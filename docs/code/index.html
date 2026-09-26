@@ -6,320 +6,210 @@
 <title>Apprendre à coder en français — Larkhré</title>
 <meta name="description" content="Apprendre à programmer en français, directement dans le navigateur. Rien à installer. 12 leçons gratuites, des exercices corrigés, et vos premiers programmes en quelques minutes.">
 <meta name="google-site-verification" content="n0pDG4Wm97AmE591OO68PZstzdvPWtas-unhN2IBFEY" />
-<meta name="theme-color" content="#0d1117">
+<meta name="theme-color" content="#2b2119">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icone-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d1117;
-    --bg2: #161b22;
-    --bg3: #1c2330;
-    --border: #2d3648;
-    --text: #e6edf3;
-    --muted: #8b949e;
-    --gold: #f0b429;
-    --gold-dim: #b8860b;
-    --violet: #a78bfa;
-    --green: #4ade80;
-    --red: #f87171;
-    --blue: #60a5fa;
+    --terre: #2b2119; --terre-2: #3a2d22; --sable: #efe6d6; --sable-2: #e4d7c1;
+    --papier: #fbf6ec; --marge: #e6b8a6; --ligne-num: #b6a488;
+    --ocre: #b0702a; --ocre-clair: #f0b566; --kaki: #6f8a3c;
+    --ardoise: #243029; --ardoise-2: #1d2621; --craie: #eeede6; --craie-2: rgba(238,237,230,.62);
+    --texte: #2b2119; --doux: #6b5f55;
+    --code: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+    /* anciens noms, encore utilisés par quelques lignes du script */
+    --bg: var(--ardoise); --bg2: var(--sable); --bg3: var(--papier); --border: var(--sable-2);
+    --text: var(--texte); --muted: var(--doux); --gold: var(--ocre); --gold-dim: var(--ocre);
+    --violet: var(--ocre); --green: var(--kaki); --red: var(--ocre-clair); --blue: #b9d3c2;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    display: flex;
-    flex-direction: column;
+    background: var(--sable); color: var(--texte);
+    font-family: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+    display: flex; flex-direction: column;
+    padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   /* ---------- entête ---------- */
   header {
-    padding: 14px 22px 12px;
-    background: linear-gradient(135deg, #161b22 0%, #1a1430 60%, #241a3d 100%);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    padding: 12px 22px; background: var(--terre); color: var(--sable);
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
   }
-  .logo {
-    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
-    font-size: 1.65rem;
-    font-weight: 800;
-    letter-spacing: 3px;
-    background: linear-gradient(90deg, var(--gold), #ffd970, var(--gold));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .tagline { color: var(--muted); font-size: .88rem; }
-  .tagline b { color: var(--violet); }
-  .version {
-    margin-left: auto;
-    font-size: .75rem;
-    color: var(--gold);
-    border: 1px solid var(--gold-dim);
-    border-radius: 20px;
-    padding: 3px 10px;
-    white-space: nowrap;
-  }
+  .logo { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 1.7rem; letter-spacing: -.01em; color: var(--sable); }
+  .logo a { color: inherit; text-decoration: none; }
+  .tagline { color: #cbbda6; font-size: .95rem; }
+  .tagline em { font-family: 'Fraunces', Georgia, serif; }
+  .version { margin-left: auto; font-size: .8rem; color: #cbbda6; white-space: nowrap; }
 
   /* ---------- barre d'outils ---------- */
   .toolbar {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 10px 22px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
+    display: flex; gap: 8px; align-items: center; padding: 10px 22px;
+    background: var(--sable); border-bottom: 1px solid var(--sable-2); flex-wrap: wrap;
   }
   button, select {
-    font-family: inherit;
-    font-size: .9rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg3);
-    color: var(--text);
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: all .15s;
+    font-family: inherit; font-size: .95rem; border-radius: 6px;
+    border: 1px solid #cdbfa8; background: var(--papier); color: var(--texte);
+    padding: 8px 14px; cursor: pointer; transition: background .15s, border-color .15s;
   }
-  button:hover, select:hover { border-color: var(--gold-dim); }
-  .btn-run {
-    background: linear-gradient(135deg, #1a7f37, #2ea043);
-    border-color: #2ea043;
-    font-weight: 700;
-  }
-  .btn-run:hover { filter: brightness(1.15); }
-  .btn-stop { background: #6e2020; border-color: #a03030; display: none; }
-  .hint { color: var(--muted); font-size: .78rem; margin-left: auto; }
+  button:hover, select:hover { border-color: var(--ocre); }
+  button:focus-visible, select:focus-visible, #editor:focus-visible { outline: 3px solid rgba(176,112,42,.45); outline-offset: 1px; }
+  .btn-run { background: var(--ocre); border-color: var(--ocre); color: #fff8ec; font-weight: 700; padding: 8px 20px; }
+  .btn-run:hover { background: #9a6023; }
+  .btn-stop { background: var(--terre); border-color: var(--terre); color: var(--sable); display: none; font-weight: 700; }
+  .btn-ecole { font-weight: 700; border-color: var(--terre); }
+  .hint { color: var(--doux); font-size: .82rem; margin-left: auto; }
 
-  /* ---------- panneaux ---------- */
-  main {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    min-height: 0;
-  }
+  /* ---------- le cahier et l'ardoise ---------- */
+  main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; min-height: 0; }
   .pane { display: flex; flex-direction: column; min-height: 0; }
-  .pane-title {
-    padding: 8px 16px;
-    font-size: .78rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--muted);
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-  }
-  .editor-wrap { flex: 1; display: flex; min-height: 0; border-right: 1px solid var(--border); }
+  .pane-title { padding: 7px 16px; font-size: .88rem; color: var(--doux); background: var(--sable); border-bottom: 1px solid var(--sable-2); }
+  .pane + .pane .pane-title { background: var(--ardoise-2); color: var(--craie-2); border-bottom-color: #2f3b34; }
+  .editor-wrap { flex: 1; display: flex; min-height: 0; background: var(--papier); }
   .linenos {
-    padding: 14px 8px 14px 14px;
-    text-align: right;
-    color: #4b5563;
-    user-select: none;
-    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
-    font-size: .95rem;
-    line-height: 1.55;
-    background: var(--bg);
-    overflow: hidden;
-    white-space: pre;
+    padding: 14px 10px 14px 14px; text-align: right; color: var(--ligne-num); user-select: none;
+    font-family: var(--code); font-size: .95rem; line-height: 1.6; background: var(--papier);
+    border-right: 2px solid var(--marge); overflow: hidden; white-space: pre; min-width: 3.2em;
   }
   #editor {
-    flex: 1;
-    background: var(--bg);
-    color: var(--text);
-    border: none;
-    outline: none;
-    resize: none;
-    padding: 14px;
-    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
-    font-size: .95rem;
-    line-height: 1.55;
-    tab-size: 4;
-    white-space: pre;
-    overflow-wrap: normal;
-    overflow: auto;
+    flex: 1; background: var(--papier); color: var(--texte); border: none; outline: none; resize: none;
+    padding: 14px 16px; font-family: var(--code); font-size: .95rem; line-height: 1.6; tab-size: 4;
+    white-space: pre; overflow-wrap: normal; overflow: auto; caret-color: var(--ocre);
   }
+  #editor::selection { background: rgba(176,112,42,.22); }
+  .linenos .cur { color: var(--ocre); font-weight: 700; }
+  .linenos .err-ligne { color: #fff8ec; background: var(--ocre); border-radius: 3px; padding: 0 3px; font-weight: 700; }
   #varsPanel {
-    display: none;
-    padding: 8px 14px;
-    background: #10151d;
-    border-bottom: 1px solid var(--border);
-    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
-    font-size: .82rem;
-    color: var(--gold);
-    white-space: pre-wrap;
+    display: none; padding: 8px 14px; background: var(--ardoise-2); border-bottom: 1px solid #2f3b34;
+    font-family: var(--code); font-size: .84rem; color: var(--ocre-clair); white-space: pre-wrap;
   }
-  .linenos .cur { color: var(--gold); font-weight: bold; }
-  #canvasWrap {
-    display: none;
-    padding: 12px 14px 8px;
-    background: #0a0e14;
-    border-bottom: 1px solid var(--border);
-    text-align: center;
-  }
-  #toileCanvas {
-    max-width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: #0d1117;
-  }
-  /* ---------- v7 : le mode interface ---------- */
-  #appWrap {
-    display: none;
-    padding: 14px;
-    background: #0f1420;
-    border-bottom: 1px solid var(--border);
-  }
-  #appWrap .app-titre {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--gold);
-    margin: 4px 0 10px;
-  }
-  #appWrap .app-etiquette {
-    color: var(--text);
-    margin: 6px 0;
-    font-size: .95rem;
-    white-space: pre-wrap;
-  }
-  #appWrap .app-bouton {
-    background: linear-gradient(135deg, #b8860b, #f0b429);
-    color: #1a1200;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-weight: 700;
-    font-size: .92rem;
-    cursor: pointer;
-    margin: 6px 8px 6px 0;
-  }
-  #appWrap .app-bouton:active { transform: scale(.96); }
-  #appWrap .app-champ {
-    display: block;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: inherit;
-    font-size: .92rem;
-    padding: 8px 12px;
-    margin: 6px 0;
-    outline: none;
-    min-width: 240px;
-  }
-  #appWrap .app-champ:focus { border-color: var(--gold-dim); }
+  #canvasWrap { display: none; padding: 12px 14px 8px; background: var(--ardoise-2); border-bottom: 1px solid #2f3b34; text-align: center; }
+  #toileCanvas { max-width: 100%; border: 1px solid #3a4840; border-radius: 6px; background: #1f2a24; }
+
+  /* ---------- le mode interface ---------- */
+  #appWrap { display: none; padding: 14px; background: var(--papier); border-bottom: 1px solid var(--sable-2); color: var(--texte); }
+  #appWrap .app-titre { font-family: 'Fraunces', Georgia, serif; font-size: 1.2rem; font-weight: 700; margin: 4px 0 10px; }
+  #appWrap .app-etiquette { margin: 6px 0; font-size: .98rem; white-space: pre-wrap; }
+  #appWrap .app-bouton { background: var(--ocre); color: #fff8ec; border: none; border-radius: 6px; padding: 8px 18px; font-weight: 700; font-size: .95rem; cursor: pointer; margin: 6px 8px 6px 0; }
+  #appWrap .app-bouton:active { transform: scale(.97); }
+  #appWrap .app-champ { display: block; background: #fff; border: 1px solid #cdbfa8; border-radius: 6px; color: var(--texte); font-family: inherit; font-size: .95rem; padding: 8px 12px; margin: 6px 0; outline: none; min-width: 240px; }
+  #appWrap .app-champ:focus { border-color: var(--ocre); }
 
   #console {
-    flex: 1;
-    overflow-y: auto;
-    padding: 14px;
-    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
-    font-size: .92rem;
-    line-height: 1.55;
-    background: #0a0e14;
+    flex: 1; overflow-y: auto; padding: 14px 16px; font-family: var(--code); font-size: .93rem; line-height: 1.6;
+    background: radial-gradient(ellipse at 25% 15%, rgba(255,255,255,.035), transparent 55%), var(--ardoise); color: var(--craie);
   }
   #console .out { white-space: pre-wrap; }
-  #console .err { color: var(--red); white-space: pre-wrap; }
-  #console .sys { color: var(--muted); font-style: italic; }
-  #console .in-echo { color: var(--blue); }
-  .inline-input {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .inline-input input {
-    background: var(--bg3);
-    border: 1px solid var(--gold-dim);
-    border-radius: 6px;
-    color: var(--gold);
-    font-family: inherit;
-    font-size: .92rem;
-    padding: 3px 8px;
-    outline: none;
-    min-width: 160px;
-  }
+  #console .err { color: var(--ocre-clair); white-space: pre-wrap; font-weight: 600; }
+  #console .sys { color: var(--craie-2); font-family: 'Atkinson Hyperlegible', sans-serif; font-size: .92rem; }
+  #console .in-echo { color: #b9d3c2; }
+  .inline-input { display: inline-flex; align-items: center; gap: 6px; }
+  .inline-input input { background: var(--ardoise-2); border: 1px solid var(--ocre-clair); border-radius: 5px; color: var(--craie); font-family: inherit; font-size: .93rem; padding: 3px 8px; outline: none; min-width: 160px; }
 
-  /* ---------- v9 : l'École ---------- */
-  #ecolePanel {
-    display: none;
-    background: linear-gradient(135deg, #14102a, #1a1430);
-    border-bottom: 2px solid var(--gold-dim);
-    padding: 14px 22px;
-  }
-  #ecolePanel .ec-haut { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  #ecolePanel .ec-titre { font-weight: 700; color: var(--gold); font-size: 1.05rem; }
-  #ecolePanel .ec-serie { color: #ff9d4d; font-weight: 700; margin-left: auto; }
-  #ecolePanel .ec-points { display: flex; gap: 5px; margin: 8px 0; flex-wrap: wrap; }
-  #ecolePanel .ec-point { width: 14px; height: 14px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border); cursor: pointer; }
-  #ecolePanel .ec-point.fait { background: var(--green); border-color: var(--green); }
-  #ecolePanel .ec-point.actuel { border: 2px solid var(--gold); }
-  #ecolePanel .ec-texte { color: var(--text); margin: 8px 0 12px; line-height: 1.6; max-width: 900px; white-space: pre-wrap; }
-  #ecolePanel .ec-texte code { background: #0a0e14; border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; color: var(--gold); font-family: Consolas, monospace; }
-  #ecolePanel .ec-boutons { display: flex; gap: 10px; flex-wrap: wrap; }
-  #ecolePanel .ec-verifier { background: linear-gradient(135deg, #1a7f37, #2ea043); border: none; color: #fff; font-weight: 700; }
-  #ecolePanel .ec-suivant { background: linear-gradient(135deg, #b8860b, #f0b429); border: none; color: #1a1200; font-weight: 700; display: none; }
-  #ecolePanel .ec-msg { margin-top: 10px; font-weight: 600; display: none; }
-  #ecolePanel .ec-msg.gagne { color: var(--green); }
-  #ecolePanel .ec-msg.perdu { color: #facc15; }
+  /* ---------- l'École ---------- */
+  #ecolePanel { display: none; background: var(--papier); border-bottom: 1px solid var(--sable-2); border-left: 4px solid var(--ocre); padding: 14px 22px; }
+  #ecolePanel .ec-haut { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  #ecolePanel .ec-titre { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 1.15rem; }
+  #ecolePanel .ec-serie { color: var(--ocre); font-weight: 700; margin-left: auto; }
+  #ecolePanel .ec-points { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
+  #ecolePanel .ec-point { width: 14px; height: 14px; border-radius: 50%; background: var(--sable-2); border: 1px solid #cdbfa8; cursor: pointer; }
+  #ecolePanel .ec-point.fait { background: var(--kaki); border-color: var(--kaki); }
+  #ecolePanel .ec-point.actuel { border: 2px solid var(--ocre); }
+  #ecolePanel .ec-texte { margin: 8px 0 12px; line-height: 1.6; max-width: 900px; white-space: pre-wrap; }
+  #ecolePanel .ec-texte code { background: var(--sable); border-radius: 4px; padding: 1px 6px; color: #7a4a1c; font-family: var(--code); font-size: .9em; }
+  #ecolePanel .ec-boutons { display: flex; gap: 8px; flex-wrap: wrap; }
+  #ecolePanel .ec-verifier { background: var(--ocre); border-color: var(--ocre); color: #fff8ec; font-weight: 700; }
+  #ecolePanel .ec-suivant { background: var(--kaki); border-color: var(--kaki); color: #fff; font-weight: 700; display: none; }
+  #ecolePanel .ec-msg { margin-top: 10px; font-weight: 700; display: none; }
+  #ecolePanel .ec-msg.gagne { color: var(--kaki); }
+  #ecolePanel .ec-msg.perdu { color: var(--ocre); }
 
   /* ---------- aide-mémoire ---------- */
-  .cheatsheet {
-    border-top: 1px solid var(--border);
-    background: var(--bg2);
-    padding: 10px 22px 18px;
-    max-height: 40vh;
-    overflow-y: auto;
-  }
-  .cheatsheet summary {
-    cursor: pointer;
-    color: var(--gold);
-    font-weight: 600;
-    padding: 6px 0;
-    user-select: none;
-  }
-  .cheat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 14px;
-    margin-top: 12px;
-  }
-  .cheat-card {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-  }
-  .cheat-card h3 { font-size: .85rem; color: var(--violet); margin-bottom: 8px; }
-  .cheat-card pre {
-    font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
-    font-size: .8rem;
-    color: #c9d1d9;
-    white-space: pre-wrap;
-  }
-  .cheat-card .kw { color: var(--gold); }
+  .cheatsheet { border-top: 1px solid var(--sable-2); background: var(--sable); padding: 10px 22px 18px; max-height: 40vh; overflow-y: auto; }
+  .cheatsheet summary { cursor: pointer; color: var(--terre); font-weight: 700; padding: 6px 0; user-select: none; }
+  .cheat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+  .cheat-card { background: var(--papier); border: 1px solid var(--sable-2); border-radius: 6px; padding: 12px 14px; }
+  .cheat-card h3 { font-family: 'Fraunces', Georgia, serif; font-size: .98rem; color: var(--terre); margin-bottom: 8px; }
+  .cheat-card pre { font-family: var(--code); font-size: .8rem; color: var(--texte); white-space: pre-wrap; }
+  .cheat-card .kw { color: var(--ocre); font-weight: 600; }
 
-  footer {
-    padding: 10px 22px;
-    text-align: center;
-    color: var(--muted);
-    font-size: .78rem;
-    background: var(--bg2);
-    border-top: 1px solid var(--border);
-  }
-  footer b { color: var(--gold); }
+  footer { padding: 10px 22px; text-align: center; color: #cbbda6; font-size: .82rem; background: var(--terre); }
+  footer b { color: var(--sable); }
+  footer a { color: var(--sable); }
 
   @media (max-width: 820px) {
     main { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
-    .editor-wrap { border-right: none; border-bottom: 1px solid var(--border); }
     .hint { display: none; }
+    .tagline { font-size: .85rem; }
   }
+
+  /* ---------- sous le baobab : la photo en fond, le cahier et l'ardoise posés dessus ---------- */
+  body { background: #2b2119 url('baobab-village.webp') center 38% / cover no-repeat fixed; }
+  body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(30,23,17,.62) 0%, rgba(30,23,17,.30) 35%, rgba(30,23,17,.45) 70%, rgba(30,23,17,.78) 100%); }
+  header { background: transparent; padding: 16px 24px 12px; text-shadow: 0 1px 10px rgba(0,0,0,.45); }
+  .logo { font-size: 2rem; }
+  .tagline, .version { color: #efe3cf; }
+  .toolbar { margin: 0 18px; border: none; border-radius: 8px; background: rgba(251,246,236,.94); box-shadow: 0 8px 22px rgba(0,0,0,.25); }
+  #ecolePanel { margin: 12px 18px 0; border-radius: 8px; box-shadow: 0 8px 22px rgba(0,0,0,.25); }
+  main { gap: 18px; padding: 16px 18px 14px; }
+  .pane { border-radius: 8px; overflow: hidden; box-shadow: 0 16px 34px rgba(0,0,0,.38); }
+  /* le cahier : papier crème, lignes bleues, marge rose */
+  .pane:first-child .pane-title { background: var(--papier); color: var(--doux); border-bottom: 1px solid #e9dfcc; }
+  #editor, .linenos {
+    background-color: var(--papier);
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.6em - 1px), rgba(110,140,185,.30) calc(1.6em - 1px), rgba(110,140,185,.30) 1.6em);
+    background-position: 0 14px; background-attachment: local;
+  }
+  /* l'ardoise : cadre en bois, comme sur la page d'accueil */
+  .pane + .pane { border: 10px solid #7a5536; border-radius: 6px; background: var(--ardoise); }
+  .pane + .pane .pane-title { background: var(--ardoise); border-bottom: 1px solid rgba(238,237,230,.12); }
+  .cheatsheet { margin: 0 18px 10px; border: none; border-radius: 8px; background: rgba(251,246,236,.94); }
+  footer { background: transparent; color: #efe3cf; text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+  @media (max-width: 820px) {
+    body { background-attachment: scroll; }
+    main { gap: 12px; padding: 10px; }
+    .toolbar, .cheatsheet, #ecolePanel { margin-left: 10px; margin-right: 10px; }
+    .pane + .pane { border-width: 7px; }
+  }
+
+  /* ---------- le cahier : mots-clés en couleur, correction dans la marge ---------- */
+  .zone-code { position: relative; flex: 1; min-width: 0; overflow: hidden; }
+  .surligne, .zone-code #editor {
+    position: absolute; inset: 0; margin: 0; padding: 14px 16px; border: 0;
+    font-family: var(--code); font-size: .95rem; line-height: 1.6; tab-size: 4; white-space: pre; overflow: auto;
+  }
+  .surligne {
+    overflow: hidden; color: var(--texte); pointer-events: none;
+    background-color: var(--papier);
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.6em - 1px), rgba(110,140,185,.30) calc(1.6em - 1px), rgba(110,140,185,.30) 1.6em);
+    background-position: 0 14px; background-attachment: local;
+  }
+  .zone-code #editor { z-index: 1; background: transparent !important; background-image: none !important;
+    color: transparent; -webkit-text-fill-color: transparent; caret-color: var(--ocre); }
+  .zone-code #editor::selection { background: rgba(176,112,42,.28); }
+  .surligne .k { color: #a15d1c; font-weight: 600; }
+  .surligne .s { color: #5f7a2e; }
+  .surligne .c { color: #9a8c7a; font-style: italic; }
+  .surligne .n { color: #7a4a1c; }
+  .bande-err { position: absolute; left: 0; right: 0; display: none; pointer-events: none; z-index: 0;
+    background: rgba(176,112,42,.16); border-left: 3px solid var(--ocre); }
+  .note-prof { position: absolute; right: 14px; max-width: min(64%, 440px); display: none; z-index: 2;
+    background: #fff8ec; border: 1px solid #e3cfa9; border-left: 4px solid var(--ocre); border-radius: 6px;
+    padding: 8px 12px 9px; box-shadow: 0 6px 16px rgba(0,0,0,.18);
+    font-family: 'Caveat', 'Segoe Print', cursive; font-size: 1.28rem; line-height: 1.18; color: #8a4f16; cursor: pointer; }
+  .note-prof b { display: block; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: .78rem; color: var(--ocre); margin-bottom: 2px; }
+  .note-prof .conseil { display: block; margin-top: 4px; color: #5d3a14; }
+
+  /* ---------- plus de place pour le baobab ---------- */
+  .hint { display: none; }
+  .toolbar { background: rgba(251,246,236,.84); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .cheatsheet:not([open]) { align-self: flex-start; padding: 6px 16px; margin-bottom: 8px; background: rgba(251,246,236,.84); }
 </style>
 <script data-goatcounter="https://lazarus.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -327,39 +217,47 @@
 <body>
 
 <header>
-  <div class="logo">Larkhré</div>
-  <div class="tagline">Le langage de programmation créé par <b>Ladji</b> — accolades comme Java, simplicité de Python, mots-clés uniques.</div>
+  <div class="logo"><a href="../">Larkhré</a></div>
+  <div class="tagline"><em>Mosi larkhré</em> : la langue de la machine, en soninké</div>
   <div class="version">v11.1</div>
 </header>
 
 <div class="toolbar">
-  <button class="btn-run" id="btnRun">▶ Exécuter</button>
-  <button class="btn-stop" id="btnStop">⏹ Arrêter</button>
-  <select id="examples">
-    <option value="">📚 Charger un exemple...</option>
-    <option value="bonjour">Bonjour le monde</option>
-    <option value="demo">Démo complète du langage</option>
-    <option value="jeu">Jeu : devine le nombre</option>
-    <option value="calc">Calculatrice</option>
-    <option value="etoiles">Pyramide d'étoiles</option>
-    <option value="poo">v2.0 : classes et objets (klas)</option>
-    <option value="dico">v2.0 : dictionnaires</option>
-    <option value="couleurs">v3.0 : la couleur !</option>
-    <option value="dessin">v3.1 : le mode dessin !</option>
-    <option value="v4">v4.0 : interpolation + essaie/rattrape</option>
-    <option value="v5">v5.0 : garde + ralenti pédagogique</option>
-    <option value="anglais">v5.0 : coder en anglais (#langue:)</option>
-    <option value="jeu6">🎮 v6.0 : JEU TEMPS RÉEL — Attrape les pièces !</option>
-    <option value="v7app">🖥️ v7.0 : MODE INTERFACE — Ta première appli !</option>
-    <option value="francais">🇫🇷 v7.1 : le pack français académique (#langue:)</option>
-    <option value="parle">🗣️ v8.0 : Larkhré PARLE — la voix !</option>
-    <option value="quantique">⚛️ v10.0 : Larkhré QUANTIQUE !</option>
-    <option value="python">🐍 v11.0 : LE PYTHON BIENVEILLANT !</option>
+  <button class="btn-run" id="btnRun" title="Raccourci : Ctrl + Entrée">Exécuter</button>
+  <button class="btn-stop" id="btnStop">Arrêter</button>
+  <select id="examples" aria-label="Charger un exemple">
+    <option value="">Charger un exemple…</option>
+    <optgroup label="Pour commencer">
+      <option value="bonjour">Bonjour le monde</option>
+      <option value="calc">Calculatrice</option>
+      <option value="etoiles">Pyramide d'étoiles</option>
+      <option value="jeu">Jeu : devine le nombre</option>
+      <option value="demo">Tour complet du langage</option>
+    </optgroup>
+    <optgroup label="Aller plus loin">
+      <option value="poo">Classes et objets (klas)</option>
+      <option value="dico">Dictionnaires</option>
+      <option value="v4">Textes à trous et gestion d'erreurs</option>
+      <option value="v5">garde et ralenti</option>
+    </optgroup>
+    <optgroup label="Dessins, jeux et applis">
+      <option value="couleurs">Les couleurs</option>
+      <option value="dessin">Le mode dessin</option>
+      <option value="jeu6">Jeu en temps réel : attrape les pièces</option>
+      <option value="v7app">Ta première appli à boutons</option>
+    </optgroup>
+    <optgroup label="Langues et super-pouvoirs">
+      <option value="anglais">Coder en anglais</option>
+      <option value="francais">Le français académique</option>
+      <option value="parle">Larkhré parle</option>
+      <option value="quantique">Le mode quantique</option>
+      <option value="python">Du vrai Python, erreurs en français</option>
+    </optgroup>
   </select>
-  <button id="btnClear">🗑 Effacer la console</button>
-  <button id="btnShare">🔗 Partager</button>
-  <button id="btnEcole" style="background:linear-gradient(135deg,#4c1d95,#7c3aed);border-color:#7c3aed;font-weight:700">🎓 L'École</button>
-  <span class="hint">Astuce : Ctrl + Entrée pour exécuter</span>
+  <button id="btnClear">Effacer la console</button>
+  <button id="btnShare">Partager</button>
+  <button class="btn-ecole" id="btnEcole">L'École</button>
+  <span class="hint">Ctrl + Entrée pour exécuter</span>
 </div>
 
 <div id="ecolePanel">
@@ -370,24 +268,24 @@
   <div class="ec-points" id="ecPoints"></div>
   <div class="ec-texte" id="ecTexte"></div>
   <div class="ec-boutons">
-    <button class="ec-verifier" id="ecVerifier">✅ Vérifier ma réponse</button>
-    <button id="ecIndice">💡 Indice</button>
-    <button class="ec-suivant" id="ecSuivant">→ Leçon suivante</button>
-    <button id="ecQuitter">❌ Quitter l'école</button>
+    <button class="ec-verifier" id="ecVerifier">Vérifier ma réponse</button>
+    <button id="ecIndice">Un indice</button>
+    <button class="ec-suivant" id="ecSuivant">Leçon suivante</button>
+    <button id="ecQuitter">Quitter l'École</button>
   </div>
   <div class="ec-msg" id="ecMsg"></div>
 </div>
 
 <main>
   <div class="pane">
-    <div class="pane-title">✍️ Ton code Larkhré</div>
+    <div class="pane-title">Ton code</div>
     <div class="editor-wrap">
       <div class="linenos" id="linenos">1</div>
       <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
     </div>
   </div>
   <div class="pane">
-    <div class="pane-title">🖥️ Console</div>
+    <div class="pane-title">Console</div>
     <div id="varsPanel"></div>
     <div id="appWrap"></div>
     <div id="canvasWrap"><canvas id="toileCanvas"></canvas></div>
@@ -396,7 +294,7 @@
 </main>
 
 <details class="cheatsheet">
-  <summary>📖 Aide-mémoire Larkhré — clique pour ouvrir</summary>
+  <summary>Aide-mémoire</summary>
   <div class="cheat-grid">
     <div class="cheat-card">
       <h3>Variables &amp; affichage</h3>
@@ -489,7 +387,7 @@ Python, erreurs en français !
 v10 : qubits superpose intrique
 mesure probabilites → QUANTIQUE !
 v8.0 : dis("texte") → il PARLE !
-🔗 Partager → ton code en lien
+Partager → ton code en lien
 v7.0 : titre bouton champ etiquette
 valeur_de(id) change_texte(id, txt)
 efface_interface() → des APPLIS !
@@ -499,7 +397,7 @@ efface_interface() → des APPLIS !
 </details>
 
 <footer>
-  <b>Larkhré v11.1</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="https://github.com/larkhre/larkhre.github.io" style="color:#f0b429">GitHub</a> · pip install larkhre
+  <b>Larkhré v11.1</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
 </footer>
 
 <script>
@@ -1929,7 +1827,7 @@ const Larkhre = (function () {
           return r === null || r === undefined ? '' : String(r);
         }
         if (self.io.onInput) {
-          const r = await self.io.onInput('🎤 ' + prompt + ' (micro indisponible — tape ta réponse) ');
+          const r = await self.io.onInput(prompt + ' (micro indisponible — tape ta réponse) ');
           return r === null || r === undefined ? '' : String(r);
         }
         return '';
@@ -3167,6 +3065,99 @@ vox("Larkhré !")
   editor.addEventListener('scroll', () => { linenos.scrollTop = editor.scrollTop; });
   updateLinenos();
 
+  // ---------- le cahier : mots-clés en couleur, correction dans la marge ----------
+  const MOTS_CLES = new Set(['laz', 'fonk', 'rend', 'kan', 'sinon', 'tanke', 'pou', 'dan', 'kase', 'swiv',
+    'vrai', 'faux', 'walu', 'et', 'ou', 'non', 'klas', 'herite', 'moi', 'importe', 'garde', 'essaie', 'rattrape', 'vox']);
+  const zoneCode = document.createElement('div'); zoneCode.className = 'zone-code';
+  editor.parentNode.insertBefore(zoneCode, editor);
+  const surligne = document.createElement('pre'); surligne.className = 'surligne'; surligne.setAttribute('aria-hidden', 'true');
+  const bandeErr = document.createElement('div'); bandeErr.className = 'bande-err';
+  const noteProf = document.createElement('div'); noteProf.className = 'note-prof'; noteProf.setAttribute('role', 'status');
+  noteProf.title = 'Clique pour fermer';
+  zoneCode.append(surligne, bandeErr, editor, noteProf);
+
+  function echappe(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  const JETONS = /(#[^\n]*)|("(?:\\.|[^"\\\n])*"?)|(\d+(?:\.\d+)?)|([A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ_0-9]*)/g;
+  function colorie(src) {
+    let html = '', dernier = 0, m;
+    JETONS.lastIndex = 0;
+    while ((m = JETONS.exec(src))) {
+      html += echappe(src.slice(dernier, m.index));
+      const t = echappe(m[0]);
+      if (m[1]) html += '<span class="c">' + t + '</span>';
+      else if (m[2]) html += '<span class="s">' + t + '</span>';
+      else if (m[3]) html += '<span class="n">' + t + '</span>';
+      else html += MOTS_CLES.has(m[4]) ? '<span class="k">' + t + '</span>' : t;
+      dernier = m.index + m[0].length;
+    }
+    return html + echappe(src.slice(dernier)) + '\n ';
+  }
+  let erreurAffichee = null;
+  function effaceNote() { erreurAffichee = null; noteProf.style.display = 'none'; bandeErr.style.display = 'none'; }
+  function rafraichitCahier() { surligne.innerHTML = colorie(editor.value); effaceNote(); }
+  // le code peut changer par programme (exemples, École, lien partagé) : on colorie à chaque fois
+  const valeurNative = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value');
+  Object.defineProperty(editor, 'value', {
+    configurable: true,
+    get() { return valeurNative.get.call(this); },
+    set(v) { valeurNative.set.call(this, v); rafraichitCahier(); },
+  });
+  editor.addEventListener('input', rafraichitCahier);
+  editor.addEventListener('scroll', () => {
+    surligne.scrollTop = editor.scrollTop; surligne.scrollLeft = editor.scrollLeft;
+    if (erreurAffichee) placeNote();
+  });
+  noteProf.addEventListener('click', effaceNote);
+
+  function distance(a, b) {
+    const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[a.length][b.length];
+  }
+  function conseilPour(msg) {
+    let m;
+    if ((m = /la variable « ([^»]+) » n'existe pas/.exec(msg))) {
+      const mots = new Set(editor.value.match(/[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ_0-9]*/g) || []);
+      let meilleur = null, d = 3;
+      for (const w of mots) { if (w === m[1] || MOTS_CLES.has(w)) continue; const x = distance(w, m[1]); if (x < d) { d = x; meilleur = w; } }
+      return meilleur ? 'Tu voulais peut-être dire « ' + meilleur + ' » ?' : 'Vérifie l\'orthographe, ou crée-la d\'abord avec laz.';
+    }
+    if (/j'attendais « \{ » mais j'ai trouvé « = »/.test(msg)) return 'Pour comparer, écris == (deux signes égal). Un seul = veut dire « mets dedans ».';
+    if (/chaîne de caractères non fermée/.test(msg)) return 'Il manque le guillemet " de la fin.';
+    if (/j'attendais « \) » mais j'ai trouvé « une fin de ligne »/.test(msg)) return 'Il manque une parenthèse ) pour fermer, sur cette ligne ou juste au-dessus.';
+    if (/j'attendais « \} »/.test(msg)) return 'Il manque une accolade } pour fermer un bloc.';
+    if (/j'attendais « \{ »/.test(msg)) return 'Il manque l\'accolade { qui ouvre le bloc.';
+    if (/division par zéro/.test(msg)) return 'Le nombre sous la division vaut 0. Regarde le film sur l\'ardoise pour voir d\'où il vient.';
+    if ((m = /hors limites \(taille (\d+)\)/.exec(msg))) return 'On compte à partir de 0 : ici, les positions vont de 0 à ' + (parseInt(m[1], 10) - 1) + '.';
+    if (/demande au moins \d+ argument/.test(msg)) return 'Il manque quelque chose entre les parenthèses.';
+    if (/impossible de convertir/.test(msg)) return 'nombre() a reçu un texte qui n\'est pas un nombre.';
+    return '';
+  }
+  function placeNote() {
+    const n = erreurAffichee.ligne;
+    const cs = getComputedStyle(editor);
+    const lh = parseFloat(cs.lineHeight), pt = parseFloat(cs.paddingTop);
+    const haut = pt + (n - 1) * lh - editor.scrollTop;
+    bandeErr.style.top = haut + 'px'; bandeErr.style.height = lh + 'px';
+    let y = haut + lh + 4;
+    if (y + noteProf.offsetHeight > zoneCode.clientHeight - 6) y = Math.max(4, haut - noteProf.offsetHeight - 4);
+    noteProf.style.top = y + 'px';
+  }
+  function montreErreur(ligne, message) {
+    const texte = message.replace(/^✘ Erreur Larkhré \(ligne \d+\) : /, '');
+    const conseil = conseilPour(texte);
+    noteProf.innerHTML = '<b>Ligne ' + ligne + '</b>' + echappe(texte) + (conseil ? '<span class="conseil">' + echappe(conseil) + '</span>' : '');
+    erreurAffichee = { ligne };
+    bandeErr.style.display = 'block'; noteProf.style.display = 'block';
+    const cs = getComputedStyle(editor), lh = parseFloat(cs.lineHeight);
+    const y = (ligne - 1) * lh;
+    if (y < editor.scrollTop || y > editor.scrollTop + editor.clientHeight - 2 * lh) editor.scrollTop = Math.max(0, y - editor.clientHeight / 3);
+    placeNote();
+  }
+  rafraichitCahier();
+
   // tabulation = 4 espaces
   editor.addEventListener('keydown', (e) => {
     if (e.key === 'Tab') {
@@ -3184,9 +3175,9 @@ vox("Larkhré !")
 
   // ---------- console (avec rendu des couleurs ANSI de Larkhré v3) ----------
   const ANSI_CSS = {
-    '30': 'color:#484f58', '31': 'color:#f87171', '32': 'color:#4ade80',
+    '30': 'color:#9aa39c', '31': 'color:#f87171', '32': 'color:#4ade80',
     '33': 'color:#facc15', '34': 'color:#60a5fa', '35': 'color:#c084fc',
-    '36': 'color:#22d3ee', '37': 'color:#e6edf3', '90': 'color:#8b949e',
+    '36': 'color:#22d3ee', '37': 'color:#eeede6', '90': 'color:#8b949e',
     '93': 'color:#f0b429', '95': 'color:#f9a8d4',
     '1': 'font-weight:bold', '4': 'text-decoration:underline',
   };
@@ -3277,18 +3268,20 @@ vox("Larkhré !")
 
   // ---------- v5 : le ralenti pédagogique ----------
   const varsPanel = document.getElementById('varsPanel');
-  function marqueLigne(n) {
+  function marqueLigne(n, genre) {
     const count = editor.value.split('\n').length;
     let html = '';
     for (let i = 1; i <= count; i++) {
-      html += (i === n) ? '<span class="cur">▶' + i + '</span>\n' : i + '\n';
+      if (i !== n) html += i + '\n';
+      else if (genre === 'erreur') html += '<span class="err-ligne">' + i + '</span>\n';
+      else html += '<span class="cur">▶' + i + '</span>\n';
     }
     linenos.innerHTML = html;
   }
   async function onStep(ligne, variables, delaiMs) {
     marqueLigne(ligne);
     varsPanel.style.display = 'block';
-    varsPanel.textContent = '👁 ligne ' + ligne + '  ·  ' +
+    varsPanel.textContent = 'ligne ' + ligne + '  ·  ' +
       (variables.length ? variables.map(([k, v]) => k + ' = ' + v).join('  ·  ') : '(pas encore de variables)');
     await new Promise(r => setTimeout(r, delaiMs));
   }
@@ -3306,7 +3299,7 @@ vox("Larkhré !")
       if (toileCanvas.height !== cmd.h) toileCanvas.height = cmd.h;
       canvasWrap.style.display = 'block';
       toileCtx = toileCanvas.getContext('2d');
-      toileCtx.fillStyle = '#0d1117';
+      toileCtx.fillStyle = '#1f2a24';
       toileCtx.fillRect(0, 0, cmd.w, cmd.h);
       return;
     }
@@ -3433,13 +3426,13 @@ vox("Larkhré !")
     try {
       if (navigator.share) {
         await navigator.share({ title: 'Mon programme Larkhré', url: lien });
-        addLine('🔗 Programme partagé !', 'sys');
+        addLine('Programme partagé !', 'sys');
       } else {
         await navigator.clipboard.writeText(lien);
-        addLine('🔗 Lien copié ! Colle-le dans WhatsApp, un email... celui qui l\'ouvre reçoit ton programme.', 'sys');
+        addLine('Lien copié ! Colle-le dans WhatsApp, un email... celui qui l\'ouvre reçoit ton programme.', 'sys');
       }
     } catch (e) {
-      addLine('🔗 Lien : ' + lien, 'sys');
+      addLine('Lien : ' + lien, 'sys');
     }
   });
 
@@ -3448,7 +3441,7 @@ vox("Larkhré !")
     try {
       editor.value = lienVersCode(location.hash);
       setTimeout(() => {
-        addLine('📬 Programme reçu par lien ! Clique sur ▶ Exécuter pour le lancer.', 'sys');
+        addLine('Programme reçu par lien. Clique sur Exécuter pour le lancer.', 'sys');
         updateLinenos();
       }, 100);
     } catch (e) { }
@@ -3529,8 +3522,8 @@ vox("Larkhré !")
       onDis: disVoix,
       onEcoute: ecouteVoix,
       onJeuDemarre: (mode) => addLine(mode === 'interface'
-        ? '🖥 Application lancée ! Elle est vivante au-dessus de la console. (⏹ Arrêter pour quitter)'
-        : '🎮 Partie lancée ! Clique une fois sur la page, puis joue au clavier. (⏹ Arrêter pour quitter)', 'sys'),
+        ? 'Application lancée : elle vit au-dessus de la console. (Arrêter pour quitter)'
+        : 'Partie lancée : clique une fois sur la page, puis joue au clavier. (Arrêter pour quitter)', 'sys'),
       // v7 : le mode interface
       onWidget: onWidget,
       prendClics: () => { const c = clicsEnAttente; clicsEnAttente = []; return c; },
@@ -3551,6 +3544,10 @@ vox("Larkhré !")
       }
     }
     updateLinenos();
+    if (!result.ok && result.error) {
+      const m = /\(ligne (\d+)\)/.exec(result.error);
+      if (m) { marqueLigne(parseInt(m[1], 10), 'erreur'); montreErreur(parseInt(m[1], 10), result.error); }
+    }
     varsPanel.style.display = 'none';
 
     running = false;
@@ -3576,10 +3573,10 @@ vox("Larkhré !")
     return new Promise((resolve) => {
       const Reco = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!Reco) {
-        askInput('🎤 ' + prompt + ' (micro indisponible ici — tape ta réponse) ').then(resolve);
+        askInput(prompt + ' (micro indisponible ici — tape ta réponse) ').then(resolve);
         return;
       }
-      addLine('🎤 ' + (prompt || 'Je t\'écoute...') + ' (parle maintenant)', 'sys');
+      addLine((prompt || 'Je t\'écoute...') + ' (parle maintenant)', 'sys');
       const r = new Reco();
       r.lang = 'fr-FR';
       r.interimResults = false;
@@ -3588,14 +3585,14 @@ vox("Larkhré !")
       const termine = (texte) => {
         if (fini) return;
         fini = true;
-        if (texte) addLine('🎤 → « ' + texte + ' »', 'in-echo');
+        if (texte) addLine('→ « ' + texte + ' »', 'in-echo');
         resolve(texte || '');
       };
       r.onresult = (e) => termine(e.results[0][0].transcript);
       r.onerror = () => {
         if (fini) return;
         fini = true;
-        askInput('🎤 ' + prompt + ' (micro refusé — tape ta réponse) ').then(resolve);
+        askInput(prompt + ' (micro refusé — tape ta réponse) ').then(resolve);
       };
       r.onend = () => termine('');
       try { r.start(); } catch (e) { r.onerror(); }
@@ -3604,18 +3601,18 @@ vox("Larkhré !")
 
   // ---------- v9 : L'ÉCOLE ----------
   const LECONS = [
-    { titre: 'Dis bonjour au monde', texte: "En Larkhré, <code>vox(...)</code> affiche à l'écran — comme une voix qui parle.\n\n🎯 DÉFI : affiche exactement le texte  Bonjour le monde !", code: '# Écris ton code ici :\nvox("...")\n', attendu: ['Bonjour le monde !'], indice: 'vox("Bonjour le monde !")' },
-    { titre: 'Ta première variable', texte: "Une variable, c'est une boîte avec un nom. <code>laz age = 25</code> crée la boîte « age » qui contient 25.\n\n🎯 DÉFI : crée une variable  annee  qui vaut 2026, puis affiche-la avec vox.", code: '# Crée la variable puis affiche-la :\n', attendu: ['2026'], indice: 'laz annee = 2026   puis   vox(annee)' },
-    { titre: 'La machine à calculer', texte: "Larkhré calcule tout : <code>+</code> <code>-</code> <code>*</code> <code>/</code>.\n\n🎯 DÉFI : affiche le résultat de 7 fois 8 (sans le calculer toi-même !).", code: 'vox(...)\n', attendu: ['56'], indice: 'vox(7 * 8)' },
-    { titre: 'Le texte magique', texte: "Dans un texte entre guillemets, <code>{nom_de_variable}</code> est remplacé par sa valeur : c'est l'interpolation.\n\n🎯 DÉFI : crée  laz prenom = \"Awa\"  puis affiche  Salut Awa !  en utilisant {prenom}.", code: 'laz prenom = "Awa"\n# affiche : Salut Awa !\n', attendu: ['Salut Awa !'], indice: 'vox("Salut {prenom} !")' },
-    { titre: 'Décider avec kan', texte: "<code>kan</code> = « quand/si » : le code entre accolades ne s'exécute QUE si la condition est vraie. <code>sinon</code> = le reste du temps.\n\n🎯 DÉFI : avec  laz age = 20 , affiche  majeur  si age >= 18, sinon  mineur .", code: 'laz age = 20\n# kan ... { ... } sinon { ... }\n', attendu: ['majeur'], indice: 'kan age >= 18 {\n    vox("majeur")\n} sinon {\n    vox("mineur")\n}' },
-    { titre: 'Répéter avec pou', texte: "<code>pou i dan 1..5 { ... }</code> répète le bloc pour i = 1, 2, 3, 4, 5 (bornes INCLUSES).\n\n🎯 DÉFI : affiche les nombres de 1 à 5, un par ligne.", code: '# la boucle pou :\n', attendu: ['1', '2', '3', '4', '5'], indice: 'pou i dan 1..5 {\n    vox(i)\n}' },
-    { titre: 'Le compte à rebours', texte: "<code>tanke</code> = « tant que » : répète TANT QUE la condition est vraie. Attention à faire évoluer la variable, sinon boucle infinie !\n\n🎯 DÉFI : un compte à rebours qui affiche 3, puis 2, puis 1.", code: 'laz n = 3\n# tanke n > 0 { ... }\n', attendu: ['3', '2', '1'], indice: 'tanke n > 0 {\n    vox(n)\n    n -= 1\n}' },
-    { titre: 'Les listes', texte: "Une liste rassemble plusieurs valeurs : <code>laz fruits = [\"mangue\", \"banane\", \"ananas\"]</code>. <code>taille(fruits)</code> compte les éléments.\n\n🎯 DÉFI : crée une liste de 3 fruits et affiche sa taille.", code: 'laz fruits = [...]\n', attendu: ['3'], indice: 'laz fruits = ["mangue", "banane", "ananas"]\nvox(taille(fruits))' },
-    { titre: 'Ta première fonction', texte: "<code>fonk</code> crée une machine réutilisable : elle reçoit des ingrédients et <code>rend</code> un résultat.\n\n🎯 DÉFI : crée  fonk double(x)  qui rend x * 2, puis affiche double(21).", code: 'fonk double(x) {\n    rend ...\n}\nvox(double(21))\n', attendu: ['42'], indice: 'rend x * 2' },
-    { titre: 'Le dictionnaire', texte: "Un dictionnaire associe des clés à des valeurs : <code>laz d = { \"nom\": \"Awa\", \"age\": 12 }</code>. On lit avec <code>d[\"nom\"]</code>.\n\n🎯 DÉFI : crée un dictionnaire avec la clé \"ville\" qui vaut \"Bamako\", et affiche cette ville.", code: 'laz d = { ... }\n', attendu: ['Bamako'], indice: 'laz d = { "ville": "Bamako" }\nvox(d["ville"])' },
-    { titre: 'La mémoire éternelle', texte: "<code>garde</code> crée une variable qui SE SOUVIENT entre les exécutions — unique au monde !\n\n🎯 DÉFI : crée  garde visites = 0 , ajoute-lui 1, et affiche  Visite numéro {visites} .", code: 'garde visites = 0\n', attendu: ['Visite numéro'], indice: 'visites += 1\nvox("Visite numéro {visites}")' },
-    { titre: 'Dessine !', texte: "<code>toile(largeur, hauteur)</code> ouvre une zone de dessin, puis <code>cercle_plein(x, y, rayon, couleur)</code>...\n\n🎯 DÉFI : crée une toile 200x200 et dessine un cercle plein doré (couleur \"or\") au milieu (100, 100), rayon 50.", code: 'toile(200, 200)\n', attenduDessin: 'cercle', attendu: [], indice: 'cercle_plein(100, 100, 50, "or")' },
+    { titre: 'Dis bonjour au monde', texte: "En Larkhré, <code>vox(...)</code> affiche à l'écran — comme une voix qui parle.\n\nDéfi : affiche exactement le texte  Bonjour le monde !", code: '# Écris ton code ici :\nvox("...")\n', attendu: ['Bonjour le monde !'], indice: 'vox("Bonjour le monde !")' },
+    { titre: 'Ta première variable', texte: "Une variable, c'est une boîte avec un nom. <code>laz age = 25</code> crée la boîte « age » qui contient 25.\n\nDéfi : crée une variable  annee  qui vaut 2026, puis affiche-la avec vox.", code: '# Crée la variable puis affiche-la :\n', attendu: ['2026'], indice: 'laz annee = 2026   puis   vox(annee)' },
+    { titre: 'La machine à calculer', texte: "Larkhré calcule tout : <code>+</code> <code>-</code> <code>*</code> <code>/</code>.\n\nDéfi : affiche le résultat de 7 fois 8 (sans le calculer toi-même !).", code: 'vox(...)\n', attendu: ['56'], indice: 'vox(7 * 8)' },
+    { titre: 'Le texte magique', texte: "Dans un texte entre guillemets, <code>{nom_de_variable}</code> est remplacé par sa valeur : c'est l'interpolation.\n\nDéfi : crée  laz prenom = \"Awa\"  puis affiche  Salut Awa !  en utilisant {prenom}.", code: 'laz prenom = "Awa"\n# affiche : Salut Awa !\n', attendu: ['Salut Awa !'], indice: 'vox("Salut {prenom} !")' },
+    { titre: 'Décider avec kan', texte: "<code>kan</code> = « quand/si » : le code entre accolades ne s'exécute QUE si la condition est vraie. <code>sinon</code> = le reste du temps.\n\nDéfi : avec  laz age = 20 , affiche  majeur  si age >= 18, sinon  mineur .", code: 'laz age = 20\n# kan ... { ... } sinon { ... }\n', attendu: ['majeur'], indice: 'kan age >= 18 {\n    vox("majeur")\n} sinon {\n    vox("mineur")\n}' },
+    { titre: 'Répéter avec pou', texte: "<code>pou i dan 1..5 { ... }</code> répète le bloc pour i = 1, 2, 3, 4, 5 (bornes INCLUSES).\n\nDéfi : affiche les nombres de 1 à 5, un par ligne.", code: '# la boucle pou :\n', attendu: ['1', '2', '3', '4', '5'], indice: 'pou i dan 1..5 {\n    vox(i)\n}' },
+    { titre: 'Le compte à rebours', texte: "<code>tanke</code> = « tant que » : répète TANT QUE la condition est vraie. Attention à faire évoluer la variable, sinon boucle infinie !\n\nDéfi : un compte à rebours qui affiche 3, puis 2, puis 1.", code: 'laz n = 3\n# tanke n > 0 { ... }\n', attendu: ['3', '2', '1'], indice: 'tanke n > 0 {\n    vox(n)\n    n -= 1\n}' },
+    { titre: 'Les listes', texte: "Une liste rassemble plusieurs valeurs : <code>laz fruits = [\"mangue\", \"banane\", \"ananas\"]</code>. <code>taille(fruits)</code> compte les éléments.\n\nDéfi : crée une liste de 3 fruits et affiche sa taille.", code: 'laz fruits = [...]\n', attendu: ['3'], indice: 'laz fruits = ["mangue", "banane", "ananas"]\nvox(taille(fruits))' },
+    { titre: 'Ta première fonction', texte: "<code>fonk</code> crée une machine réutilisable : elle reçoit des ingrédients et <code>rend</code> un résultat.\n\nDéfi : crée  fonk double(x)  qui rend x * 2, puis affiche double(21).", code: 'fonk double(x) {\n    rend ...\n}\nvox(double(21))\n', attendu: ['42'], indice: 'rend x * 2' },
+    { titre: 'Le dictionnaire', texte: "Un dictionnaire associe des clés à des valeurs : <code>laz d = { \"nom\": \"Awa\", \"age\": 12 }</code>. On lit avec <code>d[\"nom\"]</code>.\n\nDéfi : crée un dictionnaire avec la clé \"ville\" qui vaut \"Bamako\", et affiche cette ville.", code: 'laz d = { ... }\n', attendu: ['Bamako'], indice: 'laz d = { "ville": "Bamako" }\nvox(d["ville"])' },
+    { titre: 'La mémoire éternelle', texte: "<code>garde</code> crée une variable qui SE SOUVIENT entre les exécutions\n\nDéfi : crée  garde visites = 0 , ajoute-lui 1, et affiche  Visite numéro {visites} .", code: 'garde visites = 0\n', attendu: ['Visite numéro'], indice: 'visites += 1\nvox("Visite numéro {visites}")' },
+    { titre: 'Dessine !', texte: "<code>toile(largeur, hauteur)</code> ouvre une zone de dessin, puis <code>cercle_plein(x, y, rayon, couleur)</code>...\n\nDéfi : crée une toile 200x200 et dessine un cercle plein doré (couleur \"or\") au milieu (100, 100), rayon 50.", code: 'toile(200, 200)\n', attenduDessin: 'cercle', attendu: [], indice: 'cercle_plein(100, 100, 50, "or")' },
   ];
 
   const btnEcole = document.getElementById('btnEcole');
@@ -3645,8 +3642,8 @@ vox("Larkhré !")
     leconIdx = i;
     const l = LECONS[i];
     const d = chargeEcole();
-    ecTitre.textContent = '🎓 Leçon ' + (i + 1) + '/' + LECONS.length + ' — ' + l.titre;
-    ecSerie.textContent = d.serie > 0 ? '🔥 Série : ' + d.serie + ' jour' + (d.serie > 1 ? 's' : '') : '';
+    ecTitre.textContent = 'Leçon ' + (i + 1) + '/' + LECONS.length + ' — ' + l.titre;
+    ecSerie.textContent = d.serie > 0 ? 'Série : ' + d.serie + ' jour' + (d.serie > 1 ? 's' : '') : '';
     ecTexte.innerHTML = l.texte.replace(/\n/g, '<br>');
     ecMsg.style.display = 'none';
     ecSuivant.style.display = d.faits[i] ? 'inline-block' : 'none';
@@ -3669,14 +3666,14 @@ vox("Larkhré !")
     let premiere = LECONS.findIndex((_, j) => !d.faits[j]);
     if (premiere < 0) premiere = 0;
     montreLecon(premiere);
-    addLine('🎓 Bienvenue à l\'École Larkhré ! Lis la leçon en haut, écris ton code, puis clique « Vérifier ma réponse ».', 'sys');
+    addLine('Bienvenue à l\'École Larkhré ! Lis la leçon en haut, écris ton code, puis clique « Vérifier ma réponse ».', 'sys');
   });
   ecQuitter.addEventListener('click', () => {
     ecoleActive = false;
     ecolePanel.style.display = 'none';
   });
   ecIndice.addEventListener('click', () => {
-    addLine('💡 Indice : ', 'sys');
+    addLine('Indice : ', 'sys');
     addLine(LECONS[leconIdx].indice, 'out');
   });
   ecSuivant.addEventListener('click', () => {
@@ -3689,7 +3686,7 @@ vox("Larkhré !")
     const sortie = [];
     let dessinVu = '';
     consoleEl.innerHTML = '';
-    addLine('🎓 Vérification de la leçon ' + (leconIdx + 1) + '...', 'sys');
+    addLine('Vérification de la leçon ' + (leconIdx + 1) + '...', 'sys');
     const res = await Larkhre.run(editor.value, {
       onPrint: (x) => { sortie.push(x); addLine(x, 'out'); },
       onInput: async () => '',
@@ -3702,7 +3699,7 @@ vox("Larkhré !")
       toucheEnfoncee: () => false,
       onFrame: () => new Promise((r) => setTimeout(r, 5)),
       onSon: () => { },
-      onDis: (x) => addLine('🗣️ ' + x, 'sys'),
+      onDis: (x) => addLine('« ' + x + ' »', 'sys'),
       onEcoute: async () => '',
     });
     const texteSortie = sortie.join('\n');
@@ -3716,7 +3713,7 @@ vox("Larkhré !")
     ecMsg.style.display = 'block';
     if (gagne) {
       ecMsg.className = 'ec-msg gagne';
-      ecMsg.textContent = '🎉 BRAVO ! Leçon réussie !';
+      ecMsg.textContent = 'Bravo, leçon réussie !';
       joueSon('victoire');
       const d = chargeEcole();
       d.faits[leconIdx] = true;
@@ -3729,15 +3726,15 @@ vox("Larkhré !")
       sauveEcole(d);
       const toutes = LECONS.every((_, j) => d.faits[j]);
       if (toutes) {
-        addLine('🏆 INCROYABLE : tu as terminé TOUTES les leçons de l\'École Larkhré ! Tu sais coder. Le monde t\'attend.', 'sys');
+        addLine('Tu as terminé toutes les leçons de l\'École Larkhré. Tu sais coder : à toi de créer.', 'sys');
       }
       montreLecon(leconIdx);
       ecMsg.style.display = 'block';
       ecMsg.className = 'ec-msg gagne';
-      ecMsg.textContent = toutes ? '🏆 ÉCOLE TERMINÉE — tu sais coder !' : '🎉 BRAVO ! Clique « → Leçon suivante ».';
+      ecMsg.textContent = toutes ? 'École terminée : tu sais coder !' : 'Bravo ! Clique sur « Leçon suivante ».';
     } else {
       ecMsg.className = 'ec-msg perdu';
-      ecMsg.textContent = '🤔 Pas encore — regarde ce que ton code affiche dans la console, ou demande un 💡 Indice.';
+      ecMsg.textContent = 'Pas encore : regarde ce que ton code affiche dans la console, ou demande un indice.';
       joueSon('clic');
     }
   });
