@@ -1,0 +1,2 @@
+vox_couleur("C'est plus grand !", "vert")
+vox_couleur("C'est plus petit !", "rouge")

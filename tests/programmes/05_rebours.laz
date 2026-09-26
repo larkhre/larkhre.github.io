@@ -1,0 +1,4 @@
+pou i dan 10..1 {
+vox(i)
+}
+vox("Décollage !")

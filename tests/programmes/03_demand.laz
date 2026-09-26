@@ -1,0 +1,2 @@
+laz nom = demand("Comment tu t'appelles ? ")
+vox("Enchanté, {nom} !")

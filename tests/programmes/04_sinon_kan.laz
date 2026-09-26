@@ -1,0 +1,10 @@
+laz note = nombre(demand("Ta note sur 20 ? "))
+kan note >= 16 {
+vox("Excellent !")
+} sinon kan note >= 10 {
+vox("C'est réussi.")
+} sinon kan note >= 8 {
+vox("Presque... courage !")
+} sinon {
+vox("On révise ensemble ?")
+}

@@ -1,0 +1,4 @@
+laz majeur = vrai
+laz pluie = faux
+laz gagnant = walu # personne n'a encore gagné
+vox(majeur, pluie, gagnant)

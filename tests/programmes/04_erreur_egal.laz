@@ -1,0 +1,4 @@
+laz age = 18
+kan age = 18 {
+vox("dix-huit")
+}

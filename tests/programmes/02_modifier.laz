@@ -1,0 +1,5 @@
+laz score = 0
+score = 10 # nouveau contenu
+score = score + 5 # prend le contenu, ajoute 5, range le résultat
+score += 5 # raccourci qui fait exactement pareil
+vox(score)

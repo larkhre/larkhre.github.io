@@ -1,0 +1,2 @@
+laz age = nombre(demand("Ton âge ? "))
+vox("L'année prochaine tu auras", age + 1, "ans")

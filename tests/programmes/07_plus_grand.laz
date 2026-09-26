@@ -1,0 +1,8 @@
+laz nombres = [14, 7, 19, 3, 16]
+laz record = nombres[0]
+pou n dan nombres {
+kan n > record {
+record = n
+}
+}
+vox("Le plus grand :", record)

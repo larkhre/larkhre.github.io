@@ -1,0 +1,4 @@
+laz n = nombre(demand("Quelle table ? "))
+pou i dan 1..10 {
+vox("{n} × {i} = " + texte(n * i))
+}

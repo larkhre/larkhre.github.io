@@ -1,0 +1,12 @@
+laz courses = ["riz", "tomates", "poisson"]
+laz notes = [12, 15, 9, 18]
+vox(courses[0]) # riz (le PREMIER est à la position 0)
+vox(courses[2]) # poisson
+vox(courses[-1]) # poisson (-1 = le dernier, pratique !)
+ajoute(courses, "mangues") # ajouter à la fin
+retire(courses, 0) # retirer la position 0
+courses[1] = "oignons" # remplacer
+vox(taille(courses)) # combien d'éléments ?
+vox(tri(notes)) # version triée
+vox(contient(courses, "riz")) # vrai ou faux
+vox(courses)

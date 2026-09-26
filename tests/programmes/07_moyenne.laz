@@ -1,0 +1,6 @@
+laz notes = [12, 15, 9, 18]
+laz total = 0
+pou note dan notes {
+total += note
+}
+vox("Moyenne :", total / taille(notes))

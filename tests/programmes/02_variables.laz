@@ -1,0 +1,4 @@
+laz prenom = "Awa"
+laz age = 16
+vox("Je m'appelle", prenom)
+vox("J'ai", age, "ans")

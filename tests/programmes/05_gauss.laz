@@ -1,0 +1,5 @@
+laz somme = 0
+pou i dan 1..100 {
+somme += i
+}
+vox(somme) # 5050

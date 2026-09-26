@@ -1,0 +1,2 @@
+vox("7 fois 8 égale", 7 * 8)
+vox("120 divisé par 4 égale", 120 / 4)

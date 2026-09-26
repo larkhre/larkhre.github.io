@@ -1,0 +1,2 @@
+laz age = demand("Ton âge ? ")
+vox(age + 1) # 💥 « 16 » est un texte, pas un nombre !

@@ -1,0 +1,6 @@
+laz age = nombre(demand("Ton âge ? "))
+kan age >= 18 {
+vox("Tu es majeur.")
+} sinon {
+vox("Encore", 18 - age, "ans de patience !")
+}

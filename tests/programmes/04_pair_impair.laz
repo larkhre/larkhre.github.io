@@ -1,0 +1,6 @@
+laz n = nombre(demand("Un nombre ? "))
+kan n % 2 == 0 {
+vox("{n} est pair")
+} sinon {
+vox("{n} est impair")
+}

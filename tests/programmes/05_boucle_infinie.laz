@@ -1,0 +1,5 @@
+# test: contient programme trop long — boucle infinie ?
+laz n = 0
+tanke vrai {
+n += 1
+}

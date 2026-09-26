@@ -1,0 +1,6 @@
+laz energie = 100
+tanke energie > 0 {
+vox("Je danse ! Énergie : {energie}")
+energie -= 30
+}
+vox("Épuisé. Dodo.")

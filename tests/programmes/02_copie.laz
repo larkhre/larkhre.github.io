@@ -1,0 +1,4 @@
+laz a = 5
+laz b = a
+a = 10
+vox(a, b)
