@@ -1,0 +1,14 @@
+laz joueur = {
+"nom": "Awa",
+"score": 1250,
+"niveau": 3
+}
+vox(joueur["nom"]) # Awa
+joueur["score"] += 50 # modifier
+joueur["vies"] = 3 # ajouter une nouvelle clé
+pou cle dan joueur {
+vox("{cle} : " + texte(joueur[cle]))
+}
+vox(taille(joueur), cles(joueur), valeurs(joueur), contient(joueur, "nom"))
+retire(joueur, "vies")
+vox(joueur)

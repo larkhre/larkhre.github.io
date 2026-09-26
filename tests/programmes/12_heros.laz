@@ -1,0 +1,15 @@
+klas Heros {
+fonk init(moi, nom) {
+moi.nom = nom
+moi.vie = 100
+}
+fonk attaque(moi, degats) {
+moi.vie -= degats
+vox("Aïe !", moi.nom, "n'a plus que", moi.vie, "points de vie")
+}
+}
+laz awa = Heros("Awa")
+laz issa = Heros("Issa")
+awa.attaque(30)
+issa.attaque(15)
+vox(awa.vie, "contre", issa.vie)

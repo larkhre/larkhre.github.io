@@ -1,0 +1,7 @@
+Awa
+nom : Awa
+score : 1300
+niveau : 3
+vies : 3
+4 ["nom", "score", "niveau", "vies"] ["Awa", 1300, 3, 3] vrai
+{"nom": "Awa", "score": 1300, "niveau": 3}

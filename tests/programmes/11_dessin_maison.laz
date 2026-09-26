@@ -1,0 +1,5 @@
+toile(400, 300) # la zone de dessin (largeur, hauteur)
+cercle_plein(330, 60, 35, "or") # le soleil : x, y, rayon, couleur
+trace_ligne(0, 250, 400, 250, "vert") # le sol : x1, y1, x2, y2
+rect_plein(80, 170, 120, 80, "gris") # la maison : x, y, largeur, hauteur
+trace_texte(150, 40, "Chez moi", "cyan")

@@ -1,0 +1,23 @@
+garde record = 0
+laz questions = [
+{ "q": "Capitale du Mali ?", "r": "bamako" },
+{ "q": "7 × 8 ?", "r": "56" },
+{ "q": "Créateur de Larkhré ?", "r": "ladji" }
+]
+laz score = 0
+pou question dan questions {
+laz reponse = minus(demand(question["q"] + " "))
+kan reponse == question["r"] {
+vox_couleur("Correct !", "vert")
+score += 1
+} sinon {
+vox_couleur("Raté ! C'était : " + question["r"], "rouge")
+}
+}
+vox("Score final : {score} / " + texte(taille(questions)))
+kan score > record {
+record = score
+vox_couleur("NOUVEAU RECORD : {record} ! 🏆", "or")
+} sinon {
+vox("Le record reste à {record}.")
+}

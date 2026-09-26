@@ -1,0 +1,7 @@
+essaie {
+laz age = nombre(demand("Ton âge ? "))
+vox("Dans 10 ans, tu auras", age + 10, "ans")
+} rattrape probleme {
+vox("Ce n'était pas un nombre ! ({probleme})")
+}
+vox("Le programme continue tranquillement.")

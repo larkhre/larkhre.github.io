@@ -1,0 +1,7 @@
+fonk plus_grand(a, b) {
+kan a > b {
+rend a
+}
+rend b
+}
+vox(plus_grand(3, 9), plus_grand(12, 4))

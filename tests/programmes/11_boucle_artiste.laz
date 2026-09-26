@@ -1,0 +1,4 @@
+toile(400, 200)
+pou i dan 1..8 {
+cercle_plein(i * 45, 100, i * 4, "cyan")
+}

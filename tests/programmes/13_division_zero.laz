@@ -1,0 +1,5 @@
+laz total = 100
+laz x = 1
+laz nb_eleves = 0
+laz y = 2
+vox(total / nb_eleves)

@@ -1,0 +1,6 @@
+fonk saluer(prenom) {
+vox("Bonjour {prenom}, bienvenue !")
+}
+saluer("Awa")
+saluer("Moussa")
+saluer("Fatou")

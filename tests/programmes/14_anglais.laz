@@ -1,0 +1,5 @@
+#langue: anglais
+let x = 5
+when x > 3 {
+vox("ok")
+}

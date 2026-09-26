@@ -1,0 +1,11 @@
+fonk retirer(solde, montant) {
+kan montant > solde {
+echoue("solde insuffisant !")
+}
+rend solde - montant
+}
+essaie {
+vox(retirer(100, 500))
+} rattrape e {
+vox("Erreur :", e)
+}

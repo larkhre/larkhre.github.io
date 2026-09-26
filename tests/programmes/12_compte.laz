@@ -1,0 +1,18 @@
+klas Compte {
+fonk init(moi, titulaire) {
+moi.titulaire = titulaire
+moi.solde = 0
+}
+fonk depose(moi, montant) {
+moi.solde += montant
+}
+fonk affiche(moi) {
+vox("Compte de", moi.titulaire, ":", moi.solde, "F")
+}
+}
+laz a = Compte("Awa")
+laz m = Compte("Moussa")
+a.depose(500)
+m.depose(1200)
+a.affiche()
+m.affiche()

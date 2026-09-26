@@ -1,0 +1,2 @@
+ecris_fichier("journal.txt", "Cher journal")
+vox(lis_fichier("journal.txt"))

@@ -1,0 +1,7 @@
+laz dico = { "bonjour": "hello", "merci": "thank you", "eau": "water" }
+laz mot = minus(demand("Un mot en français ? "))
+kan contient(dico, mot) {
+vox("En anglais : " + dico[mot])
+} sinon {
+vox("Je ne connais pas encore ce mot !")
+}

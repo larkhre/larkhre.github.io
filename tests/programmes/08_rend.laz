@@ -1,0 +1,12 @@
+fonk carre(x) {
+rend x * x
+}
+fonk moyenne(liste) {
+laz total = 0
+pou n dan liste {
+total += n
+}
+rend total / taille(liste)
+}
+vox(carre(8)) # 64
+vox(moyenne([12, 15, 9, 18])) # 13.5

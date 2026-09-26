@@ -1,0 +1,3 @@
+toile(400, 300) # la zone de dessin (largeur,
+hauteur)
+cercle_plein(330, 60, 35, "or") # le soleil : x, y, rayon, couleur

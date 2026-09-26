@@ -1,0 +1,7 @@
+✘ Erreur Larkhré (ligne 5) : division par zéro impossible
+
+— Le film juste avant l'erreur :
+   ligne 1 : total = 100
+   ligne 2 : x = 1
+   ligne 3 : nb_eleves = 0
+   ligne 4 : y = 2
