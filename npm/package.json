@@ -1,0 +1,15 @@
+{
+  "name": "larkhre",
+  "version": "11.1.0",
+  "description": "Larkhré (« mosi larkhré », la langue de la machine en soninké) : le moteur du langage pour apprendre à coder en français. Le même moteur que le playground.",
+  "main": "larkhre.js",
+  "files": ["larkhre.js", "README.md"],
+  "scripts": {
+    "prepublishOnly": "node construire.js"
+  },
+  "keywords": ["larkhre", "langage", "programmation", "education", "francais", "interpreteur"],
+  "author": "Ladji Doucaré",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/larkhre/larkhre.github.io.git", "directory": "npm" },
+  "homepage": "https://larkhre.github.io/"
+}

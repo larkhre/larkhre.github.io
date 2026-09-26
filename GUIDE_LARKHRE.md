@@ -1,0 +1,749 @@
+# Larkhré — Le guide du langage (v5.0)
+
+**Larkhré** est un langage de programmation créé par **Ladji** (2026).
+Sa philosophie : la simplicité de Python + la structure de Java, avec des mots-clés uniques.
+
+- Des accolades `{ }` pour les blocs (comme Java)
+- **Pas** de point-virgules obligatoires (comme Python)
+- Des mots-clés inventés, courts et percutants
+- Les fichiers portent l'extension **`.laz`**
+
+---
+
+## 1. Installation et lancement
+
+Il faut juste Python 3 installé sur l'ordinateur. Ensuite :
+
+```bash
+# Exécuter un programme
+python3 larkhre.py mon_programme.laz
+
+# Mode interactif (tester du code ligne par ligne)
+python3 larkhre.py
+```
+
+---
+
+## 2. Mon premier programme
+
+```larkhre
+# Ceci est un commentaire (// marche aussi)
+vox("Bonjour le monde !")
+```
+
+`vox` veut dire « voix » : c'est la commande pour afficher à l'écran.
+
+---
+
+## 3. Les variables — `laz`
+
+On déclare une variable avec le mot-clé `laz` (comme le nom du langage !) :
+
+```larkhre
+laz nom = "Ladji"
+laz age = 25
+laz taille_m = 1.85
+laz est_fort = vrai
+laz rien = walu
+
+vox("Je m'appelle " + nom + " et j'ai", age, "ans")
+```
+
+Ensuite on la modifie sans `laz` :
+
+```larkhre
+age = age + 1
+```
+
+### Les types de valeurs
+
+| Type | Exemples | Nom Larkhré |
+|---|---|---|
+| Nombre | `42`, `3.14`, `-7` | `nombre` |
+| Texte | `"salut"` | `texte` |
+| Booléen | `vrai`, `faux` | `buli` |
+| Vide | `walu` | `walu` |
+| Liste | `[1, 2, 3]` | `liste` |
+| Fonction | `fonk ...` | `fonk` |
+
+---
+
+## 4. Les conditions — `kan` / `sinon`
+
+`kan` veut dire « quand » :
+
+```larkhre
+laz note = 15
+
+kan note >= 16 {
+    vox("Excellent !")
+} sinon kan note >= 10 {
+    vox("Réussi")
+} sinon {
+    vox("Il faut réviser...")
+}
+```
+
+### Comparaisons et logique
+
+| Larkhré | Signification |
+|---|---|
+| `==` `!=` | égal / différent |
+| `<` `>` `<=` `>=` | comparaisons |
+| `et` (ou `&&`) | ET logique |
+| `ou` (ou `\|\|`) | OU logique |
+| `non` (ou `!`) | négation |
+
+```larkhre
+kan age >= 18 et pays == "France" {
+    vox("Tu peux voter !")
+}
+```
+
+---
+
+## 5. Les boucles
+
+### `tanke` — tant que (while)
+
+```larkhre
+laz compteur = 5
+tanke compteur > 0 {
+    vox(compteur)
+    compteur = compteur - 1
+}
+vox("Décollage !")
+```
+
+### `pou ... dan` — pour chaque (for)
+
+Avec un intervalle `debut..fin` (bornes incluses) :
+
+```larkhre
+pou i dan 1..10 {
+    vox("i vaut", i)
+}
+```
+
+Avec une liste ou un texte :
+
+```larkhre
+pou fruit dan ["mangue", "banane", "ananas"] {
+    vox(fruit)
+}
+```
+
+### `kase` et `swiv` — break et continue
+
+```larkhre
+pou n dan 1..100 {
+    kan n % 2 == 0 {
+        swiv        # passe au suivant
+    }
+    kan n > 10 {
+        kase        # casse la boucle
+    }
+    vox(n)
+}
+```
+
+---
+
+## 6. Les fonctions — `fonk` / `rend`
+
+`fonk` définit une fonction, `rend` renvoie une valeur :
+
+```larkhre
+fonk carre(x) {
+    rend x * x
+}
+
+fonk saluer(nom) {
+    rend "Salut " + nom + " !"
+}
+
+vox(carre(8))          # 64
+vox(saluer("Ladji"))   # Salut Ladji !
+```
+
+La récursivité fonctionne :
+
+```larkhre
+fonk factorielle(n) {
+    kan n <= 1 {
+        rend 1
+    }
+    rend n * factorielle(n - 1)
+}
+vox(factorielle(6))    # 720
+```
+
+---
+
+## 7. Les listes
+
+```larkhre
+laz notes = [12, 15, 9, 18]
+
+vox(notes[0])            # premier élément : 12
+vox(notes[-1])           # dernier élément : 18
+notes[2] = 10            # modifier un élément
+ajoute(notes, 20)        # ajouter à la fin
+retire(notes, 0)         # retirer l'élément à la position 0
+vox(taille(notes))       # nombre d'éléments
+vox(tri(notes))          # liste triée
+```
+
+---
+
+## 8. Les fonctions intégrées
+
+| Fonction | Rôle | Exemple |
+|---|---|---|
+| `vox(...)` | Afficher à l'écran | `vox("total :", 42)` |
+| `demand(msg)` | Demander une saisie au clavier | `laz nom = demand("Ton nom ? ")` |
+| `nombre(x)` | Convertir en nombre | `nombre("42")` → `42` |
+| `texte(x)` | Convertir en texte | `texte(42)` → `"42"` |
+| `taille(x)` | Longueur d'un texte ou d'une liste | `taille("laz")` → `3` |
+| `ajoute(liste, x)` | Ajouter à une liste | `ajoute(l, 5)` |
+| `retire(liste, i)` | Retirer l'élément à la position i | `retire(l, 0)` |
+| `hasard(a, b)` | Nombre aléatoire entre a et b | `hasard(1, 100)` |
+| `arondi(x, d)` | Arrondir (d décimales, optionnel) | `arondi(3.456, 2)` → `3.46` |
+| `majus(t)` | MAJUSCULES | `majus("laz")` → `"LAZ"` |
+| `minus(t)` | minuscules | `minus("LAZ")` → `"laz"` |
+| `koupe(t, sep)` | Découper un texte en liste | `koupe("a,b", ",")` → `["a", "b"]` |
+| `tri(liste)` | Trier une liste | `tri([3, 1, 2])` → `[1, 2, 3]` |
+| `tip(x)` | Type d'une valeur | `tip(42)` → `"nombre"` |
+| `cles(d)` *(v2)* | Clés d'un dictionnaire | `cles(d)` → `["nom", "age"]` |
+| `valeurs(d)` *(v2)* | Valeurs d'un dictionnaire | `valeurs(d)` → `["Ladji", 25]` |
+| `contient(c, x)` *(v2)* | x est-il dans le texte/liste/dico ? | `contient("laz", "a")` → `vrai` |
+| `colle(liste, sep)` *(v2)* | Assembler une liste en texte | `colle(["a","b"], "-")` → `"a-b"` |
+| `remplace(t, a, b)` *(v2)* | Remplacer dans un texte | `remplace("java", "j", "l")` |
+| `lis_fichier(chemin)` *(v2)* | Lire un fichier texte | `lis_fichier("notes.txt")` |
+| `ecris_fichier(chemin, t)` *(v2)* | Écrire (écraser) un fichier | `ecris_fichier("s.txt", "yo")` |
+| `ajoute_fichier(chemin, t)` *(v2)* | Ajouter à la fin d'un fichier | `ajoute_fichier("s.txt", "!")` |
+| `fichier_existe(chemin)` *(v2)* | Le fichier existe-t-il ? | → `vrai` / `faux` |
+
+---
+
+## 9. Récapitulatif des mots-clés
+
+| Larkhré | Équivalent Python | Équivalent Java |
+|---|---|---|
+| `laz` | `x = ...` | `int x = ...` |
+| `fonk` | `def` | `void f()` |
+| `rend` | `return` | `return` |
+| `kan` | `if` | `if` |
+| `sinon kan` | `elif` | `else if` |
+| `sinon` | `else` | `else` |
+| `tanke` | `while` | `while` |
+| `pou ... dan` | `for ... in` | `for` |
+| `kase` | `break` | `break` |
+| `swiv` | `continue` | `continue` |
+| `vrai` / `faux` | `True` / `False` | `true` / `false` |
+| `walu` | `None` | `null` |
+| `et` / `ou` / `non` | `and` / `or` / `not` | `&&` / `\|\|` / `!` |
+| `klas` *(v2)* | `class` | `class` |
+| `herite` *(v2)* | `class A(B)` | `extends` |
+| `importe` *(v2)* | `import` | `import` |
+
+---
+
+## 10. Exemple complet : jeu du nombre mystère
+
+```larkhre
+vox("=== DEVINE LE NOMBRE ===")
+laz secret = hasard(1, 100)
+laz trouve = faux
+laz essais = 0
+
+tanke non trouve {
+    laz nb = nombre(demand("Ton essai : "))
+    essais = essais + 1
+
+    kan nb == secret {
+        trouve = vrai
+        vox("BRAVO ! Trouvé en", essais, "essais !")
+    } sinon kan nb < secret {
+        vox("C'est plus grand !")
+    } sinon {
+        vox("C'est plus petit !")
+    }
+}
+```
+
+---
+
+## 11. Les erreurs
+
+Larkhré parle français quand quelque chose ne va pas :
+
+```
+✘ Erreur Larkhré (ligne 3) : la variable « scor » n'existe pas (déclare-la avec : laz scor = ...)
+✘ Erreur Larkhré (ligne 7) : division par zéro impossible
+✘ Erreur Larkhré (ligne 12) : la fonction « carre » attend 1 argument(s), reçu 2
+```
+
+---
+
+# Les nouveautés de Larkhré 2.0
+
+## 12. Les dictionnaires
+
+Un dictionnaire associe des **clés** à des **valeurs** (comme un annuaire) :
+
+```larkhre
+laz personne = { "nom": "Ladji", "age": 25 }
+
+vox(personne["nom"])          # Ladji
+personne["pays"] = "France"   # ajouter ou modifier une clé
+vox(taille(personne))         # 3
+vox(cles(personne))           # ["nom", "age", "pays"]
+vox(contient(personne, "nom")) # vrai
+retire(personne, "age")       # retirer une clé
+
+pou cle dan personne {        # parcourir les clés
+    vox(cle, "=", personne[cle])
+}
+```
+
+Les clés sont des textes ou des nombres. Les valeurs peuvent être n'importe quoi — même d'autres dictionnaires ou des listes.
+
+## 13. Les classes et les objets — `klas`
+
+Une `klas` est un moule pour fabriquer des **objets**. La fonction spéciale `init` construit l'objet, et `moi` désigne l'objet lui-même (comme `self` en Python ou `this` en Java) :
+
+```larkhre
+klas Animal {
+    fonk init(moi, nom, cri) {
+        moi.nom = nom
+        moi.cri = cri
+    }
+    fonk parler(moi) {
+        vox(moi.nom, "dit :", moi.cri)
+    }
+}
+
+laz rex = Animal("Rex", "Wouf !")
+rex.parler()          # Rex dit : Wouf !
+vox(rex.nom)          # accès direct aux propriétés
+rex.nom = "Rexou"     # modification
+vox(tip(rex))         # Animal
+```
+
+### L'héritage — `herite`
+
+Une klas peut hériter d'une autre : elle reçoit toutes ses fonctions.
+
+```larkhre
+klas Chien herite Animal {
+    fonk init(moi, nom) {
+        moi.nom = nom
+        moi.cri = "Wouf wouf !"
+    }
+    fonk creuser(moi) {
+        vox(moi.nom, "creuse un trou !")
+    }
+}
+
+laz medor = Chien("Médor")
+medor.parler()    # fonction héritée d'Animal
+medor.creuser()   # fonction de Chien
+```
+
+## 14. Importer des fichiers — `importe`
+
+Découpez vos grands programmes en plusieurs fichiers :
+
+```larkhre
+# --- outils.laz ---
+fonk double(x) {
+    rend x * 2
+}
+
+# --- principal.laz ---
+importe "outils.laz"
+vox(double(21))    # 42
+```
+
+Le chemin est relatif au fichier qui importe. Un fichier n'est jamais importé deux fois. *(Disponible avec l'interpréteur Python ; pas dans le playground web.)*
+
+## 15. Lire et écrire des fichiers
+
+```larkhre
+ecris_fichier("journal.txt", "Jour 1 : j'ai créé un langage.")
+ajoute_fichier("journal.txt", "\nJour 2 : le monde l'utilise.")
+
+kan fichier_existe("journal.txt") {
+    vox(lis_fichier("journal.txt"))
+}
+```
+
+*(Dans le playground web, les fichiers sont virtuels : ils existent tant que la page est ouverte.)*
+
+---
+
+# Les nouveautés de Larkhré 3.0
+
+## 16. La couleur ! 🎨
+
+Trois nouvelles fonctions pour rendre tes programmes vivants — elles
+marchent dans le terminal ET dans le playground web :
+
+```larkhre
+vox_couleur("Bravo, tu as gagné !", "vert")
+vox_couleur("Attention !", "rouge")
+
+# stylise() colore un morceau au milieu d'une phrase :
+laz nom = stylise("Larkhré", "or")
+vox("Le langage " + nom + " est " + stylise("génial", "gras"))
+
+efface_ecran()    # nettoie tout l'écran
+```
+
+Couleurs disponibles : `rouge`, `vert`, `jaune`, `bleu`, `violet`,
+`cyan`, `blanc`, `or`, `gris`, `rose`, `noir`.
+Styles pour `stylise()` : toutes les couleurs + `gras` et `souligne`.
+
+## 17. Les raccourcis += -= *= /=
+
+Fini d'écrire `score = score + 10` :
+
+```larkhre
+laz score = 0
+score += 10      # ajouter
+score -= 3       # retirer
+score *= 2       # multiplier
+score /= 7       # diviser
+
+# Ça marche partout : listes, dictionnaires, objets
+panier["pommes"] += 1
+joueur.vie -= degats
+```
+
+## 18. Le mode dessin ! 🖼️ *(v3.1)*
+
+Larkhré sait dessiner. Dans le **playground web**, une toile apparaît et
+se dessine en direct. Avec **Python**, `sauve_dessin()` crée une vraie
+image SVG que tu peux ouvrir dans un navigateur ou partager.
+
+```larkhre
+toile(400, 300)                          # créer la zone de dessin
+
+trace_ligne(0, 250, 400, 250, "vert")    # x1, y1, x2, y2, couleur
+trace_rect(50, 150, 100, 100, "cyan")    # x, y, largeur, hauteur (contour)
+rect_plein(60, 160, 80, 80, "bleu")      # pareil, mais rempli
+trace_cercle(300, 80, 40, "or")          # x, y, rayon (contour)
+cercle_plein(300, 80, 30, "jaune")       # pareil, mais rempli
+trace_texte(150, 40, "Mon dessin", "blanc")
+fond("noir")                             # peindre tout le fond
+
+sauve_dessin("mon_dessin.svg")           # sauvegarder en image
+```
+
+Les couleurs sont les mêmes que `vox_couleur`, plus les codes
+`"#rrggbb"` pour les artistes exigeants. Astuce : combine avec les
+boucles — `pou i dan 1..20 { cercle_plein(i * 20, 100, 5, "cyan") }` —
+et regarde la magie opérer.
+
+# Les nouveautés de Larkhré 4.0
+
+## 19. L'interpolation — `"Salut {nom}"`
+
+Fini les longs `"Salut " + nom + " !"` : mets simplement la variable
+entre accolades dans ton texte :
+
+```larkhre
+laz nom = "Ladji"
+laz age = 25
+vox("Salut {nom}, tu as {age} ans !")
+```
+
+Pour afficher de vraies accolades, double-les : `"{{comme ceci}}"`.
+Une variable inconnue reste telle quelle (pas d'erreur).
+
+## 20. Les erreurs apprivoisées — `essaie` / `rattrape`
+
+Un programme sérieux ne s'écroule pas : il rattrape ses erreurs.
+
+```larkhre
+essaie {
+    laz x = nombre(demand("Un nombre ? "))
+    vox("Le double est {x} fois 2 :", x * 2)
+} rattrape probleme {
+    vox("Ce n'était pas un nombre ! Détail : {probleme}")
+}
+vox("Et la vie continue.")
+```
+
+Et `echoue()` te permet de lever tes propres erreurs :
+
+```larkhre
+fonk retirer(solde, montant) {
+    kan montant > solde {
+        echoue("solde insuffisant !")
+    }
+    rend solde - montant
+}
+```
+
+## 21. Le traducteur — la vitesse Python ⚡
+
+Ton programme Larkhré peut devenir un **vrai fichier Python**, souvent
+environ 10× plus rapide (mesuré sur une boucle de 3 millions de tours) :
+
+```bash
+larkhre --traduire mon_programme.laz     # crée mon_programme.py
+python mon_programme.py                  # exécution turbo
+```
+
+Mesuré sur fibonacci(26) : 4,4 secondes interprété → **0,08 seconde**
+traduit. Accélération ×55. Le fichier généré a besoin du package
+`larkhre` installé (pip install larkhre).
+
+# Les nouveautés de Larkhré 5.0
+
+## 22. Les langues — coder dans TA langue 🌍
+
+Le même Larkhré, avec les mots-clés dans ta langue. Ajoute un
+commentaire en tête de fichier :
+
+```larkhre
+#langue: anglais
+let name = "World"
+func greet(who) {
+    give "Hello " + who + "!"
+}
+when 2 > 1 {
+    vox(greet(name))
+}
+```
+
+Langues disponibles : `larkhre` (classique), `anglais`, et des
+**brouillons** `bambara` et `wolof` — locuteurs natifs, corrigez-les,
+c'est votre langue ! Et pour convertir un fichier existant :
+
+```bash
+larkhre --traduire-vers anglais mon_programme.laz
+larkhre --traduire-vers bambara mon_programme.laz
+larkhre --traduire-vers larkhre programme_anglais.laz
+```
+
+Aucun autre langage grand public ne fait ça.
+
+## 23. Les variables qui se souviennent — `garde` 💾
+
+```larkhre
+garde meilleur_score = 0
+garde visites = 0
+visites += 1
+vox("Visite numéro {visites}")
+```
+
+Une variable `garde` est **sauvegardée automatiquement** entre les
+exécutions — sur disque (fichier `.memoire` à côté du programme) ou
+dans le navigateur pour le playground. Un record du monde persistant
+sans jamais toucher aux fichiers.
+
+## 24. Le ralenti pédagogique — `ralenti()` 🐢
+
+```larkhre
+ralenti(0.5)     # une demi-seconde par instruction
+```
+
+Dans le playground : la ligne en cours **s'illumine** dans l'éditeur et
+un panneau montre **les variables changer en direct**. L'outil parfait
+pour comprendre (ou expliquer) un programme. `ralenti(0)` pour
+revenir à la vitesse normale. En mode traduit turbo, ralenti est ignoré.
+
+## 25. L'erreur qui raconte son histoire 🎬
+
+Quand un programme plante, Larkhré montre le film des dernières
+affectations avant l'erreur :
+
+```
+✘ Erreur Larkhré (ligne 8) : division par zéro impossible
+
+— Le film juste avant l'erreur :
+   ligne 3 : total = 100
+   ligne 5 : nb_eleves = 0
+```
+
+On voit d'un coup d'œil d'où vient le zéro. Aucune configuration :
+c'est automatique.
+
+## 26. Le mode JEU — temps réel ! 🎮 *(v6)*
+
+Jusqu'ici, tes programmes attendaient l'utilisateur avec `demand()`.
+Le mode jeu change tout : ton code tourne **30 fois par seconde** et lit
+le clavier **en direct**, comme un vrai jeu vidéo.
+
+```larkhre
+laz x = 100
+
+fonk image() {
+    kan touche_pressee("droite") {
+        x += 5
+    }
+    toile(400, 200)
+    fond("noir")
+    cercle_plein(x, 100, 15, "or")
+    kan touche_pressee("echap") {
+        arrete_jeu()
+    }
+}
+
+chaque_image(image)
+```
+
+Les 4 fonctions du mode jeu :
+
+- `chaque_image(ma_fonction)` — enregistre la fonction appelée à chaque
+  image (~30/s). La partie démarre quand le programme principal se termine.
+- `touche_pressee("nom")` — `vrai` si la touche est enfoncée LÀ, maintenant.
+  Noms : lettres (`"a"`...`"z"`), chiffres, `"haut"`, `"bas"`, `"gauche"`,
+  `"droite"`, `"espace"`, `"entree"`, `"echap"`.
+- `arrete_jeu()` — termine la partie.
+- `joue_son("nom")` — un petit son : `piece`, `saut`, `explosion`, `clic`,
+  `moteur`, `victoire`, `defaite`.
+
+Où jouer ?
+
+- **Playground** : la toile s'anime en direct, les sons sortent des
+  haut-parleurs. Clique une fois sur la page pour donner le clavier au jeu.
+- **Sur ton ordinateur** (`larkhre jeu.laz`) : une vraie **fenêtre de jeu**
+  s'ouvre ! (Linux : `sudo apt install python3-tk` si besoin.)
+
+Les règles d'or : redessine TOUTE la scène à chaque image (`toile` + `fond`
++ formes) ; pas de `demand()` ni de `ralenti()` dans la fonction d'image ;
+et `garde` fonctionne — ton record peut survivre entre les parties !
+
+## 27. Le mode INTERFACE — de vraies applications ! 🖥️ *(v7)*
+
+Après les jeux, les **applications** : boutons cliquables, champs de saisie,
+textes qui se mettent à jour. Dans le playground, ton appli apparaît au-dessus
+de la console ; sur ton ordinateur, elle vit dans la fenêtre Larkhré.
+
+```larkhre
+titre("Ma calculatrice de pourboire")
+laz zone = champ("Le montant du repas...")
+laz resultat = etiquette("")
+fonk calcule() {
+    laz montant = nombre(valeur_de(zone))
+    laz pourboire = arondi(montant * 0.1, 2)
+    change_texte(resultat, "Pourboire conseille : {pourboire}")
+}
+bouton("Calculer", calcule)
+```
+
+Les 7 fonctions du mode interface :
+
+- `titre(texte)` — le grand titre de l'application.
+- `etiquette(texte)` — un texte affiché ; **renvoie un identifiant** à garder
+  dans une variable pour le modifier plus tard.
+- `bouton(texte, ma_fonction)` — un bouton qui appelle ta fonction à chaque
+  clic (le nom de la fonction SANS parenthèses).
+- `champ(indication)` — une zone de saisie ; renvoie son identifiant.
+- `valeur_de(id)` — lit le texte tapé dans un champ (pense à `nombre()` pour
+  les calculs).
+- `change_texte(id, texte)` — met à jour une étiquette, un bouton ou un champ.
+- `efface_interface()` — repart de zéro.
+
+L'application reste vivante après la fin du programme : elle attend les clics.
+`arrete_jeu()` la ferme. Et tout se combine : `garde` pour des données qui
+survivent, `joue_son()` pour des clics sonores, et même la toile de dessin ou
+`chaque_image` pour une appli qui dessine !
+
+## 28. Larkhré partout — et il parle ! 🗣️📱 *(v8)*
+
+**La voix.** `dis("Bonjour !")` : ton programme parle à voix haute, en
+français. Dans le playground, c'est la voix du navigateur ; sur ton
+ordinateur, celle du système (Windows/Mac ; Linux : `spd-say` ou `espeak`).
+Combine avec `demand()` et tes programmes deviennent de vrais interlocuteurs.
+
+**Le partage par lien.** Le bouton 🔗 Partager du playground transforme ton
+programme en lien : envoie-le sur WhatsApp, celui qui l'ouvre reçoit ton code
+prêt à exécuter. Un jeu codé à Bamako se joue à Paris dix secondes plus tard.
+
+**L'appli installable.** Sur téléphone, le navigateur propose « Ajouter à
+l'écran d'accueil » : Larkhré devient une appli avec son icône — et le
+playground fonctionne ensuite MÊME SANS INTERNET.
+
+## 29. L'École — et Larkhré t'écoute 🎓🎤 *(v9)*
+
+**L'École.** Le bouton 🎓 du playground ouvre un cours complet intégré :
+12 leçons progressives, du premier `vox` jusqu'au dessin, avec vérification
+automatique de TON code, indices, et une série de jours 🔥 à entretenir
+comme sur Duolingo. Pas besoin de prof, pas besoin d'internet une fois
+l'appli installée : l'école est DANS le langage.
+
+**L'écoute.** `ecoute("Ta réponse ?")` — ton programme écoute le micro et
+te rend le texte reconnu (en français). Combine avec `dis()` :
+
+```larkhre
+dis("Comment tu t'appelles ?")
+laz nom = ecoute("Dis ton prénom...")
+dis("Enchanté " + nom + " !")
+```
+
+Un programme avec lequel on PARLE — sans clavier. Sur ordinateur, `ecoute()`
+bascule sur le clavier (le micro arrive) ; dans le playground, c'est la vraie
+reconnaissance vocale du navigateur.
+
+## 30. Larkhré QUANTIQUE ⚛️ *(v10)*
+
+Le futur de l'informatique est quantique — et Larkhré est le premier langage
+éducatif francophone qui vous y emmène. Son simulateur applique les VRAIES
+lois de la mécanique quantique (vecteur d'état, portes, effondrement) :
+
+```larkhre
+qubits(2)              # un registre de 2 qubits
+superpose(0)           # le qubit 0 est 0 ET 1 à la fois (porte Hadamard)
+intrique(0, 1)         # les deux qubits sont liés (porte CNOT)
+vox(probabilites())    # { "00": 0.5, "11": 0.5 } — l'état de Bell !
+laz a = mesure(0)      # la nature choisit...
+laz b = mesure(1)      # ... et b est TOUJOURS égal à a. L'intrication.
+```
+
+Les 7 fonctions : `qubits(n)` (1 à 10), `superpose(q)`, `porte_x(q)`,
+`porte_z(q)`, `intrique(controle, cible)`, `mesure(q)` → 0/1,
+`probabilites()` → dictionnaire des états possibles.
+
+C'est un simulateur — le même outil qu'utilisent les étudiants et les
+ingénieurs pour apprendre, avant de toucher aux vraies machines d'IBM.
+La superposition, l'intrication, l'interférence : tout y est, en français.
+
+## 31. Le PYTHON BIENVEILLANT 🐍 *(v11)*
+
+La réponse à la question « pourquoi apprendre deux langages ? » : n'en
+apprenez qu'un. Écrivez `#langue: python` en première ligne, et Larkhré
+lit du VRAI Python — celui du lycée : `def`, `if/elif/else`, `while`,
+`for ... in range()`, `print`, `input`, listes, dictionnaires, f-strings,
+`try/except`, `random.randint`...
+
+```python
+#langue: python
+def moyenne(notes):
+    total = 0
+    for n in notes:
+        total += n
+    return total / len(notes)
+
+print("Moyenne :", moyenne([12, 15, 18]))
+```
+
+La différence avec le vrai interpréteur Python ? TOUT l'environnement
+bienveillant de Larkhré reste là : les erreurs en français qui expliquent
+et proposent la correction, le « film » des dernières affectations quand
+ça plante, l'exécution au ralenti, le playground sans installation, le
+hors-ligne. L'élève écrit du Python authentique — copiable tel quel en
+cours — dans un cocon qui pardonne.
+
+C'est un sous-ensemble pédagogique : pas de classes ni d'imports de
+bibliothèques (à part random et math.sqrt) — exactement le périmètre des
+débuts. Le jour où l'élève dépasse ce périmètre, il est prêt pour le
+vrai Python — et il le connaît déjà.
+
+---
+
+*Larkhré v11.0 — créé par Ladji. Même Python devient bienveillant.*

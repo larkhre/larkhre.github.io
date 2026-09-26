@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="Larkhré (mosi larkhré, la langue de la machine en soninké) : apprends à coder en français, avec des erreurs expliquées. Rien à installer.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Larkhré — mosi larkhré, la langue de la machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Caveat:wght@500;600&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#9fb2d8; --sky-deep:#8a9fcb; --sand:#d8b784; --earth:#2b2119;
+  --earth-soft:#4a3a2c; --cream:#f6ecdb; --slate:#243029; --chalk:#eeeee6; --wood:#7a5536;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root:not([data-theme="light"]){ color-scheme:light; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --sky:#9fb2d8; } }
+:root[data-theme="dark"]{ --sky:#9fb2d8; }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+*,*::before,*::after{ box-sizing:inherit; margin:0; }
+body{ background:var(--earth); color:var(--earth);
+  font-family:'Atkinson Hyperlegible','Segoe UI',system-ui,sans-serif; font-size:18px; line-height:1.5; }
+
+#track{ height:340vh; position:relative; }
+.stage{ position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; background:var(--sky); }
+
+.photo{ position:absolute; inset:0; overflow:hidden; }
+.photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:45% 38%;
+  transform-origin:45% 62%; will-change:transform, filter; display:block; }
+
+.intro{ position:absolute; top:0; left:0; right:0; padding:calc(env(safe-area-inset-top,0px) + 7vh) 7vw 0; }
+.skyfade{ position:absolute; inset:0 0 auto 0; height:58%; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(150,170,212,.96) 0%, rgba(155,174,214,.85) 38%, rgba(159,178,216,.45) 68%, rgba(159,178,216,0) 100%); }
+.intro h1{ font-family:'Fraunces',Georgia,serif; font-weight:700; letter-spacing:-.02em;
+  font-size:clamp(3.4rem,15vw,7.8rem); line-height:.92; color:var(--earth); margin-left:-.055em; }
+.intro .sign{ margin-top:.8rem; font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:clamp(1.05rem,2vw,1.3rem); }
+.intro .sign em{ font-style:italic; }
+.intro p{ margin-top:.9rem; font-size:clamp(1.12rem,2.3vw,1.5rem); line-height:1.35; max-width:21ch; color:var(--earth);
+  font-weight:400; text-shadow:0 0 12px rgba(170,188,224,.95), 0 0 3px rgba(170,188,224,.9); }
+.hint{ position:absolute; left:0; right:0; bottom:calc(env(safe-area-inset-bottom,0px) + 7vh); text-align:center;
+  font-size:.95rem; color:var(--cream); text-shadow:0 1px 8px rgba(40,25,15,.7); }
+
+.caption{ position:absolute; left:0; right:0; bottom:0; padding:5rem 7vw calc(env(safe-area-inset-bottom,0px) + 9vh);
+  background:linear-gradient(to top, rgba(35,25,17,.8), rgba(35,25,17,0)); opacity:0; }
+.caption p{ font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:clamp(1.4rem,3.6vw,2.2rem);
+  line-height:1.28; max-width:24ch; color:var(--cream); }
+
+.veil{ position:absolute; inset:0; background:rgba(30,22,15,.55); opacity:0; pointer-events:none; }
+.final{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1.4rem; padding:6vh 6vw calc(env(safe-area-inset-bottom,0px) + 6vh); opacity:0; pointer-events:none; }
+.final.live{ pointer-events:auto; }
+.slate{ width:min(34rem,100%); background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.05), transparent 55%),
+    radial-gradient(ellipse at 75% 80%, rgba(255,255,255,.04), transparent 50%), var(--slate);
+  border:14px solid var(--wood); border-radius:6px; padding:1.6rem 1.7rem 1.4rem;
+  box-shadow:0 18px 40px rgba(0,0,0,.45), inset 0 0 30px rgba(0,0,0,.35);
+  transform:rotate(-1.2deg); color:var(--chalk); font-family:'Caveat','Segoe Print',cursive; }
+.slate .note{ font-size:1.5rem; opacity:.6; }
+.slate code{ display:block; font-family:inherit; font-weight:600; font-size:clamp(1.9rem,6vw,2.5rem); line-height:1.25;
+  text-shadow:0 0 1px rgba(238,238,230,.6); }
+.slate .out{ margin-top:.7rem; font-size:clamp(1.6rem,5vw,2rem); opacity:.8; }
+.final .say{ max-width:30ch; text-align:center; color:var(--cream); font-size:1.08rem; }
+.cta{ display:inline-block; padding:.9rem 1.5rem; border-radius:6px; background:var(--cream); color:var(--earth);
+  font-weight:700; font-size:1.08rem; text-decoration:none; }
+.cta:focus-visible{ outline:3px solid var(--cream); outline-offset:4px; }
+.final .credit{ font-size:.75rem; color:rgba(246,236,219,.6); }
+
+/* grand écran : texte à gauche, arbre à droite */
+@media (min-width:900px) and (min-aspect-ratio:1/1){
+  .stage{ background:linear-gradient(to bottom, var(--sky-deep) 0%, var(--sky) 55%, var(--sand) 100%); }
+  .photo{ left:auto; width:56%; }
+  .photo img{ object-position:50% 40%; }
+  .skyfade{ display:none; }
+  .photo::before{ content:""; position:absolute; inset:0 auto 0 0; width:18%; z-index:1;
+    background:linear-gradient(to right, rgba(138,159,203,.9), rgba(138,159,203,0)); pointer-events:none; }
+  .intro{ width:44%; padding:18vh 4vw 0 6vw; }
+  .intro p{ max-width:22ch; }
+  .caption{ left:auto; width:56%; }
+}
+@media (prefers-reduced-motion: reduce){ .photo img{ transform:none !important; } }
+</style>
+</head>
+<body>
+<div id="track">
+  <div class="stage">
+    <div class="photo"><img src="baobab.webp" alt="Un grand baobab au bout d'un chemin de sable, dans la savane" id="tree"></div>
+    <div class="skyfade" id="skyfade"></div>
+    <div class="intro" id="intro">
+      <h1>Larkhré</h1>
+      <p class="sign"><em>Mosi larkhré</em> : la langue de la machine, en soninké.</p>
+      <p>Apprends à coder en français, sous l'arbre à palabres.</p>
+    </div>
+    <div class="hint" id="hint">Fais défiler pour t'approcher de l'arbre</div>
+    <div class="caption" id="caption"><p>Sous le baobab, on se rassemble pour écouter, discuter, apprendre.</p></div>
+    <div class="veil" id="veil"></div>
+    <div class="final" id="final">
+      <div class="slate" role="img" aria-label="Une ardoise avec deux lignes de code Larkhré et leur résultat : Bonjour Awa !">
+        <div class="note"># ta première ligne de code</div>
+        <code>laz nom = "Awa"</code>
+        <code>vox("Bonjour {nom} !")</code>
+        <div class="out">→ Bonjour Awa !</div>
+      </div>
+      <p class="say">Rien à installer. Ça marche dans ton navigateur, même sur téléphone.</p>
+      <a class="cta" id="cta" tabindex="-1" href="code/">Écrire mon premier programme</a>
+      <p class="credit">Photo du baobab : Francesca Fabian, Unsplash</p>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var img=document.getElementById('tree'), intro=document.getElementById('intro'), hint=document.getElementById('hint'),
+      cap=document.getElementById('caption'), veil=document.getElementById('veil'), fin=document.getElementById('final'),
+      cta=document.getElementById('cta'), sky=document.getElementById('skyfade'), track=document.getElementById('track');
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pending=false;
+  function c(x){ return x<0?0:x>1?1:x; }
+  function ease(x){ return x*x*(3-2*x); }
+  function frame(){
+    pending=false;
+    var max = track.offsetHeight - window.innerHeight;
+    var p = max>0 ? c(window.scrollY/max) : 0;
+    if(!still){ img.style.transform='scale('+(1+ease(c(p/0.72))*1.55).toFixed(4)+')'; }
+    intro.style.opacity = c(1-p*6); sky.style.opacity = c(1-p*6);
+    hint.style.opacity = c(1-p*14);
+    var k = p<0.5 ? c((p-0.24)/0.1) : c(1-(p-0.6)/0.08);
+    cap.style.opacity = k;
+    var f = c((p-0.7)/0.16);
+    veil.style.opacity = f;
+    fin.style.opacity = f;
+    fin.style.transform = still ? 'none' : 'translateY('+((1-f)*24).toFixed(1)+'px)';
+    var live = f>0.6; fin.classList.toggle('live', live); cta.tabIndex = live?0:-1;
+  }
+  function ask(){ if(!pending){ pending=true; requestAnimationFrame(frame); } }
+  window.addEventListener('scroll', ask, {passive:true});
+  window.addEventListener('resize', ask);
+  frame();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "larkhre"
+version = "11.1.0"
+description = "Larkhré (« mosi larkhré », la langue de la machine en soninké) : le langage de programmation pour apprendre à coder en français, avec des erreurs expliquées."
+readme = "README.md"
+authors = [{ name = "Ladji Doucaré" }]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+keywords = ["langage", "programmation", "interpreteur", "larkhre", "education", "francais", "debutants"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Interpreters",
+    "Topic :: Education",
+    "Intended Audience :: Education",
+    "Natural Language :: French",
+]
+
+[project.urls]
+Homepage = "https://larkhre.github.io/"
+Playground = "https://larkhre.github.io/code/"
+Source = "https://github.com/larkhre/larkhre.github.io"
+Documentation = "https://github.com/larkhre/larkhre.github.io/blob/main/GUIDE_LARKHRE.md"
+
+[project.scripts]
+larkhre = "larkhre:main"
+
+[tool.setuptools]
+py-modules = ["larkhre"]

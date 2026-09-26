@@ -1,0 +1,25 @@
+{
+  "name": "larkhre-mcp",
+  "version": "1.1.0",
+  "description": "Serveur MCP du langage Larkhré : permet à n'importe quel agent IA (Claude, etc.) d'ÉCRIRE et d'EXÉCUTER du code Larkhré pour de vrai — sortie console, dessins SVG, mémoire persistante.",
+  "type": "module",
+  "bin": {
+    "larkhre-mcp": "server.js"
+  },
+  "files": [
+    "server.js",
+    "LARKHRE_POUR_IA.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "larkhre": "^11.1.0",
+    "zod": "^3.23.0"
+  },
+  "keywords": ["larkhre", "mcp", "model-context-protocol", "ai", "agent", "langage", "french", "education"],
+  "author": "Ladji Doucaré",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/larkhre/larkhre.github.io.git" },
+  "homepage": "https://larkhre.github.io/code/"
+}
