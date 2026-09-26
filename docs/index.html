@@ -27,7 +27,7 @@ body{ background:var(--earth); color:var(--earth);
 #track{ height:340vh; position:relative; }
 .stage{ position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; background:var(--sky); }
 
-.photo{ position:absolute; inset:0; overflow:hidden; }
+.photo{ position:absolute; inset:0; overflow:hidden; z-index:0; }  /* garde son dégradé derrière l'ardoise */
 .photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:45% 38%;
   transform-origin:45% 62%; will-change:transform, filter; display:block; }
 
@@ -79,6 +79,7 @@ body{ background:var(--earth); color:var(--earth);
   .intro{ width:44%; padding:18vh 4vw 0 6vw; }
   .intro p{ max-width:22ch; }
   .caption{ left:auto; width:56%; }
+  .hint{ left:auto; width:56%; }
 }
 @media (prefers-reduced-motion: reduce){ .photo img{ transform:none !important; } }
 </style>
