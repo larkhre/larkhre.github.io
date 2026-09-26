@@ -210,6 +210,17 @@
   .hint { display: none; }
   .toolbar { background: rgba(251,246,236,.84); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
   .cheatsheet:not([open]) { align-self: flex-start; padding: 6px 16px; margin-bottom: 8px; background: rgba(251,246,236,.84); }
+
+  /* ---------- téléphone : le bouton Exécuter sous le pouce ---------- */
+  @media (max-width: 820px) {
+    body { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+    .btn-run, .btn-stop {
+      position: fixed; left: 12px; right: 12px; z-index: 50;
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      padding: 15px; font-size: 1.1rem; border-radius: 10px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+  }
 </style>
 <script data-goatcounter="https://lazarus.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -3411,18 +3422,30 @@ vox("Larkhré !")
 
   // ---------- v8 : partage d'un programme par lien ----------
   const btnShare = document.getElementById('btnShare');
-  function codeVersLien(code) {
+  function codeVersLien(code, auteur) {
     const b64 = btoa(String.fromCharCode(...new TextEncoder().encode(code)))
       .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    return location.origin + location.pathname + '#code=' + b64;
+    return location.origin + location.pathname + '#code=' + b64 + (auteur ? '&de=' + encodeURIComponent(auteur) : '');
+  }
+  function auteurDuLien(hash) {
+    const m = /&de=([^&]*)/.exec(hash);
+    if (!m) return '';
+    try { return decodeURIComponent(m[1]).trim().slice(0, 40); } catch (e) { return ''; }
   }
   function lienVersCode(hash) {
-    const b64 = hash.replace(/^#code=/, '').replace(/-/g, '+').replace(/_/g, '/');
+    const b64 = hash.replace(/^#code=/, '').replace(/&.*$/, '').replace(/-/g, '+').replace(/_/g, '/');
     const bin = atob(b64);
     return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
   }
   btnShare.addEventListener('click', async () => {
-    const lien = codeVersLien(editor.value);
+    let auteur = '';
+    try { auteur = localStorage.getItem('larkhre_prenom') || ''; } catch (e) { }
+    const reponse = window.prompt('Ton prénom (facultatif), pour que la personne sache qui lui envoie ce programme :', auteur);
+    if (reponse !== null) {
+      auteur = reponse.trim().slice(0, 40);
+      try { localStorage.setItem('larkhre_prenom', auteur); } catch (e) { }
+    }
+    const lien = codeVersLien(editor.value, auteur);
     try {
       if (navigator.share) {
         await navigator.share({ title: 'Mon programme Larkhré', url: lien });
@@ -3441,10 +3464,24 @@ vox("Larkhré !")
     try {
       editor.value = lienVersCode(location.hash);
       setTimeout(() => {
-        addLine('Programme reçu par lien. Clique sur Exécuter pour le lancer.', 'sys');
+        const auteur = auteurDuLien(location.hash);
+        addLine(auteur
+          ? auteur + ' t\'a envoyé un programme. Appuie sur Exécuter pour le découvrir.'
+          : 'Programme reçu par lien. Appuie sur Exécuter pour le découvrir.', 'sys');
         updateLinenos();
       }, 100);
     } catch (e) { }
+  }
+
+  // ---------- la toute première visite : un seul geste à faire ----------
+  const CLE_VISITE = 'larkhre_deja_venu';
+  let premiereVisite = false;
+  try { premiereVisite = !location.hash.startsWith('#code=') && !localStorage.getItem(CLE_VISITE); } catch (e) { }
+  if (premiereVisite) {
+    editor.value = '# Ton tout premier programme\nlaz prenom = ""\nvox("Bonjour {prenom} !")\n';
+    updateLinenos();
+    const curseur = editor.value.indexOf('""') + 1;
+    setTimeout(() => { try { editor.focus({ preventScroll: true }); editor.setSelectionRange(curseur, curseur); } catch (e) { } }, 200);
   }
 
   // ---------- v8 : l'appli installable (service worker) ----------
@@ -3547,6 +3584,11 @@ vox("Larkhré !")
     if (!result.ok && result.error) {
       const m = /\(ligne (\d+)\)/.exec(result.error);
       if (m) { marqueLigne(parseInt(m[1], 10), 'erreur'); montreErreur(parseInt(m[1], 10), result.error); }
+    }
+    if (premiereVisite && result.ok) {
+      premiereVisite = false;
+      try { localStorage.setItem(CLE_VISITE, '1'); } catch (e) { }
+      addLine('Bravo : tu viens d\'écrire et de lancer ton premier programme. Pour continuer pas à pas, ouvre L\'École.', 'sys');
     }
     varsPanel.style.display = 'none';
 
@@ -3739,7 +3781,11 @@ vox("Larkhré !")
     }
   });
 
-  addLine('Bienvenue dans Larkhré (mosi larkhré : la langue de la machine, en soninké). Écris ton code à gauche, puis clique sur Exécuter. Pour apprendre pas à pas, ouvre L\'École.', 'sys');
+  if (premiereVisite) {
+    addLine('Bienvenue dans Larkhré ! Écris ton prénom entre les guillemets de la ligne 2, puis appuie sur Exécuter.', 'sys');
+  } else {
+    addLine('Bienvenue dans Larkhré (mosi larkhré : la langue de la machine, en soninké). Écris ton code à gauche, puis clique sur Exécuter. Pour apprendre pas à pas, ouvre L\'École.', 'sys');
+  }
 })();
 </script>
 
