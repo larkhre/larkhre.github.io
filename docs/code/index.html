@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Apprendre à coder en français — Larkhré</title>
-<meta name="description" content="Apprendre à programmer en français, directement dans le navigateur. Rien à installer. 12 leçons gratuites, des exercices corrigés, et vos premiers programmes en quelques minutes.">
+<meta name="description" content="Le playground Larkhré : écris ton premier programme en français dans ton navigateur, avec des erreurs expliquées. Gratuit, rien à installer.">
 <meta name="google-site-verification" content="n0pDG4Wm97AmE591OO68PZstzdvPWtas-unhN2IBFEY" />
 <meta name="theme-color" content="#2b2119">
 <link rel="manifest" href="manifest.json">
@@ -41,6 +41,7 @@
     padding: 12px 22px; background: var(--terre); color: var(--sable);
     display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
   }
+  h1.logo { margin: 0; line-height: 1.1; }
   .logo { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 1.7rem; letter-spacing: -.01em; color: var(--sable); }
   .logo a { color: inherit; text-decoration: none; }
   .tagline { color: #cbbda6; font-size: .95rem; }
@@ -106,6 +107,7 @@
   }
   #console .out { white-space: pre-wrap; }
   #console .err { color: var(--ocre-clair); white-space: pre-wrap; font-weight: 600; }
+  #console .sys a { color: var(--ocre-clair); }
   #console .sys { color: var(--craie-2); font-family: 'Atkinson Hyperlegible', sans-serif; font-size: .92rem; }
   #console .in-echo { color: #b9d3c2; }
   .inline-input { display: inline-flex; align-items: center; gap: 6px; }
@@ -230,7 +232,7 @@
 <body>
 
 <header>
-  <div class="logo"><a href="../">Larkhré</a></div>
+  <h1 class="logo"><a href="../">Larkhré</a></h1>
   <div class="tagline"><em>Mosi larkhré</em> : la langue de la machine, en soninké</div>
   <div class="version">v11.1</div>
 </header>
@@ -410,7 +412,7 @@ efface_interface() → des APPLIS !
 </details>
 
 <footer>
-  <b>Larkhré v11.1</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
+  <b>Larkhré v11.1</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
 </footer>
 
 <script>
@@ -3771,6 +3773,11 @@ vox("Larkhré !")
       const toutes = LECONS.every((_, j) => d.faits[j]);
       if (toutes) {
         addLine('Tu as terminé toutes les leçons de l\'École Larkhré. Tu sais coder : à toi de créer.', 'sys');
+        const suite = document.createElement('div');
+        suite.className = 'sys';
+        suite.innerHTML = 'Pour aller plus loin, le livre <a href="../livre.html" target="_blank" rel="noopener" data-goatcounter-click="ecole-vers-livre">Apprends à coder de zéro</a> reprend tout, avec trois projets complets.';
+        consoleEl.appendChild(suite);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
       }
       montreLecon(leconIdx);
       ecMsg.style.display = 'block';
