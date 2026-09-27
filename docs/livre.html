@@ -2,186 +2,151 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apprends à coder de zéro avec Larkhré — Le livre officiel</title>
-<meta name="description" content="Le livre officiel pour apprendre la programmation de zéro avec Larkhré : 14 chapitres, exercices corrigés, 3 projets complets. En français, rien à installer.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Apprends à coder de zéro avec Larkhré — le livre</title>
+<meta name="description" content="Le livre officiel du langage Larkhré : 14 chapitres, 3 projets, exercices corrigés. Apprends à coder en français, avec des erreurs qui t'expliquent quoi corriger. PDF, Kindle et livre broché.">
+<meta name="theme-color" content="#2b2119">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#0d1117; --bg2:#161b22; --border:#2d3648; --text:#e6edf3; --muted:#8b949e;
-          --gold:#f0b429; --gold-dim:#b8860b; --violet:#a78bfa; --green:#4ade80; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.65; }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 0 22px; }
-  a { color: var(--gold); }
-
-  header.hero { background: linear-gradient(160deg, #0d1117 0%, #1a1430 55%, #241a3d 100%);
-                padding: 60px 0 70px; text-align: center; border-bottom: 1px solid var(--border); }
-  .brand { font-family: Consolas, monospace; font-weight: 800; letter-spacing: 6px; color: var(--gold); font-size: 1.3rem; }
-  h1 { font-size: clamp(1.8rem, 5vw, 2.9rem); margin: 18px 0 14px; line-height: 1.2; }
-  .hero p.sub { color: #a8b3c2; font-size: 1.15rem; max-width: 620px; margin: 0 auto 30px; }
-
-  .btn { display: inline-block; background: linear-gradient(135deg, #1a7f37, #2ea043); color: #fff;
-         font-weight: 700; font-size: 1.15rem; padding: 15px 38px; border-radius: 12px; text-decoration: none;
-         box-shadow: 0 6px 24px rgba(46,160,67,.35); }
-  .btn:hover { filter: brightness(1.12); }
-  .btn.kindle { background: linear-gradient(135deg, #8a5c00, #f0b429); color: #1a1200;
-                box-shadow: 0 6px 24px rgba(240,180,41,.30); margin-left: 12px; }
-  .achat { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; align-items: center; }
-  @media (max-width: 640px) { .btn.kindle { margin-left: 0; } }
-  .btn small { display: block; font-weight: 400; font-size: .8rem; opacity: .85; }
-  .essai { display: block; margin-top: 16px; color: var(--muted); font-size: .95rem; }
-
-  section { padding: 55px 0; border-bottom: 1px solid var(--border); }
-  h2 { font-size: 1.6rem; margin-bottom: 22px; color: var(--gold); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
-  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
-  .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
-  .card p { color: var(--muted); font-size: .95rem; }
-  .card .emo { font-size: 1.6rem; display: block; margin-bottom: 8px; }
-
-  .code { background: #0a0e14; border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px;
-          font-family: Consolas, monospace; font-size: .95rem; color: #c9d1d9; margin: 20px 0; }
-  .code .k { color: var(--gold); } .code .s { color: #7ee787; }
-
-  ul.somm { columns: 2; gap: 30px; list-style: none; }
-  ul.somm li { margin-bottom: 8px; color: #c9d1d9; break-inside: avoid; }
-  ul.somm li::before { content: "✓ "; color: var(--green); }
-  @media (max-width: 640px) { ul.somm { columns: 1; } }
-
-  .auteur { display: flex; gap: 20px; align-items: center; background: var(--bg2); border: 1px solid var(--border);
-            border-radius: 14px; padding: 22px; }
-  .auteur .avatar { min-width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), #8a5c00);
-                    display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; color: #0d1117; }
-  .faq details { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-                 padding: 14px 18px; margin-bottom: 10px; }
-  .faq summary { cursor: pointer; font-weight: 600; }
-  .faq p { color: var(--muted); margin-top: 8px; }
-
-  .final { text-align: center; padding: 60px 0 70px; }
-  footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 24px 0 34px; }
+  :root { --terre:#2b2119; --sable:#efe6d6; --sable-2:#e4d7c1; --papier:#fbf6ec; --ocre:#b0702a; --doux:#6b5f55;
+          --ardoise:#243029; --craie:#eeede6; box-sizing:border-box;
+          padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+  *,*::before,*::after { box-sizing:inherit; margin:0; }
+  body { background:var(--sable); color:var(--terre); font-family:'Atkinson Hyperlegible','Segoe UI',system-ui,sans-serif;
+         font-size:18px; line-height:1.6; }
+  a { color:var(--ocre); }
+  .page { max-width:980px; margin:0 auto; padding:0 22px; }
+  nav { padding:18px 0; display:flex; justify-content:space-between; align-items:baseline; }
+  nav .logo { font-family:'Fraunces',Georgia,serif; font-weight:700; font-size:1.5rem; color:var(--terre); text-decoration:none; }
+  nav .liens a { margin-left:18px; color:var(--terre); font-size:.95rem; }
+  h1, h2 { font-family:'Fraunces',Georgia,serif; line-height:1.15; letter-spacing:-.01em; }
+  h1 { font-size:clamp(2rem,5vw,3rem); margin:.2em 0 .4em; }
+  h2 { font-size:clamp(1.4rem,3vw,1.9rem); margin:0 0 .6em; }
+  .hero { display:grid; grid-template-columns:minmax(200px,300px) 1fr; gap:40px; align-items:center; padding:20px 0 50px; }
+  .hero img { width:100%; height:auto; border-radius:4px; box-shadow:0 18px 40px rgba(43,33,25,.35); }
+  .sur-titre { color:var(--ocre); font-style:italic; }
+  .achat { display:flex; flex-wrap:wrap; gap:12px; margin:22px 0 10px; }
+  .btn { display:inline-block; padding:13px 20px; border-radius:8px; text-decoration:none; font-weight:700; line-height:1.3; }
+  .btn small { display:block; font-weight:400; font-size:.8rem; opacity:.85; }
+  .btn-pdf { background:var(--ocre); color:#fff8ec; }
+  .btn-amazon { background:var(--papier); color:var(--terre); border:1px solid #cdbfa8; }
+  .btn:focus-visible { outline:3px solid var(--terre); outline-offset:3px; }
+  .note { color:var(--doux); font-size:.95rem; }
+  section { padding:44px 0; border-top:1px solid var(--sable-2); }
+  .grille { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; }
+  .carte { background:var(--papier); border-radius:8px; padding:18px 20px; }
+  .carte h3 { font-family:'Fraunces',Georgia,serif; font-size:1.1rem; margin-bottom:6px; }
+  .carte p { color:#4a3d32; font-size:.97rem; }
+  pre { background:var(--ardoise); color:var(--craie); border:10px solid #7a5536; border-radius:6px; padding:18px 20px;
+        font-family:'JetBrains Mono',Consolas,monospace; font-size:.9rem; line-height:1.55; overflow-x:auto; }
+  pre .k { color:#f0b566; } pre .s { color:#b9d3c2; } pre .c { color:rgba(238,237,230,.55); font-style:italic; }
+  .legende { color:var(--doux); font-size:.92rem; margin-top:10px; }
+  ul.faire { columns:2; column-gap:40px; padding-left:1.1em; }
+  ul.faire li { margin-bottom:6px; break-inside:avoid; }
+  details { background:var(--papier); border-radius:8px; padding:14px 18px; margin-bottom:10px; }
+  summary { cursor:pointer; font-weight:700; }
+  details p { margin-top:8px; color:#4a3d32; }
+  .fin { text-align:center; }
+  .fin .achat { justify-content:center; }
+  footer { text-align:center; color:var(--doux); font-size:.85rem; padding:26px 0 36px; }
+  @media (max-width:700px) {
+    .hero { grid-template-columns:1fr; gap:24px; }
+    .hero img { max-width:240px; margin:0 auto; display:block; }
+    ul.faire { columns:1; }
+    nav .liens a { margin-left:12px; }
+  }
 </style>
-<script data-goatcounter="https://lazarus.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+<script data-goatcounter="https://lazarus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+<div class="page">
+  <nav>
+    <a class="logo" href="./">Larkhré</a>
+    <div class="liens"><a href="code/">Le playground</a><a href="https://github.com/larkhre/larkhre.github.io">GitHub</a></div>
+  </nav>
 
-<header class="hero">
-  <div class="wrap">
-    <div class="brand">Larkhré</div>
-    <h1>Apprends à coder de zéro —<br>dans un langage qui parle français</h1>
-    <p class="sub">Le livre officiel du langage Larkhré : 14 chapitres progressifs, des exercices corrigés,
-    et 3 vrais projets à créer toi-même. Rien à installer — tout se passe dans ton navigateur.</p>
-    <div class="achat">
-      <a class="btn" href="https://ladjidoucare.gumroad.com/l/larkhre">📚 Obtenir le PDF — 12 €<small>direct · mises à jour à vie incluses</small></a>
-      <a class="btn kindle" href="https://www.amazon.fr/dp/B0HCRLYQ4R">📖 Lire sur Kindle — 12 €<small>Amazon · liseuse, appli, tablette</small></a>
-    </div>
-    <span class="essai">Pas encore convaincu ? <a href="https://larkhre.github.io/code/">Essaie le langage gratuitement →</a></span>
-  </div>
-</header>
-
-<section>
-  <div class="wrap">
-    <h2>Pourquoi celui-ci, et pas un livre Python ?</h2>
-    <div class="grid">
-      <div class="card"><span class="emo">🇫🇷</span><h3>Les erreurs t'expliquent</h3>
-        <p>« La variable "scor" n'existe pas — déclare-la avec : laz scor = ... ». En français, avec la solution. Fini le mur d'anglais incompréhensible.</p></div>
-      <div class="card"><span class="emo">🐢</span><h3>Tu VOIS ton programme vivre</h3>
-        <p>Le mode ralenti illumine la ligne en cours et montre tes variables changer en direct. Aucun autre langage ne fait ça.</p></div>
-      <div class="card"><span class="emo">📱</span><h3>Zéro installation</h3>
-        <p>Un navigateur suffit — ordinateur, tablette ou téléphone. Tu codes 30 secondes après avoir ouvert le livre.</p></div>
-      <div class="card"><span class="emo">🎨</span><h3>Tu crées, tu ne recopies pas</h3>
-        <p>Un jeu complet, un quiz dont le record survit entre les parties, et une œuvre d'art dessinée par ton code.</p></div>
-      <div class="card"><span class="emo">⚡</span><h3>Une passerelle vers Python</h3>
-        <p>À la fin, une commande traduit ton code Larkhré en vrai Python. La transition vers les langages pros devient une promenade.</p></div>
-      <div class="card"><span class="emo">✍️</span><h3>Écrit par le créateur</h3>
-        <p>L'auteur n'a pas seulement écrit le livre — il a construit le langage, ligne par ligne, pour les débutants francophones.</p></div>
+  <div class="hero">
+    <img src="livre-couverture.webp" width="520" height="737" alt="Couverture du livre : Larkhré, apprends à coder de zéro, avec un baobab au bout d'un chemin de sable">
+    <div>
+      <p class="sur-titre">Le livre officiel du langage Larkhré</p>
+      <h1>Apprends à coder de zéro, dans un langage qui parle français</h1>
+      <p>14 chapitres progressifs, des exercices corrigés et 3 vrais projets à créer toi-même : un jeu, un quiz qui garde ton record, et une carte de vœux dessinée par ton code. Rien à installer : tout se passe dans ton navigateur, même sur téléphone.</p>
+      <div class="achat">
+        <a class="btn btn-pdf" data-goatcounter-click="livre-gumroad" href="https://ladjidoucare.gumroad.com/l/lazarus">Le PDF — 12 €<small>direct · mises à jour à vie incluses</small></a>
+        <a class="btn btn-amazon" data-goatcounter-click="livre-amazon" href="https://www.amazon.fr/s?k=Apprends+%C3%A0+coder+de+z%C3%A9ro+avec+Larkhr%C3%A9">Kindle ou livre broché<small>sur Amazon</small></a>
+      </div>
+      <p class="note">Pas encore convaincu ? <a href="code/">Essaie le langage gratuitement</a>, en dix secondes.</p>
     </div>
   </div>
-</section>
 
-<section>
-  <div class="wrap">
+  <section>
+    <h2>Pourquoi ce livre, et pas un livre de Python ?</h2>
+    <div class="grille">
+      <div class="carte"><h3>Les erreurs t'expliquent</h3><p>« La variable nmo n'existe pas. Tu voulais peut-être dire nom ? » En français, avec la piste pour corriger. Fini le mur de messages incompréhensibles.</p></div>
+      <div class="carte"><h3>Tu vois ton programme vivre</h3><p>Le mode ralenti éclaire la ligne en cours et montre tes variables changer en direct, tour après tour.</p></div>
+      <div class="carte"><h3>Zéro installation</h3><p>Un navigateur suffit : ordinateur, tablette ou téléphone. Tu écris ton premier programme trente secondes après avoir ouvert le livre.</p></div>
+      <div class="carte"><h3>Tu crées, tu ne recopies pas</h3><p>Chaque chapitre se termine par des exercices, et trois projets complets te font assembler tout ce que tu as appris.</p></div>
+      <div class="carte"><h3>Une passerelle vers Python</h3><p>À la fin, une commande traduit ton code Larkhré en vrai Python. Tu y reconnaîtras les idées que tu maîtrises déjà.</p></div>
+      <div class="carte"><h3>Des exemples garantis</h3><p>Chaque exemple du livre est exécuté par le vrai moteur du langage au moment de fabriquer le livre : ce que tu lis « à l'écran » est exactement ce que tu verras.</p></div>
+    </div>
+  </section>
+
+  <section>
     <h2>Un aperçu du voyage</h2>
-    <div class="code">
-      <span class="k">garde</span> record = 0&nbsp;&nbsp;&nbsp;<span style="color:#8b949e"># une variable qui se souvient entre les parties</span><br>
-      <span class="k">laz</span> score = 0<br>
-      <span class="k">pou</span> question <span class="k">dan</span> questions {<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">kan</span> reponse == question[<span class="s">"r"</span>] {<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vox_couleur(<span class="s">"Correct !"</span>, <span class="s">"vert"</span>)<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;score += 1<br>
-      &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-      }
-    </div>
-    <p style="color:var(--muted)">↑ Extrait du projet du chapitre 10 : ton quiz à record. Tu écriras ce code toi-même — et tu le comprendras.</p>
-  </div>
-</section>
+<pre><span class="k">garde</span> record = 0      <span class="c"># une variable qui se souvient entre les parties</span>
+<span class="k">laz</span> score = 0
+<span class="k">pou</span> question <span class="k">dan</span> questions {
+    <span class="k">kan</span> reponse == question[<span class="s">"r"</span>] {
+        vox_couleur(<span class="s">"Correct !"</span>, <span class="s">"vert"</span>)
+        score += 1
+    }
+}</pre>
+    <p class="legende">Extrait du projet du chapitre 10, le quiz à record. Tu écriras ce code toi-même, et tu le comprendras.</p>
+  </section>
 
-<section>
-  <div class="wrap">
+  <section>
     <h2>Ce que tu sauras faire</h2>
-    <ul class="somm">
+    <ul class="faire">
       <li>Écrire et exécuter tes premiers programmes</li>
-      <li>Variables, calculs et interpolation {nom}</li>
+      <li>Utiliser des variables, des calculs et l'interpolation {nom}</li>
       <li>Dialoguer avec l'utilisateur</li>
-      <li>Décider avec kan / sinon</li>
-      <li>Répéter avec les boucles (et les voir au ralenti)</li>
-      <li>Créer le jeu du Nombre Mystère 🎮</li>
+      <li>Décider avec kan et sinon</li>
+      <li>Répéter avec les boucles, et les voir au ralenti</li>
+      <li>Créer le jeu du nombre mystère</li>
       <li>Manier les listes et les dictionnaires</li>
       <li>Construire tes propres fonctions</li>
-      <li>Créer un quiz à record sauvegardé 🏆</li>
-      <li>Dessiner par le code 🎨</li>
+      <li>Créer un quiz à record sauvegardé</li>
+      <li>Dessiner avec ton code</li>
       <li>Créer des objets avec klas</li>
-      <li>Dompter les erreurs comme un pro</li>
+      <li>Comprendre et rattraper les erreurs</li>
     </ul>
-  </div>
-</section>
+  </section>
 
-<section>
-  <div class="wrap">
+  <section>
     <h2>L'auteur</h2>
-    <div class="auteur">
-      <div class="avatar">LD</div>
-      <div>
-        <strong>Ladji Doucaré</strong> est le créateur du langage Larkhré — un langage open source complet,
-        publié mondialement (PyPI, GitHub), avec son propre traducteur vers Python et un playground utilisé
-        depuis le navigateur. Ce livre est sa méthode, écrite avec l'outil qu'il a construit exactement pour ça :
-        apprendre à coder en français, en douceur, en créant.
-      </div>
-    </div>
-  </div>
-</section>
+    <p>Ladji Doucaré a grandi au Sénégal. Il a créé Larkhré, un langage libre et gratuit, pour que l'on puisse apprendre à coder en français, sans le mur de l'anglais ni celui de l'installation. Le nom vient du soninké, sa langue : <em>larkhré</em>, c'est la bouche, et aussi la langue ; <em>mosi larkhré</em>, c'est « la langue de la machine ». Ce livre est sa méthode, écrite avec l'outil qu'il a construit exactement pour ça.</p>
+  </section>
 
-<section class="faq">
-  <div class="wrap">
+  <section>
     <h2>Questions fréquentes</h2>
-    <details><summary>Je n'ai jamais codé de ma vie. C'est vraiment pour moi ?</summary>
-      <p>Oui — c'est exactement pour toi. Le livre part de zéro absolu et chaque notion est expliquée avec des mots simples, un exemple, et des exercices corrigés.</p></details>
-    <details><summary>Il me faut un bon ordinateur ?</summary>
-      <p>Non. Le playground Larkhré fonctionne dans n'importe quel navigateur, même sur un téléphone. Si tu lis cette page, tu as tout ce qu'il faut.</p></details>
-    <details><summary>Pourquoi ne pas apprendre directement Python ?</summary>
-      <p>Tu peux ! Mais la première marche est plus haute : anglais, installation, erreurs cryptiques. Larkhré enseigne les mêmes concepts sans ces obstacles — et sa commande « traduire vers Python » fait de la transition une formalité. Le chapitre final t'y emmène.</p></details>
-    <details><summary>PDF ou Kindle : lequel choisir ?</summary>
-      <p>Le <b>PDF</b> (direct) se lit partout, s'imprime, et les mises à jour à vie te sont envoyées gratuitement. La version <b>Kindle</b> se lit sur liseuse, sur l'appli Kindle (téléphone, tablette, ordinateur) et te suit dans ta bibliothèque Amazon — pratique si tu lis déjà comme ça. Le contenu est le même. <a href="https://www.amazon.com/dp/B0HCRLYQ4R">Version Amazon internationale</a>.</p></details>
-    <details><summary>Et si le livre évolue ?</summary>
-      <p>Les mises à jour sont incluses à vie : chaque nouvelle édition t'est envoyée gratuitement.</p></details>
-  </div>
-</section>
+    <details><summary>Je n'ai jamais codé de ma vie. C'est vraiment pour moi ?</summary><p>Oui, c'est exactement pour toi. Le livre part de zéro, chaque notion est expliquée avec des mots simples et un exemple, et chaque chapitre a ses exercices corrigés.</p></details>
+    <details><summary>Il me faut un bon ordinateur ?</summary><p>Non. Le playground Larkhré fonctionne dans n'importe quel navigateur, même sur un téléphone. Si tu lis cette page, tu as tout ce qu'il faut.</p></details>
+    <details><summary>Pourquoi ne pas apprendre directement Python ?</summary><p>Tu peux. Mais la première marche est plus haute : l'anglais, l'installation, les messages d'erreur difficiles. Larkhré enseigne les mêmes idées sans ces obstacles, et sa commande de traduction vers Python te sert ensuite de passerelle.</p></details>
+    <details><summary>PDF, Kindle ou livre broché : lequel choisir ?</summary><p>Le PDF se lit partout, s'imprime, et chaque nouvelle édition t'est envoyée gratuitement. La version Kindle se lit sur liseuse ou dans l'appli Kindle. Le livre broché, en papier, reste ouvert à côté de ton écran pendant que tu codes.</p></details>
+    <details><summary>Le livre a changé de nom ?</summary><p>Oui : le langage s'appelait auparavant LAZARUS. L'édition 1.1 porte le nouveau nom, corrige plusieurs exemples, et tous ses programmes sont vérifiés automatiquement. Les acheteurs du PDF la reçoivent gratuitement.</p></details>
+  </section>
 
-<div class="final">
-  <div class="wrap">
-    <h2 style="margin-bottom:10px">Le code appartient à ceux qui tapent la ligne suivante.</h2>
-    <p style="color:var(--muted); margin-bottom:26px">Commence aujourd'hui — dans ta langue.</p>
+  <section class="fin">
+    <h2>Le code appartient à ceux qui tapent la ligne suivante.</h2>
+    <p>Commence aujourd'hui, dans ta langue.</p>
     <div class="achat">
-      <a class="btn" href="https://ladjidoucare.gumroad.com/l/larkhre">📚 Obtenir le PDF — 12 €<small>34 pages · mises à jour à vie</small></a>
-      <a class="btn kindle" href="https://www.amazon.fr/dp/B0HCRLYQ4R">📖 Lire sur Kindle — 12 €<small>Amazon · dans le monde entier</small></a>
+      <a class="btn btn-pdf" data-goatcounter-click="livre-gumroad-bas" href="https://ladjidoucare.gumroad.com/l/lazarus">Le PDF — 12 €<small>42 pages · mises à jour à vie</small></a>
+      <a class="btn btn-amazon" data-goatcounter-click="livre-amazon-bas" href="https://www.amazon.fr/s?k=Apprends+%C3%A0+coder+de+z%C3%A9ro+avec+Larkhr%C3%A9">Kindle ou livre broché<small>sur Amazon</small></a>
     </div>
-  </div>
+  </section>
 </div>
-
-<footer>
-  Larkhré — un langage libre et gratuit créé par Ladji Doucaré ·
-  <a href="https://larkhre.github.io/code/">Playground</a> ·
-  <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a>
-</footer>
-
+<footer>Larkhré — un langage libre et gratuit créé par Ladji Doucaré · <a href="code/">Playground</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a></footer>
 </body>
 </html>
