@@ -1,0 +1,1 @@
+✘ Erreur Python (ligne 2) : une boucle for avec plusieurs variables (for i, n in ...) n'est pas encore prise en charge : utilise une seule variable, par exemple for n in liste

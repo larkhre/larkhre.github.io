@@ -1,0 +1,14 @@
+#langue: python
+nombres = [1, 2, 3, 4]
+def carre(n):
+    return n * n
+carres = [carre(n) for n in nombres]
+print(carres)
+print("Somme :", sum(carres))
+print(min(carres), max(carres), min(3, 1, 2), max("pomme", "banane"))
+pairs = [n for n in range(10) if n % 2 == 0]
+print(pairs)
+print([lettre.upper() for lettre in "awa"])
+print(len(carres), sorted([3, 1, 2]), abs(-5), round(3.14159, 2), str(12), int("7"), float("2.5"))
+print(sum([0.5, 0.25], 10))
+print(enumerate(nombres))

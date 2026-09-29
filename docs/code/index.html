@@ -258,7 +258,7 @@
 <header>
   <h1 class="logo"><a href="../">Larkhré</a></h1>
   <div class="tagline"><em>Mosi larkhré</em> : la langue de la machine, en soninké</div>
-  <div class="version">v11.3</div>
+  <div class="version">v11.4</div>
 </header>
 
 <div class="toolbar">
@@ -441,7 +441,7 @@ efface_interface() → des APPLIS !
 </details>
 
 <footer>
-  <b>Larkhré v11.3</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
+  <b>Larkhré v11.4</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
 </footer>
 
 <script>
@@ -463,8 +463,9 @@ const Larkhre = (function () {
       this.line = line;
     }
     toString() {
-      if (this.line) return `✘ Erreur Larkhré (ligne ${this.line}) : ${this.lazMessage}`;
-      return `✘ Erreur Larkhré : ${this.lazMessage}`;
+      const langage = MODE_PYTHON.actif ? 'Python' : 'Larkhré';
+      if (this.line) return `✘ Erreur ${langage} (ligne ${this.line}) : ${this.lazMessage}`;
+      return `✘ Erreur ${langage} : ${this.lazMessage}`;
     }
   }
   class ReturnEx { constructor(value) { this.value = value; } }
@@ -944,23 +945,59 @@ const Larkhre = (function () {
     }
   }
 
+  // v11.4 : distance de Damerau-Levenshtein (une inversion de deux lettres voisines = une faute)
+  function distanceDL(a, b) {
+    const d = Array.from({ length: a.length + 1 }, (_, i) => Array(b.length + 1).fill(0).map((_, j) => (i === 0 ? j : j === 0 ? i : 0)));
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cout = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cout);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+    return d[a.length][b.length];
+  }
+  const PY_DISPONIBLES = 'abs, float, input, int, len, max, min, print, range, round, sorted, str, sum';
+  const PY_INDISPONIBLES = new Set(['enumerate', 'zip', 'map', 'filter', 'list', 'dict', 'set', 'tuple', 'open', 'type',
+    'isinstance', 'any', 'all', 'reversed', 'chr', 'ord', 'pow', 'divmod', 'hex', 'bin',
+    'format', 'bool', 'repr', 'iter', 'next', 'hash', 'id', 'eval', 'exec', 'dir', 'help',
+    'getattr', 'setattr', 'hasattr', 'callable', 'super', 'object', 'frozenset', 'bytes']);
+  function messageVariableInconnue(env, name) {
+    if (MODE_PYTHON.actif && PY_INDISPONIBLES.has(name)) {
+      return `${name}() n'est pas encore disponible dans le mode Python (disponibles : ${PY_DISPONIBLES})`;
+    }
+    const seuil = name.length <= 4 ? 1 : 2;
+    let meilleur = null, meilleureD = seuil + 1;
+    const vus = new Set();
+    for (let e = env; e; e = e.parent) {
+      for (const [nom, val] of e.vars) {
+        if (vus.has(nom) || nom === name || nom.startsWith('__')) continue;
+        vus.add(nom);
+        if (MODE_PYTHON.actif && val && typeof val === 'object' && val.builtin) continue;
+        if (Math.abs(nom.length - name.length) > seuil) continue;
+        const d = distanceDL(name, nom);
+        if (d < meilleureD) { meilleur = nom; meilleureD = d; }
+      }
+    }
+    if (meilleur !== null) return `la variable « ${name} » n'existe pas. Tu voulais peut-être dire « ${meilleur} » ?`;
+    return MODE_PYTHON.actif
+      ? `la variable « ${name} » n'existe pas (déclare-la d'abord avec : ${name} = ...)`
+      : `la variable « ${name} » n'existe pas (déclare-la avec : laz ${name} = ...)`;
+  }
+
   // ---------------- ENVIRONNEMENT ----------------
   class Env {
     constructor(parent) { this.vars = new Map(); this.parent = parent || null; }
     get(name, line) {
       let e = this;
       while (e) { if (e.vars.has(name)) return e.vars.get(name); e = e.parent; }
-      throw new LazError(MODE_PYTHON.actif
-          ? `la variable « ${name} » n'existe pas (déclare-la d'abord avec : ${name} = ...)`
-          : `la variable « ${name} » n'existe pas (déclare-la avec : laz ${name} = ...)`, line);
+      throw new LazError(messageVariableInconnue(this, name), line);
     }
     declare(name, value) { this.vars.set(name, value); }
     assign(name, value, line) {
       let e = this;
       while (e) { if (e.vars.has(name)) { e.vars.set(name, value); return; } e = e.parent; }
-      throw new LazError(MODE_PYTHON.actif
-          ? `la variable « ${name} » n'existe pas (déclare-la d'abord avec : ${name} = ...)`
-          : `la variable « ${name} » n'existe pas (déclare-la avec : laz ${name} = ...)`, line);
+      throw new LazError(messageVariableInconnue(this, name), line);
     }
   }
 
@@ -1064,7 +1101,7 @@ const Larkhre = (function () {
   const PY_MOTS = new Set(['def', 'return', 'if', 'elif', 'else', 'while', 'for', 'in',
     'break', 'continue', 'pass', 'and', 'or', 'not', 'True', 'False', 'None',
     'try', 'except', 'as', 'import', 'from']);
-  const PY_FONCTIONS = { print: 'vox', input: 'demand', len: 'taille', str: 'texte', float: 'nombre', int: '__ent', round: 'arondi', sorted: 'tri', abs: '__abs' };
+  const PY_FONCTIONS = { print: 'vox', input: 'demand', len: 'taille', str: 'texte', float: 'nombre', int: '__ent', round: 'arondi', sorted: 'tri', abs: '__abs', sum: '__somme', min: '__min', max: '__max' };
   const PY_METHODES = { append: 'ajoute', pop: 'retire', upper: 'majus', lower: 'minus', split: 'koupe', replace: 'remplace', join: 'colle' };
   const PY_OPS2 = new Set(['**', '//', '==', '!=', '<=', '>=', '+=', '-=', '*=', '/=']);
   const PY_MODE_RE = /#\s*langue\s*:\s*python/i;
@@ -1266,6 +1303,7 @@ const Larkhre = (function () {
 
       if (this.accept('KW', 'for')) {
         const v = this.expect('IDENT', undefined, 'un nom de variable')[1];
+        if (this.check('OP', ',')) throw new LazError("une boucle for avec plusieurs variables (for i, n in ...) n'est pas encore prise en charge : utilise une seule variable, par exemple for n in liste", line);
         this.expect('KW', 'in', 'in');
         const iterable = this.parseExpression();
         this.scopes[this.scopes.length - 1].add(v);
@@ -1478,7 +1516,18 @@ const Larkhre = (function () {
       if (this.accept('OP', '[')) {
         const items = [];
         if (!this.check('OP', ']')) {
-          items.push(this.parseExpression());
+          const premier = this.parseExpression();
+          if (this.accept('KW', 'for')) {
+            // v11.4 : liste en compréhension [expression for nom in liste if condition]
+            const tok = this.next();
+            if (tok[0] !== 'IDENT' || this.check('OP', ',')) throw new LazError('dans une liste en compréhension, écris : [expression for nom in liste] (une seule variable après for)', tok[2]);
+            this.expect('KW', 'in', 'in');
+            const source = this.parseExpression();
+            const condition = this.accept('KW', 'if') ? this.parseExpression() : null;
+            this.expect('OP', ']', ']');
+            return ['listcomp', premier, tok[1], source, condition, line];
+          }
+          items.push(premier);
           while (this.accept('OP', ',')) {
             if (this.check('OP', ']')) break;
             items.push(this.parseExpression());
@@ -1532,7 +1581,7 @@ const Larkhre = (function () {
     }
 
     noteHistoire(line, name, value) {
-      this.histoire.push([line, name, toText(value)]);
+      this.histoire.push([line, name, typeof value === 'string' ? `"${value}"` : toText(value)]);
       if (this.histoire.length > 6) this.histoire.shift();
     }
 
@@ -1914,6 +1963,32 @@ const Larkhre = (function () {
       B('__abs', async (args, line) => {
         self.need(args, 1, 'abs', line);
         return Math.abs(checkNumber(args[0], line, 'abs()'));
+      });
+
+      // --- v11.4 : sum(), min(), max() pour le mode Python ---
+      const valeursNumeriques = (args, line, nom) => {
+        let valeurs;
+        if (args.length === 1 && Array.isArray(args[0])) valeurs = args[0];
+        else if (args.length === 1 && args[0] instanceof Map) valeurs = [...args[0].keys()];
+        else valeurs = args;
+        if (!valeurs.length) throw new LazError(`${nom}() a reçu une liste vide`, line);
+        return valeurs;
+      };
+      const comparable = (valeurs, line, nom) =>
+        valeurs.every((v) => typeof v === 'string') ? valeurs : valeurs.map((v) => checkNumber(v, line, nom));
+      B('__somme', async (args, line) => {
+        if ((args.length !== 1 && args.length !== 2) || !Array.isArray(args[0])) throw new LazError('sum() attend une liste de nombres, par exemple sum([1, 2, 3])', line);
+        let total = checkNumber(args.length === 2 ? args[1] : 0, line, 'sum()');
+        for (const v of args[0]) total += checkNumber(v, line, 'sum()');
+        return total;
+      });
+      B('__min', async (args, line) => {
+        const v = comparable(valeursNumeriques(args, line, 'min'), line, 'min()');
+        return v.reduce((a, b) => (b < a ? b : a));
+      });
+      B('__max', async (args, line) => {
+        const v = comparable(valeursNumeriques(args, line, 'max'), line, 'max()');
+        return v.reduce((a, b) => (b > a ? b : a));
       });
 
       // --- nouveautés v10.0 : Larkhré QUANTIQUE ---
@@ -2314,6 +2389,23 @@ const Larkhre = (function () {
       if (kind === 'str') return interpolate(node[1], env);
       if (kind === 'walu') return null;
       if (kind === 'var') return env.get(node[1], node[2]);
+      if (kind === 'listcomp') {   // v11.4 : [expression for nom in liste if condition]
+        const [, element, varName, sourceNode, condition, line] = node;
+        let iterable = await this.eval(sourceNode, env);
+        if (typeof iterable === 'string') iterable = iterable.split('');
+        if (iterable instanceof Map) iterable = [...iterable.keys()];
+        if (!Array.isArray(iterable)) throw new LazError('une liste en compréhension parcourt une liste, un texte, un range() ou un dictionnaire', line);
+        const local = new Env(env);
+        local.declare(varName, null);
+        const resultat = [];
+        for (const item of iterable) {
+          this.tick(line);
+          local.vars.set(varName, item);
+          if (condition !== null && !isTruthy(await this.eval(condition, local))) continue;
+          resultat.push(await this.eval(element, local));
+        }
+        return resultat;
+      }
       if (kind === 'list') {
         const out = [];
         for (const item of node[1]) out.push(await this.eval(item, env));
@@ -2589,7 +2681,7 @@ const Larkhre = (function () {
     }
   }
 
-  return { run, toText, LazError, version: '11.3' };
+  return { run, toText, LazError, version: '11.4' };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = Larkhre;
@@ -3217,24 +3309,14 @@ vox("Larkhré !")
   });
   noteProf.addEventListener('click', effaceNote);
 
-  function distance(a, b) {
-    const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
-    for (let j = 1; j <= b.length; j++) d[0][j] = j;
-    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
-      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-    return d[a.length][b.length];
-  }
   function conseilPour(msg) {
     let m;
     const code = editor.value;
     if (!/^\s*#\s*langue\s*:/m.test(code) && /(^|\n)\s*(print\(|def\s|import\s|elif\s|for\s+\w+\s+in\s)|\bf"/.test(code))
       return 'On dirait du Python ! Ajoute #langue: python tout en haut du cahier, et Larkhré le lira comme du Python.';
-    if ((m = /la variable « ([^»]+) » n'existe pas/.exec(msg))) {
-      const mots = new Set(editor.value.match(/[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ_0-9]*/g) || []);
-      let meilleur = null, d = 3;
-      for (const w of mots) { if (w === m[1] || MOTS_CLES.has(w)) continue; const x = distance(w, m[1]); if (x < d) { d = x; meilleur = w; } }
-      return meilleur ? 'Tu voulais peut-être dire « ' + meilleur + ' » ?' : 'Vérifie l\'orthographe, ou crée-la d\'abord avec laz.';
-    }
+    if (/Tu voulais peut-être dire/.test(msg)) return '';   // le moteur propose déjà le nom le plus proche
+    if (/n'est pas encore disponible dans le mode Python/.test(msg)) return '';
+    if (/la variable « [^»]+ » n'existe pas/.test(msg)) return 'Vérifie l\'orthographe, ou crée-la d\'abord.';
     if (/j'attendais « \{ » mais j'ai trouvé « = »/.test(msg)) return 'Pour comparer, écris == (deux signes égal). Un seul = veut dire « mets dedans ».';
     if (/chaîne de caractères non fermée/.test(msg)) return 'Il manque le guillemet " de la fin.';
     if (/j'attendais « \) » mais j'ai trouvé « une fin de ligne »/.test(msg)) return 'Il manque une parenthèse ) pour fermer, sur cette ligne ou juste au-dessus.';
@@ -3257,7 +3339,7 @@ vox("Larkhré !")
     noteProf.style.top = y + 'px';
   }
   function montreErreur(ligne, message) {
-    const texte = message.replace(/^✘ Erreur Larkhré \(ligne \d+\) : /, '');
+    const texte = message.replace(/^✘ Erreur (Larkhré|Python) \(ligne \d+\) : /, '');
     const conseil = conseilPour(texte);
     noteProf.innerHTML = '<b>Ligne ' + ligne + '</b>' + echappe(texte) + (conseil ? '<span class="conseil">' + echappe(conseil) + '</span>' : '');
     erreurAffichee = { ligne };

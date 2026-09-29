@@ -1,5 +1,18 @@
 # Historique des versions
 
+## 11.4 — Des erreurs encore plus justes (septembre 2026)
+- **Suggestion du nom le plus proche** dans le message d'erreur lui-même, dans les deux moteurs, en
+  Larkhré comme en Python : « la variable « nmo » n'existe pas. Tu voulais peut-être dire « nom » ? ».
+  Distance de Damerau-Levenshtein : une inversion de deux lettres voisines compte pour une seule faute.
+- **Mode Python** : les listes en compréhension (`[f(n) for n in liste if condition]`) et
+  `sum()`, `min()`, `max()`. Une fonction Python pas encore disponible (`enumerate`, `zip`…) et une
+  boucle `for` à plusieurs variables ont un message clair.
+- En mode Python, les erreurs s'intitulent « Erreur Python ».
+- Le « film » montre les textes entre guillemets : `nom = "Aminata"`.
+- Playground : charger un exemple ferme d'abord le clavier du téléphone ; la barre de symboles n'apparaît
+  que si le clavier est ouvert ; la note du prof repère du Python collé sans `#langue: python`.
+- Tests : 54 programmes vérifiés sur les deux moteurs.
+
 ## 11.3 — Voir le quantique (septembre 2026)
 - **`voir()`** dessine l'état quantique sur l'ardoise, une barre par résultat possible avec son
   pourcentage, sans le mesurer : l'état reste intact.

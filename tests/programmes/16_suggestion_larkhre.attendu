@@ -1,0 +1,4 @@
+✘ Erreur Larkhré (ligne 2) : la variable « nmo » n'existe pas. Tu voulais peut-être dire « nom » ?
+
+— Le film juste avant l'erreur :
+   ligne 1 : nom = "Aminata"

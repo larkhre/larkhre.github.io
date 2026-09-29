@@ -1,6 +1,6 @@
 {
   "name": "larkhre",
-  "version": "11.3.0",
+  "version": "11.4.0",
   "description": "Larkhré (« mosi larkhré », la langue de la machine en soninké) : le moteur du langage pour apprendre à coder en français. Le même moteur que le playground.",
   "main": "larkhre.js",
   "files": ["larkhre.js", "README.md"],

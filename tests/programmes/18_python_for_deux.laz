@@ -1,0 +1,3 @@
+#langue: python
+for i, n in enumerate([4, 5]):
+    print(i, n)

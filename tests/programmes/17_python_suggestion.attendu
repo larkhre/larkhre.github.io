@@ -1,0 +1,4 @@
+✘ Erreur Python (ligne 3) : la variable « nmo » n'existe pas. Tu voulais peut-être dire « nom » ?
+
+— Le film juste avant l'erreur :
+   ligne 2 : nom = "Aminata"

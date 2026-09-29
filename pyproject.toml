@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "larkhre"
-version = "11.3.0"
+version = "11.4.0"
 description = "Larkhré (« mosi larkhré », la langue de la machine en soninké) : le langage de programmation pour apprendre à coder en français, avec des erreurs expliquées."
 readme = "README.md"
 authors = [{ name = "Ladji Doucaré" }]

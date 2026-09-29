@@ -1,0 +1,13 @@
+[1, 4, 9, 16]
+Somme : 30
+1 16 1 pomme
+[0, 2, 4, 6, 8]
+["A", "W", "A"]
+4 [1, 2, 3] 5 3.14 12 7 2.5
+10.75
+✘ Erreur Python (ligne 14) : enumerate() n'est pas encore disponible dans le mode Python (disponibles : abs, float, input, int, len, max, min, print, range, round, sorted, str, sum)
+
+— Le film juste avant l'erreur :
+   ligne 2 : nombres = [1, 2, 3, 4]
+   ligne 5 : carres = [1, 4, 9, 16]
+   ligne 9 : pairs = [0, 2, 4, 6, 8]

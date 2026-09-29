@@ -57,9 +57,10 @@ class LazError(Exception):
         super().__init__(message)
 
     def __str__(self):
+        langage = 'Python' if MODE_PYTHON['actif'] else 'Larkhré'
         if self.line:
-            return f"✘ Erreur Larkhré (ligne {self.line}) : {self.message}"
-        return f"✘ Erreur Larkhré : {self.message}"
+            return f"✘ Erreur {langage} (ligne {self.line}) : {self.message}"
+        return f"✘ Erreur {langage} : {self.message}"
 
 class ReturnEx(Exception):
     def __init__(self, value):
@@ -632,6 +633,57 @@ class Parser:
 #  ENVIRONNEMENT (portée des variables)
 # ============================================================
 
+def distance_dl(a, b):
+    """Distance de Damerau-Levenshtein (une inversion de deux lettres voisines compte pour une faute)."""
+    d = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]
+    for i in range(len(a) + 1):
+        d[i][0] = i
+    for j in range(len(b) + 1):
+        d[0][j] = j
+    for i in range(1, len(a) + 1):
+        for j in range(1, len(b) + 1):
+            cout = 0 if a[i - 1] == b[j - 1] else 1
+            d[i][j] = min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cout)
+            if i > 1 and j > 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]:
+                d[i][j] = min(d[i][j], d[i - 2][j - 2] + 1)
+    return d[len(a)][len(b)]
+
+
+PY_DISPONIBLES = 'abs, float, input, int, len, max, min, print, range, round, sorted, str, sum'
+PY_INDISPONIBLES = {'enumerate', 'zip', 'map', 'filter', 'list', 'dict', 'set', 'tuple', 'open', 'type',
+                    'isinstance', 'any', 'all', 'reversed', 'chr', 'ord', 'pow', 'divmod', 'hex', 'bin',
+                    'format', 'bool', 'repr', 'iter', 'next', 'hash', 'id', 'eval', 'exec', 'dir', 'help',
+                    'getattr', 'setattr', 'hasattr', 'callable', 'super', 'object', 'frozenset', 'bytes'}
+
+
+def message_variable_inconnue(env, name):
+    """v11.4 : le même message dans les deux moteurs, avec le nom le plus proche s'il y en a un."""
+    if MODE_PYTHON['actif'] and name in PY_INDISPONIBLES:
+        return f"{name}() n'est pas encore disponible dans le mode Python (disponibles : {PY_DISPONIBLES})"
+    seuil = 1 if len(name) <= 4 else 2
+    meilleur, meilleure_d = None, seuil + 1
+    vus = set()
+    e = env
+    while e is not None:
+        for nom, val in e.vars.items():
+            if nom in vus or nom == name or nom.startswith('__'):
+                continue
+            vus.add(nom)
+            if MODE_PYTHON['actif'] and isinstance(val, tuple) and val and val[0] == 'builtin':
+                continue
+            if abs(len(nom) - len(name)) > seuil:
+                continue
+            d = distance_dl(name, nom)
+            if d < meilleure_d:
+                meilleur, meilleure_d = nom, d
+        e = e.parent
+    if meilleur is not None:
+        return f"la variable « {name} » n'existe pas. Tu voulais peut-être dire « {meilleur} » ?"
+    if MODE_PYTHON['actif']:
+        return f"la variable « {name} » n'existe pas (déclare-la d'abord avec : {name} = ...)"
+    return f"la variable « {name} » n'existe pas (déclare-la avec : laz {name} = ...)"
+
+
 class Env:
     def __init__(self, parent=None):
         self.vars = {}
@@ -643,10 +695,7 @@ class Env:
             if name in env.vars:
                 return env.vars[name]
             env = env.parent
-        raise LazError(
-                (f"la variable « {name} » n'existe pas (déclare-la d'abord avec : {name} = ...)"
-                 if MODE_PYTHON['actif'] else
-                 f"la variable « {name} » n'existe pas (déclare-la avec : laz {name} = ...)"), line)
+        raise LazError(message_variable_inconnue(self, name), line)
 
     def declare(self, name, value):
         self.vars[name] = value
@@ -658,10 +707,7 @@ class Env:
                 env.vars[name] = value
                 return
             env = env.parent
-        raise LazError(
-                (f"la variable « {name} » n'existe pas (déclare-la d'abord avec : {name} = ...)"
-                 if MODE_PYTHON['actif'] else
-                 f"la variable « {name} » n'existe pas (déclare-la avec : laz {name} = ...)"), line)
+        raise LazError(message_variable_inconnue(self, name), line)
 
 # ============================================================
 #  VALEURS ET FONCTIONS
@@ -1104,6 +1150,38 @@ def make_builtins(env, interp=None):
         _need(args, 1, 'abs', line)
         return abs(check_number(args[0], line, 'abs()'))
 
+    # --- v11.4 : sum(), min(), max() pour le mode Python ---
+    def _valeurs_numeriques(args, line, nom):
+        if len(args) == 1 and isinstance(args[0], list):
+            valeurs = args[0]
+        elif len(args) == 1 and isinstance(args[0], dict):
+            valeurs = list(args[0].keys())
+        else:
+            valeurs = list(args)
+        if not valeurs:
+            raise LazError(f"{nom}() a reçu une liste vide", line)
+        return valeurs
+
+    def b_somme(args, line):
+        if len(args) not in (1, 2) or not isinstance(args[0], list):
+            raise LazError("sum() attend une liste de nombres, par exemple sum([1, 2, 3])", line)
+        total = args[1] if len(args) == 2 else 0
+        total = check_number(total, line, 'sum()')
+        for v in args[0]:
+            total = total + check_number(v, line, 'sum()')
+        return total
+
+    def _comparable(valeurs, line, nom):
+        if all(isinstance(v, str) for v in valeurs):
+            return valeurs
+        return [check_number(v, line, nom) for v in valeurs]
+
+    def b_min(args, line):
+        return min(_comparable(_valeurs_numeriques(args, line, 'min'), line, 'min()'))
+
+    def b_max(args, line):
+        return max(_comparable(_valeurs_numeriques(args, line, 'max'), line, 'max()'))
+
     # --- nouveautés v10.0 : Larkhré QUANTIQUE ! ---
     # Un vrai simulateur quantique pédagogique : vecteur d'état complet,
     # portes H/X/Z/CNOT, mesure avec effondrement. Jusqu'à 10 qubits.
@@ -1521,6 +1599,9 @@ def make_builtins(env, interp=None):
         '__plage': b_plage,                 # range() de Python (fin exclue)
         '__ent': b_ent,                     # int() de Python (troncature)
         '__abs': b_abs,                     # abs() de Python
+        '__somme': b_somme,                 # v11.4 : sum() de Python
+        '__min': b_min,                     # v11.4 : min() de Python
+        '__max': b_max,                     # v11.4 : max() de Python
         # --- nouveautés v10.0 : le mode QUANTIQUE ---
         'qubits': b_qubits,                 # créer le registre quantique (1 à 10 qubits)
         'superpose': b_superpose,           # porte Hadamard : superposition !
@@ -1563,7 +1644,8 @@ PY_MOTS = {'def', 'return', 'if', 'elif', 'else', 'while', 'for', 'in',
 
 PY_FONCTIONS = {'print': 'vox', 'input': 'demand', 'len': 'taille',
                 'str': 'texte', 'float': 'nombre', 'int': '__ent',
-                'round': 'arondi', 'sorted': 'tri', 'abs': '__abs'}
+                'round': 'arondi', 'sorted': 'tri', 'abs': '__abs',
+                'sum': '__somme', 'min': '__min', 'max': '__max'}
 
 PY_METHODES = {'append': ('ajoute', 1), 'pop': ('retire', None),
                'upper': ('majus', 0), 'lower': ('minus', 0),
@@ -1782,6 +1864,8 @@ class PyParser:
 
         if self.accept('KW', 'for'):
             var = self.expect('IDENT', quoi='un nom de variable')[1]
+            if self.check('OP', ','):
+                raise LazError("une boucle for avec plusieurs variables (for i, n in ...) n'est pas encore prise en charge : utilise une seule variable, par exemple for n in liste", line)
             self.expect('KW', 'in', 'in')
             iterable = self.parse_expression()
             self.scopes[-1].add(var)
@@ -1998,7 +2082,18 @@ class PyParser:
         if self.accept('OP', '['):
             items = []
             if not self.check('OP', ']'):
-                items.append(self.parse_expression())
+                premier = self.parse_expression()
+                if self.accept('KW', 'for'):
+                    # v11.4 : liste en compréhension [expression for nom in liste if condition]
+                    tok = self.next()
+                    if tok[0] != 'IDENT' or self.check('OP', ','):
+                        raise LazError("dans une liste en compréhension, écris : [expression for nom in liste] (une seule variable après for)", tok[2])
+                    self.expect('KW', 'in', 'in')
+                    source = self.parse_expression()
+                    condition = self.parse_expression() if self.accept('KW', 'if') else None
+                    self.expect('OP', ']', ']')
+                    return ('listcomp', premier, tok[1], source, condition, line)
+                items.append(premier)
                 while self.accept('OP', ','):
                     if self.check('OP', ']'):
                         break
@@ -2059,7 +2154,7 @@ class Interpreter:
         make_builtins(self.globals, self)
 
     def note_histoire(self, line, name, value):
-        self.histoire.append((line, name, to_text(value)))
+        self.histoire.append((line, name, f'"{value}"' if isinstance(value, str) else to_text(value)))
         if len(self.histoire) > 6:
             self.histoire.pop(0)
 
@@ -2282,6 +2377,24 @@ class Interpreter:
             return None
         if kind == 'var':
             return env.get(node[1], node[2])
+        if kind == 'listcomp':   # v11.4 : [expression for nom in liste if condition]
+            _, element, var, source_node, condition, line = node
+            iterable = self.eval(source_node, env)
+            if isinstance(iterable, str):
+                iterable = list(iterable)
+            if isinstance(iterable, dict):
+                iterable = list(iterable.keys())
+            if not isinstance(iterable, list):
+                raise LazError("une liste en compréhension parcourt une liste, un texte, un range() ou un dictionnaire", line)
+            local = Env(env)
+            local.declare(var, None)
+            resultat = []
+            for item in iterable:
+                local.vars[var] = item
+                if condition is not None and not is_truthy(self.eval(condition, local)):
+                    continue
+                resultat.append(self.eval(element, local))
+            return resultat
         if kind == 'list':
             return [self.eval(item, env) for item in node[1]]
         if kind == 'dict':
@@ -2714,6 +2827,16 @@ class Traducteur:
             return self.nom(node[1])
         if k == 'list':
             return '[' + ', '.join(self.expr(i) for i in node[1]) + ']'
+        if k == 'listcomp':
+            _, element, var, source, condition, _l = node
+            deja = var in self.declared
+            self.declared.add(var)
+            texte = f'[{self.expr(element)} for {self.nom(var)} in _iter({self.expr(source)})'
+            if condition is not None:
+                texte += f' if _t({self.expr(condition)})'
+            if not deja:
+                self.declared.discard(var)
+            return texte + ']'
         if k == 'dict':
             return '{' + ', '.join(f'{self.expr(kk)}: {self.expr(vv)}' for kk, vv in node[1]) + '}'
         if k == 'range':
