@@ -1838,6 +1838,8 @@ class PyParser:
     def parse_statement(self):
         tok = self.peek()
         line = tok[2]
+        if tok[0] == 'INDENT':
+            raise LazError("cette ligne commence par des espaces en trop. En Python, on ne décale une ligne que dans un bloc (après def, if, for, while…) : efface les espaces au début de la ligne", line)
 
         if self.accept('KW', 'def'):
             nom = self.expect('IDENT', quoi='un nom de fonction')[1]

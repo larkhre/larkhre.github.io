@@ -1,5 +1,10 @@
 # Historique des versions
 
+## 11.4.1 (septembre 2026)
+- Mode Python : une ligne décalée par des espaces en trop, hors d'un bloc, donne un message clair
+  (« cette ligne commence par des espaces en trop… ») au lieu de « j'ai trouvé une indentation ».
+  Le message est identique dans les deux moteurs.
+
 ## 11.4 — Des erreurs encore plus justes (septembre 2026)
 - **Suggestion du nom le plus proche** dans le message d'erreur lui-même, dans les deux moteurs, en
   Larkhré comme en Python : « la variable « nmo » n'existe pas. Tu voulais peut-être dire « nom » ? ».

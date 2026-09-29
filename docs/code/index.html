@@ -258,7 +258,7 @@
 <header>
   <h1 class="logo"><a href="../">Larkhré</a></h1>
   <div class="tagline"><em>Mosi larkhré</em> : la langue de la machine, en soninké</div>
-  <div class="version">v11.4</div>
+  <div class="version">v11.4.1</div>
 </header>
 
 <div class="toolbar">
@@ -441,7 +441,7 @@ efface_interface() → des APPLIS !
 </details>
 
 <footer>
-  <b>Larkhré v11.4</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
+  <b>Larkhré v11.4.1</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
 </footer>
 
 <script>
@@ -1277,6 +1277,7 @@ const Larkhre = (function () {
     parseStatement() {
       const tok = this.peek();
       const line = tok[2];
+      if (tok[0] === 'INDENT') throw new LazError("cette ligne commence par des espaces en trop. En Python, on ne décale une ligne que dans un bloc (après def, if, for, while…) : efface les espaces au début de la ligne", line);
 
       if (this.accept('KW', 'def')) {
         const nom = this.expect('IDENT', undefined, 'un nom de fonction')[1];
@@ -2681,7 +2682,7 @@ const Larkhre = (function () {
     }
   }
 
-  return { run, toText, LazError, version: '11.4' };
+  return { run, toText, LazError, version: '11.4.1' };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = Larkhre;
