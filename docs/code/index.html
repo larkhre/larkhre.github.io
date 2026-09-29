@@ -237,6 +237,18 @@
     font-family: var(--code); font-size: 1.05rem; font-weight: 600; background: var(--papier);
     color: var(--texte); border: 1px solid #cdbfa8; touch-action: manipulation; }
   .barre-symboles button.nav { color: var(--ocre); }
+
+  /* ---------- le panneau des exemples ---------- */
+  .panneau-exemples { margin: 10px 18px 0; padding: 10px 14px 14px; border-radius: 8px;
+    background: rgba(251,246,236,.97); box-shadow: 0 8px 22px rgba(0,0,0,.25); max-height: 55vh; overflow-y: auto; }
+  .panneau-exemples[hidden] { display: none; }
+  .panneau-exemples .groupe { font-size: .82rem; color: var(--doux); margin: 8px 0 6px; }
+  .grille-ex { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+  .grille-ex button { text-align: left; padding: 10px 12px; font-size: .95rem; background: #fff; }
+  @media (max-width: 820px) {
+    .panneau-exemples { margin: 10px 10px 0; }
+    .grille-ex { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
+  }
 </style>
 <script data-goatcounter="https://lazarus.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -252,39 +264,43 @@
 <div class="toolbar">
   <button class="btn-run" id="btnRun" title="Raccourci : Ctrl + Entrée">Exécuter</button>
   <button class="btn-stop" id="btnStop">Arrêter</button>
-  <select id="examples" aria-label="Charger un exemple">
-    <option value="">Charger un exemple…</option>
-    <optgroup label="Pour commencer">
-      <option value="bonjour">Bonjour le monde</option>
-      <option value="calc">Calculatrice</option>
-      <option value="etoiles">Pyramide d'étoiles</option>
-      <option value="jeu">Jeu : devine le nombre</option>
-      <option value="demo">Tour complet du langage</option>
-    </optgroup>
-    <optgroup label="Aller plus loin">
-      <option value="poo">Classes et objets (klas)</option>
-      <option value="dico">Dictionnaires</option>
-      <option value="v4">Textes à trous et gestion d'erreurs</option>
-      <option value="v5">garde et ralenti</option>
-    </optgroup>
-    <optgroup label="Dessins, jeux et applis">
-      <option value="couleurs">Les couleurs</option>
-      <option value="dessin">Le mode dessin</option>
-      <option value="jeu6">Jeu en temps réel : attrape les pièces</option>
-      <option value="v7app">Ta première appli à boutons</option>
-    </optgroup>
-    <optgroup label="Langues et super-pouvoirs">
-      <option value="anglais">Coder en anglais</option>
-      <option value="francais">Le français académique</option>
-      <option value="parle">Larkhré parle</option>
-      <option value="quantique">Le mode quantique</option>
-      <option value="python">Du vrai Python, erreurs en français</option>
-    </optgroup>
-  </select>
+  <button type="button" id="btnExemples" aria-expanded="false" aria-controls="panneauExemples">Exemples ▾</button>
   <button id="btnClear">Effacer la console</button>
   <button id="btnShare">Partager</button>
   <button class="btn-ecole" id="btnEcole">L'École</button>
   <span class="hint">Ctrl + Entrée pour exécuter</span>
+</div>
+<div class="panneau-exemples" id="panneauExemples" hidden>
+  <p class="groupe">Pour commencer</p>
+  <div class="grille-ex">
+    <button type="button" data-ex="bonjour">Bonjour le monde</button>
+    <button type="button" data-ex="calc">Calculatrice</button>
+    <button type="button" data-ex="etoiles">Pyramide d'étoiles</button>
+    <button type="button" data-ex="jeu">Jeu : devine le nombre</button>
+    <button type="button" data-ex="demo">Tour complet du langage</button>
+  </div>
+  <p class="groupe">Aller plus loin</p>
+  <div class="grille-ex">
+    <button type="button" data-ex="poo">Classes et objets (klas)</button>
+    <button type="button" data-ex="dico">Dictionnaires</button>
+    <button type="button" data-ex="v4">Textes à trous et gestion d'erreurs</button>
+    <button type="button" data-ex="v5">garde et ralenti</button>
+  </div>
+  <p class="groupe">Dessins, jeux et applis</p>
+  <div class="grille-ex">
+    <button type="button" data-ex="couleurs">Les couleurs</button>
+    <button type="button" data-ex="dessin">Le mode dessin</button>
+    <button type="button" data-ex="jeu6">Jeu en temps réel : attrape les pièces</button>
+    <button type="button" data-ex="v7app">Ta première appli à boutons</button>
+  </div>
+  <p class="groupe">Langues et super-pouvoirs</p>
+  <div class="grille-ex">
+    <button type="button" data-ex="anglais">Coder en anglais</button>
+    <button type="button" data-ex="francais">Le français académique</button>
+    <button type="button" data-ex="parle">Larkhré parle</button>
+    <button type="button" data-ex="quantique">Le mode quantique</button>
+    <button type="button" data-ex="python">Du vrai Python, erreurs en français</button>
+  </div>
 </div>
 
 <div id="ecolePanel">
@@ -2553,7 +2569,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = Larkhre;
   const btnRun = document.getElementById('btnRun');
   const btnStop = document.getElementById('btnStop');
   const btnClear = document.getElementById('btnClear');
-  const examples = document.getElementById('examples');
+  const btnExemples = document.getElementById('btnExemples');
+  const panneauExemples = document.getElementById('panneauExemples');
 
   // ---------- exemples ----------
   const EX = {};
@@ -3079,16 +3096,23 @@ vox("Larkhré !")
 
   editor.value = EX.bonjour;
 
-  examples.addEventListener('change', () => {
-    if (examples.value && EX[examples.value]) {
-      const nomExemple = examples.options[examples.selectedIndex].text;
-      editor.value = EX[examples.value];
-      updateLinenos();
-      editor.scrollTop = 0;
-      addLine('Exemple chargé : ' + nomExemple + '. Appuie sur Exécuter pour le lancer.', 'sys');
-    }
-    examples.selectedIndex = 0;
+  // les exemples : de vrais boutons dans la page (la liste du téléphone ne transmettait pas toujours le choix)
+  function fermeExemples() { panneauExemples.hidden = true; btnExemples.setAttribute('aria-expanded', 'false'); }
+  btnExemples.addEventListener('click', () => {
+    const ouvrir = panneauExemples.hidden;
+    panneauExemples.hidden = !ouvrir;
+    btnExemples.setAttribute('aria-expanded', String(ouvrir));
   });
+  panneauExemples.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-ex]');
+    if (!b || !EX[b.dataset.ex]) return;
+    editor.value = EX[b.dataset.ex];
+    updateLinenos();
+    editor.scrollTop = 0;
+    fermeExemples();
+    addLine('Exemple chargé : ' + b.textContent + '. Appuie sur Exécuter pour le lancer.', 'sys');
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panneauExemples.hidden) fermeExemples(); });
 
   // ---------- numéros de ligne ----------
   function updateLinenos() {
