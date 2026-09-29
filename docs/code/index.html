@@ -3153,6 +3153,7 @@ vox("Larkhré !")
   panneauExemples.addEventListener('click', (e) => {
     const b = e.target.closest('button[data-ex]');
     if (!b || !EX[b.dataset.ex]) return;
+    editor.blur();   // le clavier du téléphone ne doit pas réécrire l'ancien texte par-dessus
     editor.value = EX[b.dataset.ex];
     updateLinenos();
     editor.scrollTop = 0;
@@ -3225,6 +3226,9 @@ vox("Larkhré !")
   }
   function conseilPour(msg) {
     let m;
+    const code = editor.value;
+    if (!/^\s*#\s*langue\s*:/m.test(code) && /(^|\n)\s*(print\(|def\s|import\s|elif\s|for\s+\w+\s+in\s)|\bf"/.test(code))
+      return 'On dirait du Python ! Ajoute #langue: python tout en haut du cahier, et Larkhré le lira comme du Python.';
     if ((m = /la variable « ([^»]+) » n'existe pas/.exec(msg))) {
       const mots = new Set(editor.value.match(/[A-Za-zÀ-ÖØ-öø-ÿ_][A-Za-zÀ-ÖØ-öø-ÿ_0-9]*/g) || []);
       let meilleur = null, d = 3;
@@ -3620,7 +3624,14 @@ vox("Larkhré !")
   });
   barreSymboles.addEventListener('mousedown', (e) => e.preventDefault());
 
+  function clavierOuvert() {
+    const vv = window.visualViewport;
+    return !vv || vv.height < window.innerHeight * 0.8;   // sans cette mesure, on suppose le clavier ouvert
+  }
   function placeBarreSymboles() {
+    if (!ecranTactile || document.activeElement !== editor) return;
+    // clavier fermé (touche Retour) : la barre se cache, pour ne jamais recouvrir le bouton Exécuter
+    barreSymboles.classList.toggle('visible', clavierOuvert());
     if (!barreSymboles.classList.contains('visible')) return;
     const vv = window.visualViewport;
     if (vv) {
@@ -3633,7 +3644,6 @@ vox("Larkhré !")
   }
   editor.addEventListener('focus', () => {
     if (!ecranTactile) return;
-    barreSymboles.classList.add('visible');
     placeBarreSymboles();
     setTimeout(placeBarreSymboles, 300);   // le temps que le clavier finisse de s'ouvrir
   });
@@ -3859,6 +3869,7 @@ vox("Larkhré !")
     ecTexte.innerHTML = l.texte.replace(/\n/g, '<br>');
     ecMsg.style.display = 'none';
     ecSuivant.style.display = d.faits[i] ? 'inline-block' : 'none';
+    editor.blur();
     editor.value = l.code;
     updateLinenos();
     ecPoints.innerHTML = '';
@@ -3959,7 +3970,7 @@ vox("Larkhré !")
   if (premiereVisite) {
     addLine('Bienvenue dans Larkhré ! Écris ton prénom entre les guillemets de la ligne 2, puis appuie sur Exécuter.', 'sys');
   } else {
-    addLine('Bienvenue dans Larkhré (mosi larkhré : la langue de la machine, en soninké). Écris ton code à gauche, puis clique sur Exécuter. Pour apprendre pas à pas, ouvre L\'École.', 'sys');
+    addLine('Bienvenue dans Larkhré (mosi larkhré : la langue de la machine, en soninké). Écris ton code dans le cahier, puis appuie sur Exécuter. Pour apprendre pas à pas, ouvre L\'École.', 'sys');
   }
 })();
 </script>
