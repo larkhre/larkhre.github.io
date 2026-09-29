@@ -37,6 +37,8 @@ import re
 import json
 import time
 import random
+import math
+import bisect
 import threading
 import subprocess
 import keyword as _pykeyword
@@ -1208,6 +1210,61 @@ def make_builtins(env, interp=None):
                 d[cle] = round(p, 4)
         return d
 
+    # --- nouveautés v11.3 : VOIR l'état et RÉPÉTER l'expérience ---
+    def _pourcent(p):
+        v = math.floor(p * 1000 + 0.5) / 10
+        return str(int(v)) if v == int(v) else str(v)
+
+    def _barre(p):
+        plein = int(math.floor(p * 10 + 0.5))
+        return '█' * plein + '░' * (10 - plein)
+
+    def b_voir(args, line):
+        if len(args) > 1:
+            raise LazError('voir() prend au plus 1 argument : les résultats de mesure_repetee()', line)
+        if args:
+            d = args[0]
+            if not isinstance(d, dict) or not d:
+                raise LazError('voir() attend les résultats de mesure_repetee(), par exemple voir(resultats)', line)
+            total = 0
+            for v in d.values():
+                total += check_number(v, line, 'voir()')
+            print(f'Résultats de {total} mesures :')
+            for cle in sorted(d, key=to_text):
+                p = d[cle] / total if total else 0
+                print(f'|{to_text(cle)}⟩ {_barre(p)} {d[cle]} ({_pourcent(p)}\u00a0%)')
+            return None
+        _quantique_requis(line)
+        n = etat_q['n']
+        print(f'État quantique ({n} qubit{"s" if n > 1 else ""}) :')
+        for i, a in enumerate(etat_q['amp']):
+            p = abs(a) ** 2
+            if p > 1e-9:
+                print(f'|{format(i, "0" + str(n) + "b")}⟩ {_barre(p)} {_pourcent(p)}\u00a0%')
+        return None
+
+    def b_mesure_repetee(args, line):
+        _need(args, 1, 'mesure_repetee', line)
+        _quantique_requis(line)
+        fois = int(check_number(args[0], line, 'mesure_repetee()'))
+        if fois < 1 or fois > 100000:
+            raise LazError('mesure_repetee() : entre 1 et 100000 répétitions', line)
+        n = etat_q['n']
+        indices, cumul, total = [], [], 0.0
+        for i, a in enumerate(etat_q['amp']):
+            p = abs(a) ** 2
+            if p > 1e-12:
+                total += p
+                indices.append(i)
+                cumul.append(total)
+        comptes = {}
+        for _ in range(fois):
+            k = bisect.bisect_left(cumul, random.random() * total)
+            k = min(k, len(indices) - 1)
+            cle = format(indices[k], '0' + str(n) + 'b')
+            comptes[cle] = comptes.get(cle, 0) + 1
+        return {k: comptes[k] for k in sorted(comptes)}
+
     # --- nouveautés v7.0 : le MODE INTERFACE ! ---
     # titre / etiquette / bouton / champ construisent une vraie application.
     # Playground : widgets HTML au-dessus de la console.
@@ -1472,6 +1529,8 @@ def make_builtins(env, interp=None):
         'intrique': b_intrique,             # porte CNOT : l'intrication !
         'mesure': b_mesure,                 # mesurer un qubit (effondrement)
         'probabilites': b_probabilites,     # les probabilités de chaque état
+        'voir': b_voir,                     # v11.3 : dessiner l'état (ou des résultats)
+        'mesure_repetee': b_mesure_repetee, # v11.3 : répéter l'expérience n fois
         # --- nouveautés v7.0 : le mode interface ---
         'titre': b_titre,                   # grand titre de l'application
         'etiquette': b_etiquette,           # texte affiché (renvoie son id)

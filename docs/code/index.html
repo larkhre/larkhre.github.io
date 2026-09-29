@@ -258,7 +258,7 @@
 <header>
   <h1 class="logo"><a href="../">Larkhré</a></h1>
   <div class="tagline"><em>Mosi larkhré</em> : la langue de la machine, en soninké</div>
-  <div class="version">v11.2</div>
+  <div class="version">v11.3</div>
 </header>
 
 <div class="toolbar">
@@ -429,6 +429,7 @@ v11 : #langue: python → du VRAI
 Python, erreurs en français !
 v10 : qubits superpose intrique
 mesure probabilites → QUANTIQUE !
+v11.3 : voir() mesure_repetee(1000)
 v8.0 : dis("texte") → il PARLE !
 Partager → ton code en lien
 v7.0 : titre bouton champ etiquette
@@ -440,7 +441,7 @@ efface_interface() → des APPLIS !
 </details>
 
 <footer>
-  <b>Larkhré v11.2</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
+  <b>Larkhré v11.3</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
 </footer>
 
 <script>
@@ -2017,6 +2018,55 @@ const Larkhre = (function () {
         return d;
       });
 
+      // --- nouveautés v11.3 : VOIR l'état et RÉPÉTER l'expérience ---
+      const qPourcent = (p) => { const v = Math.floor(p * 1000 + 0.5) / 10; return Number.isInteger(v) ? String(v) : String(v); };
+      const qBarre = (p) => { const plein = Math.floor(p * 10 + 0.5); return '█'.repeat(plein) + '░'.repeat(10 - plein); };
+      B('voir', async (args, line) => {
+        if (args.length > 1) throw new LazError('voir() prend au plus 1 argument : les résultats de mesure_repetee()', line);
+        if (args.length) {
+          const d = args[0];
+          if (!(d instanceof Map) || d.size === 0) throw new LazError('voir() attend les résultats de mesure_repetee(), par exemple voir(resultats)', line);
+          let total = 0;
+          for (const v of d.values()) total += checkNumber(v, line, 'voir()');
+          self.io.onPrint(`Résultats de ${total} mesures :`);
+          const cles = [...d.keys()].sort((a, b) => (toText(a) < toText(b) ? -1 : toText(a) > toText(b) ? 1 : 0));
+          for (const cle of cles) {
+            const p = total ? d.get(cle) / total : 0;
+            self.io.onPrint(`|${toText(cle)}⟩ ${qBarre(p)} ${d.get(cle)} (${qPourcent(p)}\u00a0%)`);
+          }
+          return null;
+        }
+        qRequis(line);
+        const n = etatQ.n;
+        self.io.onPrint(`État quantique (${n} qubit${n > 1 ? 's' : ''}) :`);
+        for (let i = 0; i < etatQ.amp.length; i++) {
+          const p = etatQ.amp[i][0] ** 2 + etatQ.amp[i][1] ** 2;
+          if (p > 1e-9) self.io.onPrint(`|${i.toString(2).padStart(n, '0')}⟩ ${qBarre(p)} ${qPourcent(p)}\u00a0%`);
+        }
+        return null;
+      });
+      B('mesure_repetee', async (args, line) => {
+        self.need(args, 1, 'mesure_repetee', line);
+        qRequis(line);
+        const fois = Math.trunc(checkNumber(args[0], line, 'mesure_repetee()'));
+        if (fois < 1 || fois > 100000) throw new LazError('mesure_repetee() : entre 1 et 100000 répétitions', line);
+        const n = etatQ.n, indices = [], cumul = [];
+        let total = 0;
+        for (let i = 0; i < etatQ.amp.length; i++) {
+          const p = etatQ.amp[i][0] ** 2 + etatQ.amp[i][1] ** 2;
+          if (p > 1e-12) { total += p; indices.push(i); cumul.push(total); }
+        }
+        const comptes = new Map();
+        for (let f = 0; f < fois; f++) {
+          const r = Math.random() * total;
+          let lo = 0, hi = cumul.length - 1;
+          while (lo < hi) { const mid = (lo + hi) >> 1; if (cumul[mid] < r) lo = mid + 1; else hi = mid; }
+          const cle = indices[lo].toString(2).padStart(n, '0');
+          comptes.set(cle, (comptes.get(cle) || 0) + 1);
+        }
+        return new Map([...comptes.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)));
+      });
+
       // --- nouveautés v7.0 : le MODE INTERFACE ---
       const widget = (cmd) => { if (self.io.onWidget) self.io.onWidget(cmd); };
       const nouvelId = (prefixe) => { self.compteurWidget++; return prefixe + '_' + self.compteurWidget; };
@@ -2539,7 +2589,7 @@ const Larkhre = (function () {
     }
   }
 
-  return { run, toText, LazError, version: '11.2' };
+  return { run, toText, LazError, version: '11.3' };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = Larkhre;
@@ -3007,41 +3057,38 @@ pou i dan 1..3 {
 }
 dis("3, 2, 1... c'est parti !")
 `;
-  EX.quantique = `# ===== v10.0 : Larkhré QUANTIQUE ! =====
-# Un VRAI simulateur quantique — les mêmes lois physiques
-# que les ordinateurs d'IBM et Google, expliquées en français.
+  EX.quantique = `# ===== Le mode quantique =====
+# Un simulateur qui suit les lois de la mécanique quantique, en français.
 
-vox_couleur("=== 1. LA PIECE QUANTIQUE ===", "or")
-vox("Un qubit n'est ni 0 ni 1 : il est LES DEUX a la fois...")
+vox_couleur("1. La pièce quantique", "or")
+vox("Un qubit peut être dans les deux états à la fois : c'est la superposition.")
 qubits(1)
 superpose(0)
-vox("Etat du qubit :", probabilites())
+voir()
+vox("On refait l'expérience 1000 fois :")
+voir(mesure_repetee(1000))
 laz resultat = mesure(0)
-vox_couleur("Mesure ! La nature a choisi : {resultat}", "cyan")
+vox("Une seule mesure, et la nature choisit : {resultat}")
 
 vox("")
-vox_couleur("=== 2. L'INTRICATION (la magie d'Einstein) ===", "or")
-vox("Deux qubits lies : mesurer l'un decide INSTANTANEMENT l'autre.")
+vox_couleur("2. L'intrication", "or")
+vox("Deux qubits liés : jamais l'un sans l'autre.")
 qubits(2)
 superpose(0)
 intrique(0, 1)
-vox("Etat de Bell :", probabilites())
-laz a = mesure(0)
-laz b = mesure(1)
-vox_couleur("Qubit A : {a}   Qubit B : {b}   -> toujours identiques !", "vert")
+voir()
+voir(mesure_repetee(1000))
+vox("01 et 10 ne sortent jamais : les deux qubits sont toujours identiques.")
 
 vox("")
-vox_couleur("=== 3. L'INTERFERENCE ===", "or")
-vox("Superposer deux fois avec un dephasage : les chemins s'annulent...")
+vox_couleur("3. L'interférence", "or")
+vox("Deux superpositions séparées par un déphasage : les chemins s'annulent.")
 qubits(1)
 superpose(0)
 porte_z(0)
 superpose(0)
-vox("Probabilites :", probabilites())
-vox_couleur("Le hasard a disparu : c'est l'interference quantique.", "violet")
-
-vox("")
-vox("Tu viens de manipuler de VRAIS etats quantiques. En francais. Bravo.")
+voir()
+vox("Le hasard a disparu : c'est l'interférence quantique.")
 `;
   EX.python = `#langue: python
 # ===== v11.0 : LE PYTHON BIENVEILLANT =====

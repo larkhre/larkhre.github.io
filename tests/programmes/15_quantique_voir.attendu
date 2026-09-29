@@ -1,0 +1,21 @@
+État quantique (2 qubits) :
+|00⟩ █████░░░░░ 50 %
+|11⟩ █████░░░░░ 50 %
+État quantique (3 qubits) :
+|000⟩ █░░░░░░░░░ 12.5 %
+|001⟩ █░░░░░░░░░ 12.5 %
+|010⟩ █░░░░░░░░░ 12.5 %
+|011⟩ █░░░░░░░░░ 12.5 %
+|100⟩ █░░░░░░░░░ 12.5 %
+|101⟩ █░░░░░░░░░ 12.5 %
+|110⟩ █░░░░░░░░░ 12.5 %
+|111⟩ █░░░░░░░░░ 12.5 %
+{"1": 100}
+Résultats de 100 mesures :
+|1⟩ ██████████ 100 (100 %)
+État quantique (1 qubit) :
+|1⟩ ██████████ 100 %
+✘ Erreur Larkhré (ligne 20) : voir() attend les résultats de mesure_repetee(), par exemple voir(resultats)
+
+— Le film juste avant l'erreur :
+   ligne 15 : r = {"1": 100}

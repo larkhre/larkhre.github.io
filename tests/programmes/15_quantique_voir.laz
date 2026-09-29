@@ -1,0 +1,20 @@
+# l'état de Bell : deux qubits intriqués
+qubits(2)
+superpose(0)
+intrique(0, 1)
+voir()
+# trois qubits en superposition : huit états à 12,5 %
+qubits(3)
+superpose(0)
+superpose(1)
+superpose(2)
+voir()
+# un qubit basculé : le résultat est certain, donc les mesures répétées aussi
+qubits(1)
+porte_x(0)
+laz r = mesure_repetee(100)
+vox(r)
+voir(r)
+# mesurer mille fois ne détruit pas l'état
+voir()
+voir("pas des résultats")

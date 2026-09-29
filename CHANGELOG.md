@@ -1,5 +1,16 @@
 # Historique des versions
 
+## 11.3 — Voir le quantique (septembre 2026)
+- **`voir()`** dessine l'état quantique sur l'ardoise, une barre par résultat possible avec son
+  pourcentage, sans le mesurer : l'état reste intact.
+- **`mesure_repetee(n)`** refait l'expérience `n` fois (jusqu'à 100 000), comme un vrai ordinateur
+  quantique, et renvoie le nombre de fois où chaque résultat est sorti ; `voir(resultats)` en dessine
+  l'histogramme.
+- L'exemple « Le mode quantique » est réécrit avec ces deux fonctions.
+- Playground : les exemples sont de vrais boutons (la liste du téléphone ne transmettait pas toujours
+  le choix), et une question posée par un programme a une grande case de réponse avec un bouton OK.
+- Tests : 49 programmes vérifiés sur les deux moteurs.
+
 ## 11.2 — Le téléphone d'abord (septembre 2026)
 - **`{moi.nom}` dans les textes** : l'interpolation accepte maintenant les champs d'un objet, et même
   `{joueur.arme.nom}`. Un chemin inconnu reste affiché tel quel, comme une variable inconnue.
