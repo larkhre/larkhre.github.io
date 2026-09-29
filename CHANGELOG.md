@@ -1,5 +1,14 @@
 # Historique des versions
 
+## 11.2 — Le téléphone d'abord (septembre 2026)
+- **`{moi.nom}` dans les textes** : l'interpolation accepte maintenant les champs d'un objet, et même
+  `{joueur.arme.nom}`. Un chemin inconnu reste affiché tel quel, comme une variable inconnue.
+  Identique dans le moteur Python, le playground et la traduction vers Python.
+- **Barre de symboles sur téléphone** : quand on écrit dans le cahier sur un écran tactile, une barre
+  apparaît au-dessus du clavier avec `" ( ) { } [ ] = +`, une tabulation et deux flèches pour
+  déplacer le curseur.
+- Tests : 48 programmes vérifiés sur les deux moteurs.
+
 ## 11.1 — Larkhré (septembre 2026)
 - **Nouveau nom : LAZARUS devient Larkhré** (*mosi larkhré* : « la langue de la machine », en soninké).
   Les programmes existants marchent sans changement ; `#langue: lazarus` reste accepté.

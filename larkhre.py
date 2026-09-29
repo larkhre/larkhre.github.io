@@ -737,7 +737,7 @@ def is_truthy(value):
         return len(value) > 0
     return True
 
-INTERP_RE = re.compile(r'\{([A-Za-z_][A-Za-z0-9_]*)\}')
+INTERP_RE = re.compile(r'\{([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*)\}')
 
 def interpolate(s, env):
     """Interpolation v4.0 : "Salut {nom}" remplace {nom} par la variable.
@@ -746,13 +746,21 @@ def interpolate(s, env):
         return s
     s2 = s.replace('{{', '\x00').replace('}}', '\x01')
     def rep(m):
-        name = m.group(1)
+        parts = m.group(1).split('.')   # v11.2 : {moi.nom}, {joueur.arme.nom}
         e = env
         while e is not None:
-            if name in e.vars:
-                return to_text(e.vars[name])
+            if parts[0] in e.vars:
+                val = e.vars[parts[0]]
+                break
             e = e.parent
-        return m.group(0)
+        else:
+            return m.group(0)
+        for p in parts[1:]:
+            if isinstance(val, LazInstance) and p in val.fields:
+                val = val.fields[p]
+            else:
+                return m.group(0)       # chemin inconnu : le texte reste tel quel
+        return to_text(val)
     s2 = INTERP_RE.sub(rep, s2)
     return s2.replace('\x00', '{').replace('\x01', '}')
 
@@ -2467,6 +2475,15 @@ def _iter(x):
         return list(x.keys())
     return x
 
+def _ch(brut, v, *noms):
+    # v11.2 : {moi.nom} dans un texte ; si le champ n'existe pas, le texte reste tel quel
+    for n in noms:
+        champs = getattr(v, '__dict__', None)
+        if not isinstance(champs, dict) or n not in champs:
+            return brut
+        v = champs[n]
+    return _s(v)
+
 def _idx(t, i):
     if isinstance(t, dict):
         if i not in t:
@@ -2586,6 +2603,8 @@ class Traducteur:
         if '{' not in s:
             return repr(s)
         s2 = s.replace('{{', '\x00').replace('}}', '\x01')
+        if any('.' in m.group(1) for m in INTERP_RE.finditer(s2)):
+            return self.chaine_chemins(s2)
         def rep(m):
             name = m.group(1)
             if name in self.declared:
@@ -2598,6 +2617,29 @@ class Traducteur:
         s3 = s2.replace('{', '{{').replace('}', '}}')
         s3 = s3.replace('\x02', '{_s(').replace('\x03', ')}')
         return 'f' + repr(s3)
+
+    def chaine_chemins(self, s2):
+        """v11.2 : un texte qui contient {moi.nom} devient une concaténation de morceaux."""
+        def litteral(t):
+            return repr(t.replace('\x00', '{').replace('\x01', '}'))
+        morceaux, dernier = [], 0
+        for m in INTERP_RE.finditer(s2):
+            if m.start() > dernier:
+                morceaux.append(litteral(s2[dernier:m.start()]))
+            parts = m.group(1).split('.')
+            base = parts[0]
+            if base in self.declared or (base == 'moi' and len(parts) > 1):
+                if len(parts) == 1:
+                    morceaux.append(f'_s({self.nom(base)})')
+                else:
+                    noms = ', '.join(repr(self.nom(p)) for p in parts[1:])
+                    morceaux.append(f'_ch({m.group(0)!r}, {self.nom(base)}, {noms})')
+            else:
+                morceaux.append(repr(m.group(0)))
+            dernier = m.end()
+        if dernier < len(s2):
+            morceaux.append(litteral(s2[dernier:]))
+        return "''.join((" + ', '.join(morceaux) + ",))"
 
     def expr(self, node):
         k = node[0]

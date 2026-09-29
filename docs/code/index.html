@@ -225,6 +225,16 @@
       box-shadow: 0 10px 24px rgba(0,0,0,.35);
     }
   }
+
+  /* ---------- téléphone : la barre de symboles au-dessus du clavier ---------- */
+  .barre-symboles { position: fixed; left: 0; right: 0; top: 0; z-index: 60; display: none; gap: 5px;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px)); background: #efe6d6;
+    border-top: 1px solid #cdbfa8; box-shadow: 0 -4px 14px rgba(0,0,0,.18); }
+  .barre-symboles.visible { display: flex; }
+  .barre-symboles button { flex: 1 1 0; min-width: 0; padding: 10px 0; border-radius: 6px;
+    font-family: var(--code); font-size: 1.05rem; font-weight: 600; background: var(--papier);
+    color: var(--texte); border: 1px solid #cdbfa8; touch-action: manipulation; }
+  .barre-symboles button.nav { color: var(--ocre); }
 </style>
 <script data-goatcounter="https://lazarus.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -234,7 +244,7 @@
 <header>
   <h1 class="logo"><a href="../">Larkhré</a></h1>
   <div class="tagline"><em>Mosi larkhré</em> : la langue de la machine, en soninké</div>
-  <div class="version">v11.1</div>
+  <div class="version">v11.2</div>
 </header>
 
 <div class="toolbar">
@@ -412,7 +422,7 @@ efface_interface() → des APPLIS !
 </details>
 
 <footer>
-  <b>Larkhré v11.1</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
+  <b>Larkhré v11.2</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
 </footer>
 
 <script>
@@ -996,18 +1006,24 @@ const Larkhre = (function () {
     if (v instanceof Map) return v.size > 0;
     return true;
   }
-  const INTERP_RE = /\{([A-Za-z_][A-Za-z0-9_]*)\}/g;
+  const INTERP_RE = /\{([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*)\}/g;
 
   function interpolate(s, env) {
     if (!s.includes('{')) return s;
     let s2 = s.split('{{').join('\x00').split('}}').join('\x01');
-    s2 = s2.replace(INTERP_RE, (whole, name) => {
-      let e = env;
+    s2 = s2.replace(INTERP_RE, (whole, chemin) => {
+      const parts = chemin.split('.');   // v11.2 : {moi.nom}, {joueur.arme.nom}
+      let e = env, val, trouve = false;
       while (e) {
-        if (e.vars.has(name)) return toText(e.vars.get(name));
+        if (e.vars.has(parts[0])) { val = e.vars.get(parts[0]); trouve = true; break; }
         e = e.parent;
       }
-      return whole;
+      if (!trouve) return whole;
+      for (const p of parts.slice(1)) {
+        if (val instanceof LazInstance && val.fields.has(p)) val = val.fields.get(p);
+        else return whole;               // chemin inconnu : le texte reste tel quel
+      }
+      return toText(val);
     });
     return s2.split('\x00').join('{').split('\x01').join('}');
   }
@@ -2505,7 +2521,7 @@ const Larkhre = (function () {
     }
   }
 
-  return { run, toText, LazError, version: '11.1' };
+  return { run, toText, LazError, version: '11.2' };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = Larkhre;
@@ -3475,6 +3491,68 @@ vox("Larkhré !")
         updateLinenos();
       }, 100);
     } catch (e) { }
+  }
+
+  // ---------- téléphone : la barre de symboles au-dessus du clavier ----------
+  const barreSymboles = document.createElement('div');
+  barreSymboles.className = 'barre-symboles';
+  barreSymboles.setAttribute('role', 'toolbar');
+  barreSymboles.setAttribute('aria-label', 'Symboles pour écrire du code');
+  const TOUCHES = [
+    ['◀', 'gauche', 'Curseur à gauche'], ['▶', 'droite', 'Curseur à droite'], ['⇥', '    ', 'Tabulation'],
+    ['"', '"', 'Guillemet'], ['(', '(', 'Parenthèse ouvrante'], [')', ')', 'Parenthèse fermante'],
+    ['{', '{', 'Accolade ouvrante'], ['}', '}', 'Accolade fermante'], ['[', '[', 'Crochet ouvrant'],
+    [']', ']', 'Crochet fermant'], ['=', '=', 'Égal'], ['+', '+', 'Plus'],
+  ];
+  for (const [libelle, valeur, nomAccessible] of TOUCHES) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = libelle;
+    b.dataset.valeur = valeur;
+    b.setAttribute('aria-label', nomAccessible);
+    if (valeur === 'gauche' || valeur === 'droite') b.className = 'nav';
+    barreSymboles.appendChild(b);
+  }
+  document.body.appendChild(barreSymboles);
+  const ecranTactile = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+  function tapeSymbole(valeur) {
+    const debut = editor.selectionStart, fin = editor.selectionEnd;
+    if (valeur === 'gauche') { const p = Math.max(0, debut - 1); editor.setSelectionRange(p, p); return; }
+    if (valeur === 'droite') { const p = Math.min(editor.value.length, fin + 1); editor.setSelectionRange(p, p); return; }
+    editor.setRangeText(valeur, debut, fin, 'end');
+    editor.dispatchEvent(new Event('input', { bubbles: true }));   // couleurs et numéros de ligne à jour
+  }
+  // on agit dès l'appui, et on empêche le bouton de voler le focus : le clavier reste ouvert
+  barreSymboles.addEventListener('pointerdown', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    e.preventDefault();
+    tapeSymbole(b.dataset.valeur);
+  });
+  barreSymboles.addEventListener('mousedown', (e) => e.preventDefault());
+
+  function placeBarreSymboles() {
+    if (!barreSymboles.classList.contains('visible')) return;
+    const vv = window.visualViewport;
+    if (vv) {
+      barreSymboles.style.bottom = 'auto';
+      barreSymboles.style.top = Math.max(0, vv.offsetTop + vv.height - barreSymboles.offsetHeight) + 'px';
+    } else {
+      barreSymboles.style.top = 'auto';
+      barreSymboles.style.bottom = '0';
+    }
+  }
+  editor.addEventListener('focus', () => {
+    if (!ecranTactile) return;
+    barreSymboles.classList.add('visible');
+    placeBarreSymboles();
+    setTimeout(placeBarreSymboles, 300);   // le temps que le clavier finisse de s'ouvrir
+  });
+  editor.addEventListener('blur', () => barreSymboles.classList.remove('visible'));
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', placeBarreSymboles);
+    window.visualViewport.addEventListener('scroll', placeBarreSymboles);
   }
 
   // ---------- la toute première visite : un seul geste à faire ----------

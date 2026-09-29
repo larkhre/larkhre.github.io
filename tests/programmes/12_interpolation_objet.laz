@@ -1,0 +1,22 @@
+klas Arme {
+fonk init(moi, nom) {
+moi.nom = nom
+}
+}
+klas Heros {
+fonk init(moi, nom) {
+moi.nom = nom
+moi.vie = 100
+moi.arme = Arme("bâton")
+}
+fonk attaque(moi, degats) {
+moi.vie -= degats
+vox("Aïe ! {moi.nom} n'a plus que {moi.vie} points de vie")
+}
+}
+laz awa = Heros("Awa")
+awa.attaque(30)
+vox("{awa.nom} se bat avec son {awa.arme.nom}")
+vox("inconnu : {awa.age} · pas un objet : {awa.nom.x} · littéral : {{awa.nom}}")
+laz nom = "Issa"
+vox("simple : {nom}")
