@@ -110,8 +110,10 @@
   #console .sys a { color: var(--ocre-clair); }
   #console .sys { color: var(--craie-2); font-family: 'Atkinson Hyperlegible', sans-serif; font-size: .92rem; }
   #console .in-echo { color: #b9d3c2; }
-  .inline-input { display: inline-flex; align-items: center; gap: 6px; }
-  .inline-input input { background: var(--ardoise-2); border: 1px solid var(--ocre-clair); border-radius: 5px; color: var(--craie); font-family: inherit; font-size: .93rem; padding: 3px 8px; outline: none; min-width: 160px; }
+  .inline-input { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0; }
+  .inline-input input { flex: 1 1 140px; min-width: 0; background: var(--ardoise-2); border: 2px solid var(--ocre-clair); border-radius: 6px; color: var(--craie); font-family: inherit; font-size: 1rem; padding: 8px 10px; outline: none; }
+  .inline-input input::placeholder { color: rgba(238,237,230,.45); }
+  .inline-input .ok-reponse { background: var(--ocre); border: none; border-radius: 6px; color: #fff8ec; font-weight: 700; padding: 8px 16px; font-size: 1rem; }
 
   /* ---------- l'École ---------- */
   #ecolePanel { display: none; background: var(--papier); border-bottom: 1px solid var(--sable-2); border-left: 4px solid var(--ocre); padding: 14px 22px; }
@@ -3079,8 +3081,11 @@ vox("Larkhré !")
 
   examples.addEventListener('change', () => {
     if (examples.value && EX[examples.value]) {
+      const nomExemple = examples.options[examples.selectedIndex].text;
       editor.value = EX[examples.value];
       updateLinenos();
+      editor.scrollTop = 0;
+      addLine('Exemple chargé : ' + nomExemple + '. Appuie sur Exécuter pour le lancer.', 'sys');
     }
     examples.selectedIndex = 0;
   });
@@ -3251,11 +3256,20 @@ vox("Larkhré !")
       label.textContent = promptText;
       const input = document.createElement('input');
       input.type = 'text';
+      input.placeholder = 'Ta réponse';
+      input.setAttribute('aria-label', promptText.trim() || 'Ta réponse');
+      input.setAttribute('enterkeyhint', 'done');
+      const ok = document.createElement('button');
+      ok.type = 'button';
+      ok.className = 'ok-reponse';
+      ok.textContent = 'OK';
       wrap.appendChild(label);
       wrap.appendChild(input);
+      wrap.appendChild(ok);
       consoleEl.appendChild(wrap);
       consoleEl.scrollTop = consoleEl.scrollHeight;
       input.focus();
+      wrap.scrollIntoView({ block: 'nearest' });
 
       const done = (value) => {
         wrap.remove();
@@ -3272,10 +3286,13 @@ vox("Larkhré !")
         consoleEl.appendChild(echo);
         resolve(value);
       };
+      let repondu = false;
+      const valide = () => { if (!repondu) { repondu = true; done(input.value); } };
       input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') done(input.value);
+        if (e.key === 'Enter') valide();
       });
-      currentInputCancel = () => done(input.value);
+      ok.addEventListener('click', valide);
+      currentInputCancel = valide;
     });
   }
 
