@@ -1,7 +1,7 @@
-/* Larkhré v8 — service worker : l'appli fonctionne même sans internet.
+/* Larkhré — service worker : l'appli fonctionne même sans internet.
    Stratégie : réseau d'abord (toujours la dernière version quand on est
    connecté), cache en secours (hors-ligne = la dernière version connue). */
-const CACHE = 'larkhre-v8';
+const CACHE = 'larkhre-v11-2';  // nouveau nom : les téléphones rechargent tout, icône comprise
 const FICHIERS = ['./', './index.html', './manifest.json', './icone-192.png', './icone-512.png'];
 
 self.addEventListener('install', (e) => {
