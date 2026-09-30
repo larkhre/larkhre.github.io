@@ -1,0 +1,29 @@
+# ===== Larkhré se présente : l'autoportrait =====
+fonk presente(phrase, voix) {
+    vox(phrase)
+    dis(voix)
+}
+fonk presente_couleur(phrase, voix, couleur) {
+    vox_couleur(phrase, couleur)
+    dis(voix)
+}
+
+presente("Tu entends ? C'est un programme qui te parle.", "Tu entends ? C'est un programme qui te parle.")
+attends(0.5)
+presente_couleur("Je m'appelle Larkhré.", "Je m'appelle Larkré.", "or")
+presente("Mon nom vient du soninké : mosi larkhré, la langue de la machine.", "Mon nom vient du soni-nnékéé. Mossi raanné : la langue de la machine.")
+presente("Je suis un langage de programmation en français.", "Je suis un langage de programmation en français.")
+presente("Je sais calculer :", "Je sais calculer.")
+laz resultat = 7 * 8
+presente_couleur("7 × 8 = {resultat}", "Sept fois huit : {resultat}.", "cyan")
+presente("Regarde, je me trompe exprès :", "Regarde, je me trompe exprès.")
+laz nom = "Awa"
+essaie {
+    vox(nmo)
+} rattrape erreur {
+    vox_couleur(erreur, "rouge")
+}
+presente("Tu vois ? Même mes erreurs sont expliquées en français.", "Tu vois ? Même mes erreurs sont expliquées en français.")
+presente("Rien à installer. Je fonctionne sur ton téléphone. Et je suis gratuit.", "Rien à installer. Je fonctionne sur ton téléphone. Et je suis gratuit.")
+presente("Viens me parler :", "Viens me parler :")
+presente_couleur("larkhre.github.io", "larkré point guitt-hub point i-o.", "vert")
