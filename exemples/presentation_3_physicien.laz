@@ -2,7 +2,7 @@
 # Comment la voix prononce les mots difficiles : change ici, et c'est corrigé partout
 laz dit_larkhre = "Larkré"
 laz dit_soninke = "soniinnké"
-laz dit_mossi = "mossi sef raanné"
+laz dit_mossi = "mossi sef ra-né"
 laz dit_adresse = "larkré point guitt-hub point i-o"
 
 fonk presente(phrase, voix) {
