@@ -3,6 +3,10 @@ fonk presente(phrase, voix) {
     vox(phrase)
     dis(voix)
 }
+fonk presente_couleur(phrase, voix, couleur) {
+    vox_couleur(phrase, couleur)
+    dis(voix)
+}
 
 presente("Tu entends ? C'est un programme qui te parle.", "Tu entends ? C'est un programme qui te parle.")
 presente("Et en parlant, je dessine.", "Et en parlant, je dessine.")
@@ -13,18 +17,17 @@ pou i dan 1..6 {
     cercle_plein(240, 60, i * 5, "or")
     attends(0.1)
 }
-dis("Un soleil.")
+presente("Un soleil.", "Un soleil.")
 rect_plein(135, 110, 30, 60, "gris")
 pou i dan 1..5 {
     cercle_plein(90 + i * 20, 100, 28, "vert")
     attends(0.1)
 }
-dis("Et un arbre, pour se retrouver dessous.")
+presente("Et un arbre, pour se retrouver dessous.", "Et un arbre, pour se retrouver dessous.")
 presente("Chaque forme, c'est une ligne de code que tu peux écrire toi aussi.", "Chaque forme, c'est une ligne de code que tu peux écrire toi aussi.")
-vox_couleur("Je m'appelle Larkhré.", "or")
-dis("Je m'appelle Larkré.")
-presente("Mosi larkhré : la langue de la machine, en soninké.", "Mossi raanné : la langue de la machine, en soni-nnékéé.")
+presente_couleur("Je m'appelle Larkhré.", "Je m'appelle Larkré.", "or")
+presente("Mossi sef raanné : la langue de la machine, en soninké.", "Mossi sef raanné : la langue de la machine, en soni-nnékéé.")
 presente("Un langage de programmation en français, avec des erreurs expliquées.", "Un langage de programmation en français, avec des erreurs expliquées.")
-presente("Rien à installer, sur ton téléphone, et gratuit.", "Rien à installer, sur ton téléphone, et gratuit.")
-vox_couleur("larkhre.github.io", "vert")
-dis("Viens dessiner avec moi : larkré point guitt-hub point i-o.")
+presente("Rien à installer, sur ton téléphone, et tout est gratuit.", "Rien à installer, sur ton téléphone, et tout est gratuit.")
+presente("Viens dessiner avec moi :", "Viens dessiner avec moi :")
+presente_couleur("larkhre.github.io", "larkré point guitt-hub point i-o.", "vert")

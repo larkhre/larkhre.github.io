@@ -3,6 +3,10 @@ fonk presente(phrase, voix) {
     vox(phrase)
     dis(voix)
 }
+fonk presente_couleur(phrase, voix, couleur) {
+    vox_couleur(phrase, couleur)
+    dis(voix)
+}
 
 presente("Tu entends ? C'est un programme qui te parle.", "Tu entends ? C'est un programme qui te parle.")
 presente("Et je vais te montrer de la physique quantique.", "Et je vais te montrer de la physique quantique.")
@@ -11,11 +15,16 @@ superpose(0)
 intrique(0, 1)
 presente("Deux qubits liés, dans mon simulateur quantique :", "Deux qubits liés, dans mon simulateur quantique.")
 voir()
+dis("Zéro-zéro : cinquante pour cent. Un-un : cinquante pour cent.")
 presente("Je fais l'expérience mille fois :", "Je fais l'expérience mille fois.")
-voir(mesure_repetee(1000))
+laz resultats = mesure_repetee(1000)
+voir(resultats)
+laz fois_00 = resultats["00"]
+laz fois_11 = resultats["11"]
+dis("Zéro-zéro : {fois_00} fois. Un-un : {fois_11} fois.")
 presente("01 et 10 ne sortent jamais : c'est l'intrication.", "Zéro-un et un-zéro ne sortent jamais. C'est l'intrication.")
-vox_couleur("Je m'appelle Larkhré.", "or")
-dis("Je m'appelle Larkré, mossi raanné, la langue de la machine en soni-nnékéé.")
-presente("Un langage en français, erreurs expliquées. Rien à installer, gratuit.", "Un langage en français, avec des erreurs expliquées. Rien à installer, et gratuit.")
-vox_couleur("larkhre.github.io", "vert")
-dis("Essaie sur ton téléphone : larkré point guitt-hub point i-o.")
+presente_couleur("Je m'appelle Larkhré : mossi sef raanné, la langue de la machine en soninké.", "Je m'appelle Larkré. Mossi sef raanné, la langue de la machine en soni-nnékéé.", "or")
+presente("Un langage en français, avec des erreurs expliquées.", "Un langage en français, avec des erreurs expliquées.")
+presente("Rien à installer, sur ton téléphone, et tout est gratuit.", "Rien à installer, sur ton téléphone, et tout est gratuit.")
+presente("Viens m'essayer :", "Viens m'essayer :")
+presente_couleur("larkhre.github.io", "larkré point guitt-hub point i-o.", "vert")
