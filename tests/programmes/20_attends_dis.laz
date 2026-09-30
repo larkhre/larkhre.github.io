@@ -1,0 +1,5 @@
+dis("bonjour")
+attends(0)
+attends(0.05)
+vox("après la pause")
+attends(-1)

@@ -1,0 +1,21 @@
+# ===== Larkhré se présente : le physicien =====
+fonk presente(phrase, voix) {
+    vox(phrase)
+    dis(voix)
+}
+
+presente("Tu entends ? C'est un programme qui te parle.", "Tu entends ? C'est un programme qui te parle.")
+presente("Et je vais te montrer de la physique quantique.", "Et je vais te montrer de la physique quantique.")
+qubits(2)
+superpose(0)
+intrique(0, 1)
+presente("Deux qubits liés, dans mon simulateur quantique :", "Deux qubits liés, dans mon simulateur quantique.")
+voir()
+presente("Je fais l'expérience mille fois :", "Je fais l'expérience mille fois.")
+voir(mesure_repetee(1000))
+presente("01 et 10 ne sortent jamais : c'est l'intrication.", "Zéro-un et un-zéro ne sortent jamais. C'est l'intrication.")
+vox_couleur("Je m'appelle Larkhré.", "or")
+dis("Je m'appelle Larkré, mossi raanné, la langue de la machine en soni-nnékéé.")
+presente("Un langage en français, erreurs expliquées. Rien à installer, gratuit.", "Un langage en français, avec des erreurs expliquées. Rien à installer, et gratuit.")
+vox_couleur("larkhre.github.io", "vert")
+dis("Essaie sur ton téléphone : larkré point guitt-hub point i-o.")

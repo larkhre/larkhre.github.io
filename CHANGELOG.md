@@ -1,5 +1,15 @@
 # Historique des versions
 
+## 11.5 — Larkhré prend la parole (septembre 2026)
+- **`dis()` attend la fin de la phrase** dans le playground, comme il le faisait déjà avec pip :
+  le texte affiché suit la voix. Le bouton Arrêter coupe la voix en cours.
+- **`attends(secondes)`**, une pause de 0 à 60 secondes, dans les deux moteurs.
+- **Playground sur téléphone** : la page défile, l'ardoise prend la place qu'il lui faut (un dessin
+  n'est plus caché, même sur un petit écran) et s'arrête au-dessus du bouton Exécuter ; appuyer sur
+  Exécuter fait descendre jusqu'à l'ardoise.
+- Trois programmes de présentation dans `exemples/` (l'autoportrait, le dessinateur, le physicien).
+- Tests : 58 programmes vérifiés sur les deux moteurs.
+
 ## 11.4.1 (septembre 2026)
 - Mode Python : une ligne décalée par des espaces en trop, hors d'un bloc, donne un message clair
   (« cette ligne commence par des espaces en trop… ») au lieu de « j'ai trouvé une indentation ».

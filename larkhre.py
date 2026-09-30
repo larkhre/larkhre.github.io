@@ -1288,6 +1288,15 @@ def make_builtins(env, interp=None):
                 d[cle] = round(p, 4)
         return d
 
+    # --- v11.5 : attends(secondes), une pause ---
+    def b_attends(args, line):
+        _need(args, 1, 'attends', line)
+        secondes = check_number(args[0], line, 'attends()')
+        if secondes < 0 or secondes > 60:
+            raise LazError('attends() : entre 0 et 60 secondes, par exemple attends(1.5)', line)
+        time.sleep(secondes)
+        return None
+
     # --- nouveautés v11.3 : VOIR l'état et RÉPÉTER l'expérience ---
     def _pourcent(p):
         v = math.floor(p * 1000 + 0.5) / 10
@@ -1610,6 +1619,7 @@ def make_builtins(env, interp=None):
         'intrique': b_intrique,             # porte CNOT : l'intrication !
         'mesure': b_mesure,                 # mesurer un qubit (effondrement)
         'probabilites': b_probabilites,     # les probabilités de chaque état
+        'attends': b_attends,               # v11.5 : une pause, en secondes
         'voir': b_voir,                     # v11.3 : dessiner l'état (ou des résultats)
         'mesure_repetee': b_mesure_repetee, # v11.3 : répéter l'expérience n fois
         # --- nouveautés v7.0 : le mode interface ---

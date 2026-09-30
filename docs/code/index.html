@@ -249,6 +249,16 @@
     .panneau-exemples { margin: 10px 10px 0; }
     .grille-ex { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
   }
+
+  /* ---------- v11.5 : sur téléphone, la page défile et l'ardoise prend la place qu'il lui faut ---------- */
+  @media (max-width: 820px) {
+    html, body { height: auto; }
+    main { display: flex; flex-direction: column; flex: none; }
+    main > .pane:first-child { height: 44vh; min-height: 230px; }
+    /* l'ardoise occupe l'écran jusqu'au-dessus du bouton Exécuter ; la console prend la place restante */
+    main > .pane:last-child { height: calc(100vh - 100px); height: calc(100svh - 100px); min-height: 320px; }
+    #console { flex: 1; min-height: 120px; }
+  }
 </style>
 <script data-goatcounter="https://lazarus.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -258,7 +268,7 @@
 <header>
   <h1 class="logo"><a href="../">Larkhré</a></h1>
   <div class="tagline"><em>Mosi larkhré</em> : la langue de la machine, en soninké</div>
-  <div class="version">v11.4.1</div>
+  <div class="version">v11.5</div>
 </header>
 
 <div class="toolbar">
@@ -430,6 +440,7 @@ Python, erreurs en français !
 v10 : qubits superpose intrique
 mesure probabilites → QUANTIQUE !
 v11.3 : voir() mesure_repetee(1000)
+v11.5 : attends(1.5) — une pause
 v8.0 : dis("texte") → il PARLE !
 Partager → ton code en lien
 v7.0 : titre bouton champ etiquette
@@ -441,7 +452,7 @@ efface_interface() → des APPLIS !
 </details>
 
 <footer>
-  <b>Larkhré v11.4.1</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
+  <b>Larkhré v11.5</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
 </footer>
 
 <script>
@@ -1915,7 +1926,21 @@ const Larkhre = (function () {
       B('dis', async (args, line) => {
         self.need(args, 1, 'dis', line);
         const texte = args.map(toText).join(' ');
-        if (self.io.onDis) { try { self.io.onDis(texte); } catch (e) { } }
+        // v11.5 : on attend la fin de la phrase, pour que le texte suive la voix
+        if (self.io.onDis) { try { await self.io.onDis(texte); } catch (e) { } }
+        return null;
+      });
+
+      // --- v11.5 : attends(secondes), une pause ---
+      B('attends', async (args, line) => {
+        self.need(args, 1, 'attends', line);
+        const s = checkNumber(args[0], line, 'attends()');
+        if (s < 0 || s > 60) throw new LazError('attends() : entre 0 et 60 secondes, par exemple attends(1.5)', line);
+        const fin = Date.now() + s * 1000;
+        while (Date.now() < fin) {
+          if (self.io.shouldStop && self.io.shouldStop()) throw new StopEx();
+          await new Promise((r) => setTimeout(r, Math.min(100, Math.max(0, fin - Date.now()))));
+        }
         return null;
       });
 
@@ -2682,7 +2707,7 @@ const Larkhre = (function () {
     }
   }
 
-  return { run, toText, LazError, version: '11.4.1' };
+  return { run, toText, LazError, version: '11.5' };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = Larkhre;
@@ -3603,15 +3628,25 @@ vox("Larkhré !")
   }
 
   // ---------- v8 : Larkhré parle (synthèse vocale) ----------
+  // v11.5 : la promesse se résout quand la phrase est finie (ou si la voix est indisponible)
   function disVoix(texte) {
-    try {
-      const u = new SpeechSynthesisUtterance(texte);
-      u.lang = 'fr-FR';
-      u.rate = 0.95;
-      const voix = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
-      if (voix) u.voice = voix;
-      speechSynthesis.speak(u);
-    } catch (e) { }
+    return new Promise((fini) => {
+      let termine = false;
+      const finir = () => { if (!termine) { termine = true; clearInterval(veille); clearTimeout(secours); fini(); } };
+      // filet de sécurité : certaines voix n'annoncent jamais la fin de la phrase
+      const secours = setTimeout(finir, 2000 + texte.length * 120);
+      const veille = setInterval(() => { if (stopFlag) { try { speechSynthesis.cancel(); } catch (e) { } finir(); } }, 150);
+      try {
+        const u = new SpeechSynthesisUtterance(texte);
+        u.lang = 'fr-FR';
+        u.rate = 0.95;
+        const voix = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
+        if (voix) u.voice = voix;
+        u.onend = finir;
+        u.onerror = finir;
+        speechSynthesis.speak(u);
+      } catch (e) { finir(); }
+    });
   }
   try { speechSynthesis.getVoices(); } catch (e) { }
 
@@ -3802,6 +3837,10 @@ vox("Larkhré !")
     clicsEnAttente = [];
     btnRun.style.display = 'none';
     btnStop.style.display = 'inline-block';
+    if (window.matchMedia('(max-width: 820px)').matches) {
+      const ardoise = consoleEl.closest('.pane');
+      if (ardoise) ardoise.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     addLine('▶ Exécution...', 'sys');
 
     const io = {
@@ -3863,6 +3902,7 @@ vox("Larkhré !")
   btnRun.addEventListener('click', runProgram);
   btnStop.addEventListener('click', () => {
     stopFlag = true;
+    try { speechSynthesis.cancel(); } catch (e) { }
     if (currentInputCancel) { const c = currentInputCancel; currentInputCancel = null; c(); }
   });
   btnClear.addEventListener('click', () => {
