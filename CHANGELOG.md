@@ -1,5 +1,12 @@
 # Historique des versions
 
+## 11.5.1 — Mossi sef raanné (septembre 2026)
+- L'expression soninké devient **« mossi sef raanné »** : *mossi*, la machine ; *sef*, parler ;
+  *raanné*, la langue parlée. Et *larkhré*, c'est la bouche : la bouche qui parle la langue de la
+  machine. Mis à jour sur le site, le playground, le moteur, les paquets pip et npm, et le livre.
+- **Livre, édition 1.2** : la nouvelle explication du nom, le playground décrit pour ordinateur et
+  téléphone, et l'astuce du chapitre 12 indique que `{moi.nom}` marche dans un texte.
+
 ## 11.5 — Larkhré prend la parole (septembre 2026)
 - **`dis()` attend la fin de la phrase** dans le playground, comme il le faisait déjà avec pip :
   le texte affiché suit la voix. Le bouton Arrêter coupe la voix en cours.

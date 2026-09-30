@@ -22,8 +22,12 @@ from contenu import LIVRE, SOLUTIONS, PLAYGROUND
 
 ICI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ICI)
-MOTEUR = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ICI, '..', 'larkhre.py')
-SORTIE = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ICI, 'Apprends_a_coder_avec_Larkhre_1.1.pdf')
+# --imprime : l'intérieur du livre broché (sans couverture, encadrés lisibles en noir et blanc)
+IMPRESSION = '--imprime' in sys.argv
+ARGS = [x for x in sys.argv[1:] if x != '--imprime']
+MOTEUR = ARGS[0] if len(ARGS) > 0 else os.path.join(ICI, '..', 'larkhre.py')
+SORTIE = ARGS[1] if len(ARGS) > 1 else os.path.join(
+    ICI, 'Apprends_a_coder_avec_Larkhre_1.2_interieur_imprime.pdf' if IMPRESSION else 'Apprends_a_coder_avec_Larkhre_1.2.pdf')
 
 # ---------------------------------------------------------------- le moteur
 spec = importlib.util.spec_from_file_location('larkhre', MOTEUR)
@@ -92,6 +96,10 @@ pdfmetrics.registerFont(TTFont('Code-Gras', F + 'dejavu/DejaVuSansMono-Bold.ttf'
 from reportlab.pdfbase.pdfmetrics import registerFontFamily
 registerFontFamily('Texte', normal='Texte', bold='Texte-Gras', italic='Texte-Italique', boldItalic='Texte-GrasItalique')
 registerFontFamily('Code', normal='Code', bold='Code-Gras', italic='Code', boldItalic='Code-Gras')
+import reportlab.rl_config as _rl
+_rl.canvas_basefontname = 'Texte'   # aucune police Helvetica non intégrée
+import reportlab.platypus.tables as _tables
+_tables.CellStyle.fontname = 'Texte'   # les encadrés aussi
 
 TERRE = HexColor('#2b2119'); OCRE = HexColor('#b0702a'); SABLE = HexColor('#f4ede1')
 ARDOISE = HexColor('#243029'); CRAIE = HexColor('#eeede6'); KAKI = HexColor('#eef0e2'); GRIS = HexColor('#6b5f55')
@@ -145,10 +153,23 @@ def encadre(contenu, fond, bord=None, pad=7):
     return t
 
 
+ecranst_imp = ParagraphStyle('ecran_imp', parent=ecranst, textColor=TERRE)
+
+
+def boite_ecran_imprimee(contenu):
+    t = encadre(contenu, white)
+    t.setStyle(TableStyle([('BOX', (0, 0), (-1, -1), 0.8, HexColor('#555555'))]))
+    return t
+
+
 def rend_code(d):
-    elements = [encadre(bloc_texte(d['code'], codest), SABLE, OCRE), Spacer(1, 3)]
+    if IMPRESSION:
+        elements = [encadre(bloc_texte(d['code'], codest), HexColor('#eeeeee'), HexColor('#444444')), Spacer(1, 3)]
+    else:
+        elements = [encadre(bloc_texte(d['code'], codest), SABLE, OCRE), Spacer(1, 3)]
     if d['ecran']:
-        elements += [Paragraph("À l'écran :", petit), encadre(bloc_texte(d['sortie'], ecranst), ARDOISE), Spacer(1, 4)]
+        boite = boite_ecran_imprimee(bloc_texte(d['sortie'], ecranst_imp)) if IMPRESSION else encadre(bloc_texte(d['sortie'], ecranst), ARDOISE)
+        elements += [Paragraph("À l'écran :", petit), boite, Spacer(1, 4)]
     elements.append(Spacer(1, 4))
     return KeepTogether(elements)
 
@@ -188,6 +209,16 @@ class Repere(Flowable):
     def draw(self): PAGES[self.cle] = self.canv.getPageNumber()
 
 
+from reportlab.pdfgen.canvas import Canvas as _Canvas
+
+
+class CanevasSansHelvetica(_Canvas):
+    """Toutes les polices intégrées au PDF (exigé pour l'impression) : pas de Helvetica par défaut."""
+    def __init__(self, *a, **k):
+        k.setdefault('initialFontName', 'Texte')
+        super().__init__(*a, **k)
+
+
 PAGES = {}
 PAGES_AVANT = {}
 
@@ -216,14 +247,14 @@ def couverture(canv, doc):
     canv.setFillAlpha(1)
     canv.setFillColor(TERRE)
     canv.setFont('Texte-Gras', 50); canv.drawString(MG - 1.5, HAUT - 38 * mm, 'Larkhré')
-    canv.setFont('Texte-Italique', 12.5); canv.drawString(MG, HAUT - 47 * mm, 'Mosi larkhré : la langue de la machine')
+    canv.setFont('Texte-Italique', 12.5); canv.drawString(MG, HAUT - 47 * mm, 'Mossi sef raanné : la langue de la machine')
     canv.setFont('Texte-Gras', 17); canv.drawString(MG, HAUT - 61 * mm, 'Apprends à coder de zéro')
     canv.setFillColor(CRAIE)
     canv.setFont('Texte', 10.5)
     canv.drawString(MG, 31 * mm, 'La méthode douce pour écrire tes premiers programmes,')
     canv.drawString(MG, 26 * mm, 'avec le langage qui parle français et explique tes erreurs.')
     canv.setFont('Texte-Gras', 12); canv.drawString(MG, 14 * mm, 'Ladji Doucaré')
-    canv.setFont('Texte-Italique', 9); canv.drawRightString(LARG - MD, 14 * mm, 'Édition 1.1')
+    canv.setFont('Texte-Italique', 9); canv.drawRightString(LARG - MD, 14 * mm, 'Édition 1.2')
     canv.restoreState()
 
 
@@ -240,18 +271,22 @@ dos_titre = ParagraphStyle('dost', parent=h1, textColor=CRAIE, fontSize=19, lead
 def construit(fichier):
     doc = BaseDocTemplate(fichier, pagesize=A5, leftMargin=MG, rightMargin=MD, topMargin=MH, bottomMargin=MB,
                           title='Apprends à coder de zéro avec Larkhré', author='Ladji Doucaré',
-                          subject='Édition 1.1 — 2026', creator='Larkhré')
+                          subject='Édition 1.2 — 2026', creator='Larkhré')
     cadre = Frame(MG, MB, LARG - MG - MD, HAUT - MH - MB, id='c')
-    doc.addPageTemplates([
-        PageTemplate('couverture', [cadre], onPage=couverture),
-        PageTemplate('page', [cadre], onPage=pied),
-        PageTemplate('quatrieme', [cadre], onPage=quatrieme),
-    ])
-    h = [Spacer(1, 1), NextPageTemplate('page'), PageBreak()]
+    if IMPRESSION:
+        doc.addPageTemplates([PageTemplate('page', [cadre], onPage=pied)])
+        h = []
+    else:
+        doc.addPageTemplates([
+            PageTemplate('couverture', [cadre], onPage=couverture),
+            PageTemplate('page', [cadre], onPage=pied),
+            PageTemplate('quatrieme', [cadre], onPage=quatrieme),
+        ])
+        h = [Spacer(1, 1), NextPageTemplate('page'), PageBreak()]
 
     # page de garde / édition
     h += [Spacer(1, 18 * mm), Paragraph('Apprends à coder de zéro avec Larkhré', h1),
-          Paragraph('Édition 1.1 — septembre 2026', etiquette), Spacer(1, 8),
+          Paragraph('Édition 1.2 — septembre 2026', etiquette), Spacer(1, 8),
           Paragraph(marque("Anciennement *Apprends à coder de zéro avec LAZARUS* (édition 1, août 2026). "
                            "Le langage a changé de nom ; les programmes, eux, n'ont pas changé."), corps),
           Paragraph(marque("**Tous les exemples de ce livre sont exécutés automatiquement** par le moteur du "
@@ -291,6 +326,9 @@ def construit(fichier):
     h += [Repere('sol'), Paragraph('Annexe', etiquette), Paragraph('Les solutions des exercices', h1)]
     h += rend(SOLUTIONS)
 
+    if IMPRESSION:
+        doc.build(h, canvasmaker=CanevasSansHelvetica)
+        return
     h += [NextPageTemplate('quatrieme'), PageBreak(), Spacer(1, 22 * mm),
           Paragraph('Et si ton premier langage parlait ta langue ?', dos_titre), Spacer(1, 6),
           Paragraph(marque("En 14 chapitres et 3 projets complets, ce livre t'emmène de zéro jusqu'aux objets, "
@@ -304,11 +342,11 @@ def construit(fichier):
                "Une passerelle vers Python et vers l'anglais"]:
         h.append(Paragraph('•&nbsp;&nbsp;' + escape(it), ParagraphStyle('dl', parent=dos, leftIndent=12, firstLineIndent=-10, spaceAfter=3)))
     h += [Spacer(1, 12),
-          Paragraph(marque("*Mosi larkhré* : « la langue de la machine », en soninké."), dos),
+          Paragraph(marque("*Mossi sef raanné* : « la langue de la machine », en soninké."), dos),
           Spacer(1, 14),
           Paragraph('Ladji Doucaré, créateur du langage Larkhré', ParagraphStyle('sig', parent=dos, fontName='Texte-Gras')),
           Paragraph(escape(PLAYGROUND) + ' · pip install larkhre', ParagraphStyle('url', parent=dos, fontName='Code', fontSize=8.8))]
-    doc.build(h)
+    doc.build(h, canvasmaker=CanevasSansHelvetica)
 
 
 # deux passages : le premier mesure les pages des chapitres, le second écrit le sommaire

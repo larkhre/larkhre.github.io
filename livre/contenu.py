@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Contenu du livre « Apprends à coder de zéro avec Larkhré », édition 1.1.
+"""Contenu du livre « Apprends à coder de zéro avec Larkhré », édition 1.2.
 
 Chaque bloc de code est EXÉCUTÉ par le vrai moteur au moment de fabriquer le PDF :
 - ecran=True  : la sortie affichée « À l'écran » est produite par le moteur ;
@@ -36,13 +36,15 @@ chapitre('Premiers pas', None, 'Pourquoi tu vas y arriver', [
       "Il peut ralentir pour te montrer ton programme s'exécuter ligne par ligne, variables visibles. "
       "Il dessine. Et il fonctionne directement dans ton navigateur : rien à installer."),
     H2('Pourquoi « Larkhré » ?'),
-    P("En soninké, *larkhré* veut dire la bouche, et aussi la langue. *Mosi larkhré*, c'est « la langue "
-      "de la machine » : exactement ce que tu vas apprendre dans ce livre. Ce langage s'appelait "
+    P("En soninké, *larkhré* veut dire la bouche. Et « la langue de la machine » se dit *mossi sef raanné* : "
+      "*mossi*, la machine ; *sef*, parler ; *raanné*, la langue parlée. Larkhré, c'est la bouche qui parle "
+      "la langue de la machine : exactement ce que tu vas apprendre dans ce livre. Ce langage s'appelait "
       "auparavant LAZARUS ; si tu croises ce nom quelque part, c'est le même."),
     H2('Ton outil de travail : le playground'),
     P("Ouvre cette adresse dans n'importe quel navigateur, sur ordinateur ou sur téléphone :"),
     ('adresse', PLAYGROUND),
-    P("À gauche, tu écris ton code. À droite, la console affiche le résultat. Le bouton **Exécuter** "
+    P("Dans le cahier, tu écris ton code ; sur l'ardoise, la console affiche le résultat (à côté sur "
+      "ordinateur, en dessous sur téléphone). Le bouton **Exécuter** "
       "lance ton programme. C'est tout ce dont tu as besoin pour ce livre entier. Et si tu veux "
       "t'entraîner encore plus, ouvre **L'École** dans le playground : 12 leçons courtes, avec "
       "vérification automatique de tes réponses."),
@@ -362,9 +364,9 @@ chapitre('Les super-pouvoirs', 12, 'Les objets : klas', [
     P("Décodage : `init` est la recette de fabrication (elle s'exécute à chaque `Heros(...)`) ; `moi` "
       "désigne l'objet en train d'agir. Quand `awa.attaque(30)` s'exécute, `moi`, c'est Awa, et seule "
       "sa vie baisse. Chaque objet a sa propre mémoire : c'est toute la puissance du concept."),
-    ASTUCE("Pour afficher une propriété, passe-la à `vox` avec une virgule, comme `moi.nom` ci-dessus. "
-           "Les accolades dans un texte, comme `{nom}`, marchent avec une variable simple, pas avec "
-           "`moi.nom`."),
+    ASTUCE("Pour afficher une propriété, tu peux la passer à `vox` avec une virgule, comme `moi.nom` "
+           "ci-dessus, ou l'écrire directement entre accolades dans le texte : "
+           "`vox(\"Aïe ! {moi.nom} n'a plus que {moi.vie} points de vie\")` marche aussi."),
     P("Bonus : une `klas` peut hériter d'une autre avec `herite`. Elle reçoit toutes ses capacités et "
       "ajoute les siennes. Tu trouveras un exemple complet dans le guide du langage ; pour l'instant, "
       "savoir créer un moule et ses objets te place déjà au-dessus de la plupart des débutants."),

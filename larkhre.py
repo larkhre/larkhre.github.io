@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Larkhré — le langage de programmation de Ladji Doucaré
-« Mosi larkhré » : la langue de la machine, en soninké.
+« Mossi sef raanné » : la langue de la machine, en soninké (Larkhré, c'est la bouche).
 
 Syntaxe hybride Java + Python : des accolades { } mais pas de point-virgules.
 Mots-clés inventés :

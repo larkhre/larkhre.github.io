@@ -1,6 +1,6 @@
 # Larkhré
 
-*Mosi larkhré* : « la langue de la machine », en soninké.
+*Mossi sef raanné* : « la langue de la machine », en soninké. Et *larkhré*, c'est la bouche.
 Le langage pour apprendre à coder en français, avec des erreurs qui t'expliquent quoi corriger.
 
 ```
@@ -80,7 +80,7 @@ Le manuel complet : [GUIDE_LARKHRE.md](GUIDE_LARKHRE.md). L'historique : [CHANGE
 
 ## English
 
-Larkhré (*mosi larkhré*, "the language of the machine" in Soninke) is a beginner-friendly
+Larkhré ("the mouth" in Soninke; *mossi sef raanné*, "the language spoken by the machine") is a beginner-friendly
 programming language with French keywords and error messages that explain what to fix.
 Curly braces, no semicolons. Try it in the browser at
 [larkhre.github.io/code](https://larkhre.github.io/code/) or `pip install larkhre`.
