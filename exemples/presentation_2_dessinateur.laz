@@ -1,4 +1,10 @@
 # ===== Larkhré se présente : le dessinateur =====
+# Comment la voix prononce les mots difficiles : change ici, et c'est corrigé partout
+laz dit_larkhre = "Larkré"
+laz dit_soninke = "soniinnké"
+laz dit_mossi = "mossi sef raanné"
+laz dit_adresse = "larkré point guitt-hub point i-o"
+
 fonk presente(phrase, voix) {
     vox(phrase)
     dis(voix)
@@ -25,9 +31,9 @@ pou i dan 1..5 {
 }
 presente("Et un arbre, pour se retrouver dessous.", "Et un arbre, pour se retrouver dessous.")
 presente("Chaque forme, c'est une ligne de code que tu peux écrire toi aussi.", "Chaque forme, c'est une ligne de code que tu peux écrire toi aussi.")
-presente_couleur("Je m'appelle Larkhré.", "Je m'appelle Larkré.", "or")
-presente("Mossi sef raanné : la langue de la machine, en soninké.", "Mossi sef raanné : la langue de la machine, en soni-nnékéé.")
+presente_couleur("Je m'appelle Larkhré.", "Je m'appelle {dit_larkhre}.", "or")
+presente("Mossi sef raanné : la langue de la machine, en soninké.", "{dit_mossi} : la langue de la machine, en {dit_soninke}.")
 presente("Un langage de programmation en français, avec des erreurs expliquées.", "Un langage de programmation en français, avec des erreurs expliquées.")
 presente("Rien à installer, sur ton téléphone, et tout est gratuit.", "Rien à installer, sur ton téléphone, et tout est gratuit.")
 presente("Viens dessiner avec moi :", "Viens dessiner avec moi :")
-presente_couleur("larkhre.github.io", "larkré point guitt-hub point i-o.", "vert")
+presente_couleur("larkhre.github.io", "{dit_adresse}.", "vert")

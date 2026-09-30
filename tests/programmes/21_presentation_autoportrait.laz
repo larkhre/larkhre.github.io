@@ -1,4 +1,10 @@
 # ===== Larkhré se présente : l'autoportrait =====
+# Comment la voix prononce les mots difficiles : change ici, et c'est corrigé partout
+laz dit_larkhre = "Larkré"
+laz dit_soninke = "soniinnké"
+laz dit_mossi = "mossi sef raanné"
+laz dit_adresse = "larkré point guitt-hub point i-o"
+
 fonk presente(phrase, voix) {
     vox(phrase)
     dis(voix)
@@ -10,8 +16,8 @@ fonk presente_couleur(phrase, voix, couleur) {
 
 presente("Tu entends ? C'est un programme qui te parle.", "Tu entends ? C'est un programme qui te parle.")
 attends(0.5)
-presente_couleur("Je m'appelle Larkhré.", "Je m'appelle Larkré.", "or")
-presente("Mon nom vient du soninké : mossi sef raanné, la langue de la machine.", "Mon nom vient du soni-nnékéé. Mossi sef raanné : la langue de la machine.")
+presente_couleur("Je m'appelle Larkhré.", "Je m'appelle {dit_larkhre}.", "or")
+presente("Mon nom vient du soninké : mossi sef raanné, la langue de la machine.", "Mon nom vient du {dit_soninke}. {dit_mossi} : la langue de la machine.")
 presente("Je suis un langage de programmation en français.", "Je suis un langage de programmation en français.")
 presente("Je sais calculer :", "Je sais calculer.")
 laz resultat = 7 * 8
@@ -26,4 +32,4 @@ essaie {
 presente("Tu vois ? Même mes erreurs sont expliquées en français.", "Tu vois ? Même mes erreurs sont expliquées en français.")
 presente("Rien à installer. Je fonctionne sur ton téléphone. Et je suis gratuit.", "Rien à installer. Je fonctionne sur ton téléphone. Et je suis gratuit.")
 presente("Viens me parler :", "Viens me parler :")
-presente_couleur("larkhre.github.io", "larkré point guitt-hub point i-o.", "vert")
+presente_couleur("larkhre.github.io", "{dit_adresse}.", "vert")
