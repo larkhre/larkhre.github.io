@@ -5,6 +5,14 @@ laz dit_soninke = "soniinnké"
 laz dit_mossi = "mossi sef ra-né"
 laz dit_adresse = "larkré point guitt-hub point i-o"
 
+# La voix : « Français France », un peu plus lente et plus grave.
+# Si l'appareil n'a pas de voix « France », on garde sa voix par défaut, avec le même ton.
+essaie {
+    regle_voix("France", 0.85, 0.8)
+} rattrape erreur {
+    regle_voix("", 0.85, 0.8)
+}
+
 fonk presente(phrase, voix) {
     vox(phrase)
     dis(voix)
