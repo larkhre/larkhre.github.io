@@ -1,0 +1,7 @@
+# sans voix installée, la liste est vide et le réglage est simplement retenu
+vox(taille(voix_disponibles()) >= 0)
+regle_voix("Google français", 0.85, 0.8)
+dis("bonjour")
+regle_voix("", 1)
+vox("réglages acceptés")
+regle_voix("", 3)

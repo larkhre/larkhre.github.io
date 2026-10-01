@@ -1,0 +1,15 @@
+# ===== Essayer toutes les voix françaises de ton appareil =====
+# Change la vitesse et la hauteur ici, puis écoute :
+# vitesse : 0.5 (lent) à 2 (rapide) · hauteur : 0 (grave) à 2 (aigu) · 1 = normal
+laz vitesse = 0.85
+laz hauteur = 0.8
+
+laz liste = voix_disponibles()
+laz combien = taille(liste)
+vox("Voix françaises trouvées : {combien}")
+pou nom dan liste {
+    regle_voix(nom, vitesse, hauteur)
+    vox_couleur(nom, "or")
+    dis("Tu entends ? C'est un programme qui te parle.")
+    attends(0.5)
+}

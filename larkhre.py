@@ -1086,21 +1086,79 @@ def make_builtins(env, interp=None):
         return None
 
     # --- nouveauté v8.0 : Larkhré PARLE ! ---
+    # v11.6 : réglages de la voix (nom, vitesse, hauteur)
+    reglage_voix = {'nom': '', 'vitesse': 0.95, 'hauteur': 1.0}
+
+    def _voix_disponibles():
+        """Les voix françaises installées sur l'ordinateur ; une liste vide si on ne sait pas les lister."""
+        try:
+            if sys.platform == 'win32':
+                r = subprocess.run(['PowerShell', '-NoProfile', '-Command',
+                                    "Add-Type -AssemblyName System.Speech; "
+                                    "(New-Object System.Speech.Synthesis.SpeechSynthesizer).GetInstalledVoices() | "
+                                    "ForEach-Object { $_.VoiceInfo.Culture.Name + '|' + $_.VoiceInfo.Name }"],
+                                   capture_output=True, text=True, timeout=20)
+                return [l.split('|', 1)[1].strip() for l in r.stdout.splitlines()
+                        if '|' in l and l.lower().startswith('fr')]
+            if sys.platform == 'darwin':
+                r = subprocess.run(['say', '-v', '?'], capture_output=True, text=True, timeout=20)
+                voix = []
+                for l in r.stdout.splitlines():
+                    m = re.match(r'^(.+?)\s{2,}(fr[_-][A-Za-z]+)', l)
+                    if m:
+                        voix.append(m.group(1).strip())
+                return voix
+            r = subprocess.run(['espeak', '--voices=fr'], capture_output=True, text=True, timeout=20)
+            return [p.split()[3] for p in r.stdout.splitlines()[1:] if len(p.split()) >= 4]
+        except Exception:
+            return []
+
+    def b_voix_disponibles(args, line):
+        return _voix_disponibles()
+
+    def b_regle_voix(args, line):
+        if len(args) < 1 or len(args) > 3:
+            raise LazError('regle_voix(nom, vitesse, hauteur) : par exemple regle_voix("Google français", 0.85, 0.8)', line)
+        nom = to_text(args[0])
+        vitesse = check_number(args[1], line, 'regle_voix()') if len(args) > 1 else 0.95
+        hauteur = check_number(args[2], line, 'regle_voix()') if len(args) > 2 else 1
+        if vitesse < 0.5 or vitesse > 2:
+            raise LazError('regle_voix() : la vitesse va de 0.5 (lent) à 2 (rapide), 1 est la vitesse normale', line)
+        if hauteur < 0 or hauteur > 2:
+            raise LazError('regle_voix() : la hauteur va de 0 (grave) à 2 (aigu), 1 est la hauteur normale', line)
+        choisie = nom
+        if nom != '':
+            liste = _voix_disponibles()
+            if liste:
+                petit = nom.lower()
+                choisie = next((v for v in liste if v.lower() == petit), None) or \
+                    next((v for v in liste if petit in v.lower()), None)
+                if choisie is None:
+                    raise LazError(f"la voix « {nom} » n'est pas installée sur cet appareil. Voix disponibles : {', '.join(liste)}", line)
+        reglage_voix.update(nom=choisie, vitesse=vitesse, hauteur=hauteur)
+        return None
+
     def b_dis(args, line):
         _need(args, 1, 'dis', line)
         texte = ' '.join(to_text(a) for a in args)
+        nom, vitesse, hauteur = reglage_voix['nom'], reglage_voix['vitesse'], reglage_voix['hauteur']
         try:
             if sys.platform == 'win32':
                 sur = texte.replace("'", ' ').replace('"', ' ')
+                choix = ("$s.SelectVoice('" + nom.replace("'", ' ') + "'); ") if nom else ''
+                debit = max(-10, min(10, int(round((vitesse - 1) * 10))))
                 subprocess.run(['PowerShell', '-NoProfile', '-Command',
                                 "Add-Type -AssemblyName System.Speech; "
                                 "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
+                                + choix + "$s.Rate = " + str(debit) + "; "
                                 "$s.Speak('" + sur + "')"],
                                capture_output=True, timeout=60)
             elif sys.platform == 'darwin':
-                subprocess.run(['say', texte], capture_output=True, timeout=60)
+                subprocess.run(['say'] + (['-v', nom] if nom else []) + ['-r', str(int(175 * vitesse)), texte],
+                               capture_output=True, timeout=60)
             else:
-                for cmd in (['spd-say', '-w', texte], ['espeak', '-v', 'fr', texte]):
+                for cmd in (['spd-say', '-w', '-r', str(int((vitesse - 1) * 100)), '-p', str(int((hauteur - 1) * 100)), texte],
+                            ['espeak', '-v', nom or 'fr', '-s', str(int(175 * vitesse)), '-p', str(int(50 * hauteur)), texte]):
                     try:
                         subprocess.run(cmd, capture_output=True, timeout=60)
                         break
@@ -1620,6 +1678,8 @@ def make_builtins(env, interp=None):
         'mesure': b_mesure,                 # mesurer un qubit (effondrement)
         'probabilites': b_probabilites,     # les probabilités de chaque état
         'attends': b_attends,               # v11.5 : une pause, en secondes
+        'voix_disponibles': b_voix_disponibles,  # v11.6 : les voix françaises de l'appareil
+        'regle_voix': b_regle_voix,         # v11.6 : choisir la voix, sa vitesse et sa hauteur
         'voir': b_voir,                     # v11.3 : dessiner l'état (ou des résultats)
         'mesure_repetee': b_mesure_repetee, # v11.3 : répéter l'expérience n fois
         # --- nouveautés v7.0 : le mode interface ---

@@ -1,5 +1,14 @@
 # Historique des versions
 
+## 11.6 — La voix de Larkhré (septembre 2026)
+- **`voix_disponibles()`** renvoie la liste des voix françaises installées sur l'appareil.
+- **`regle_voix(nom, vitesse, hauteur)`** choisit la voix (un nom incomplet suffit) et règle
+  sa vitesse (0.5 à 2) et sa hauteur (0 à 2) ; 1 est la valeur normale. Un nom vide garde la
+  voix par défaut. Les réglages repartent à zéro à chaque exécution.
+- Nouvel exemple `exemples/essayer_les_voix.laz` : écouter toutes les voix une par une.
+- Avec pip, la vitesse est prise en compte sous Windows, macOS et Linux ; la hauteur sous Linux.
+- Tests : 59 programmes vérifiés sur les deux moteurs.
+
 ## 11.5.1 — Mossi sef raanné (septembre 2026)
 - L'expression soninké devient **« mossi sef raanné »** : *mossi*, la machine ; *sef*, parler ;
   *raanné*, la langue parlée. Et *larkhré*, c'est la bouche : la bouche qui parle la langue de la

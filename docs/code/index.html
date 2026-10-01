@@ -268,7 +268,7 @@
 <header>
   <h1 class="logo"><a href="../">Larkhré</a></h1>
   <div class="tagline"><em>Mossi sef raanné</em> : la langue de la machine, en soninké</div>
-  <div class="version">v11.5.1</div>
+  <div class="version">v11.6</div>
 </header>
 
 <div class="toolbar">
@@ -441,6 +441,7 @@ v10 : qubits superpose intrique
 mesure probabilites → QUANTIQUE !
 v11.3 : voir() mesure_repetee(1000)
 v11.5 : attends(1.5) — une pause
+v11.6 : voix_disponibles() regle_voix("", 0.85, 0.8)
 v8.0 : dis("texte") → il PARLE !
 Partager → ton code en lien
 v7.0 : titre bouton champ etiquette
@@ -452,7 +453,7 @@ efface_interface() → des APPLIS !
 </details>
 
 <footer>
-  <b>Larkhré v11.5.1</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
+  <b>Larkhré v11.6</b> — créé par Ladji · Un langage libre et gratuit, pour tout le monde · <a href="../livre.html" data-goatcounter-click="playground-vers-livre">Le livre</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a> · pip install larkhre · Photo : E. Diop, Unsplash
 </footer>
 
 <script>
@@ -1931,6 +1932,32 @@ const Larkhre = (function () {
         return null;
       });
 
+      // --- v11.6 : choisir et régler la voix ---
+      B('voix_disponibles', async () => {
+        if (!self.io.onVoixDisponibles) return [];
+        try { return (await self.io.onVoixDisponibles()).slice(); } catch (e) { return []; }
+      });
+      B('regle_voix', async (args, line) => {
+        if (args.length < 1 || args.length > 3) throw new LazError('regle_voix(nom, vitesse, hauteur) : par exemple regle_voix("Google français", 0.85, 0.8)', line);
+        const nom = toText(args[0]);
+        const vitesse = args.length > 1 ? checkNumber(args[1], line, 'regle_voix()') : 0.95;
+        const hauteur = args.length > 2 ? checkNumber(args[2], line, 'regle_voix()') : 1;
+        if (vitesse < 0.5 || vitesse > 2) throw new LazError('regle_voix() : la vitesse va de 0.5 (lent) à 2 (rapide), 1 est la vitesse normale', line);
+        if (hauteur < 0 || hauteur > 2) throw new LazError('regle_voix() : la hauteur va de 0 (grave) à 2 (aigu), 1 est la hauteur normale', line);
+        let choisie = nom;
+        if (nom !== '' && self.io.onVoixDisponibles) {
+          let liste = [];
+          try { liste = await self.io.onVoixDisponibles(); } catch (e) { }
+          if (liste.length) {
+            const petit = nom.toLowerCase();
+            choisie = liste.find((v) => v.toLowerCase() === petit) || liste.find((v) => v.toLowerCase().includes(petit)) || null;
+            if (!choisie) throw new LazError(`la voix « ${nom} » n'est pas installée sur cet appareil. Voix disponibles : ${liste.join(', ')}`, line);
+          }
+        }
+        if (self.io.onRegleVoix) self.io.onRegleVoix({ nom: choisie, vitesse, hauteur });
+        return null;
+      });
+
       // --- v11.5 : attends(secondes), une pause ---
       B('attends', async (args, line) => {
         self.need(args, 1, 'attends', line);
@@ -2707,7 +2734,7 @@ const Larkhre = (function () {
     }
   }
 
-  return { run, toText, LazError, version: '11.5.1' };
+  return { run, toText, LazError, version: '11.6' };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = Larkhre;
@@ -3629,6 +3656,17 @@ vox("Larkhré !")
 
   // ---------- v8 : Larkhré parle (synthèse vocale) ----------
   // v11.5 : la promesse se résout quand la phrase est finie (ou si la voix est indisponible)
+  // v11.6 : réglages de la voix, remis à zéro à chaque exécution
+  const reglageVoix = { nom: '', vitesse: 0.95, hauteur: 1 };
+  async function voixFrancaises() {
+    let v = [];
+    try { v = speechSynthesis.getVoices(); } catch (e) { return []; }
+    if (!v.length) {   // certains navigateurs chargent leurs voix un peu après la page
+      await new Promise((r) => { try { speechSynthesis.addEventListener('voiceschanged', r, { once: true }); } catch (e) { } setTimeout(r, 1200); });
+      try { v = speechSynthesis.getVoices(); } catch (e) { }
+    }
+    return v.filter((x) => x.lang && x.lang.toLowerCase().startsWith('fr')).map((x) => x.name);
+  }
   function disVoix(texte) {
     return new Promise((fini) => {
       let termine = false;
@@ -3639,8 +3677,10 @@ vox("Larkhré !")
       try {
         const u = new SpeechSynthesisUtterance(texte);
         u.lang = 'fr-FR';
-        u.rate = 0.95;
-        const voix = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith('fr'));
+        u.rate = reglageVoix.vitesse;
+        u.pitch = reglageVoix.hauteur;
+        const toutes = speechSynthesis.getVoices();
+        const voix = (reglageVoix.nom && toutes.find(v => v.name === reglageVoix.nom)) || toutes.find(v => v.lang && v.lang.startsWith('fr'));
         if (voix) u.voice = voix;
         u.onend = finir;
         u.onerror = finir;
@@ -3837,6 +3877,7 @@ vox("Larkhré !")
     clicsEnAttente = [];
     btnRun.style.display = 'none';
     btnStop.style.display = 'inline-block';
+    Object.assign(reglageVoix, { nom: '', vitesse: 0.95, hauteur: 1 });
     if (window.matchMedia('(max-width: 820px)').matches) {
       const ardoise = consoleEl.closest('.pane');
       if (ardoise) ardoise.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3859,6 +3900,8 @@ vox("Larkhré !")
       onFrame: () => new Promise(r => setTimeout(r, 33)),
       onSon: joueSon,
       onDis: disVoix,
+      onVoixDisponibles: voixFrancaises,
+      onRegleVoix: (r) => Object.assign(reglageVoix, r),
       onEcoute: ecouteVoix,
       onJeuDemarre: (mode) => addLine(mode === 'interface'
         ? 'Application lancée : elle vit au-dessus de la console. (Arrêter pour quitter)'
