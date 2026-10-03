@@ -61,6 +61,26 @@
     ul.faire { columns:1; }
     nav .liens a { margin-left:12px; }
   }
+
+/* --- La vidéo de présentation : une façade, le lecteur YouTube ne se charge qu'au clic --- */
+.film-cadre{ position:relative; width:100%; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#1a1410;
+  box-shadow:0 14px 34px rgba(0,0,0,.35); }
+@supports not (aspect-ratio:16/9){ .film-cadre{ height:0; padding-top:56.25%; } }
+.film-facade, .film-cadre iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
+.film-facade img{ width:100%; height:100%; object-fit:cover; display:block; }
+.film-lecture{ position:absolute; left:50%; top:50%; width:84px; height:84px; margin:-42px 0 0 -42px; border-radius:50%;
+  background:rgba(246,236,219,.95); box-shadow:0 6px 22px rgba(0,0,0,.4); transition:transform .15s ease; }
+.film-lecture::after{ content:""; position:absolute; left:33px; top:26px; border-style:solid;
+  border-width:16px 0 16px 26px; border-color:transparent transparent transparent #2b2119; }
+.film-facade:hover .film-lecture, .film-facade:focus-visible .film-lecture{ transform:scale(1.08); }
+.film-facade:focus-visible{ outline:3px solid #f6ecdb; outline-offset:-6px; }
+.film-cache{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.film-lien{ margin-top:12px; text-align:center; font-size:.95rem; }
+@media (prefers-reduced-motion: reduce){ .film-lecture{ transition:none; } }
+  .film{ border-top:0; padding:8px 0 36px; }
+  .film h2{ margin-bottom:.3em; }
+  .film-intro{ margin:0 0 16px; color:var(--doux); }
+  .film-lien a{ color:var(--terre); }
 </style>
 <script data-goatcounter="https://lazarus.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <script type="application/ld+json">
@@ -89,6 +109,20 @@
     <a class="logo" href="./">Larkhré</a>
     <div class="liens"><a href="code/">Le playground</a><a href="https://github.com/larkhre/larkhre.github.io">GitHub</a></div>
   </nav>
+
+  <section class="film" aria-labelledby="film-titre">
+    <h2 id="film-titre">Larkhré en 1 minute 30</h2>
+    <p class="film-intro">Découvre le langage en vidéo, avant de commencer le livre.</p>
+  <div class="film-cadre">
+    <a class="film-facade" href="https://youtu.be/19oQ2O1K9sQ" data-video="19oQ2O1K9sQ" data-titre="Larkhré en 1 minute 30 : la vidéo de présentation du langage"
+       title="Lire la vidéo : Larkhré en 1 minute 30" data-goatcounter-click="video-livre">
+      <img src="film-larkhre-apercu.webp" width="1280" height="720" loading="eager" alt="Aperçu de la vidéo : le playground Larkhré, avec un programme de quelques lignes qui dessine un soleil et de l'herbe">
+      <span class="film-lecture" aria-hidden="true"></span>
+      <span class="film-cache">Lire la vidéo de présentation de Larkhré</span>
+    </a>
+  </div>
+  <p class="film-lien"><a href="https://youtu.be/19oQ2O1K9sQ" data-goatcounter-click="video-livre-youtube">Voir sur YouTube</a></p>
+  </section>
 
   <div class="hero">
     <img src="livre-couverture.webp" width="520" height="737" alt="Couverture du livre : Larkhré, apprends à coder de zéro, avec un baobab au bout d'un chemin de sable">
@@ -177,5 +211,22 @@
 <footer>Larkhré — un langage libre et gratuit créé par Ladji Doucaré · <a href="code/">Playground</a> · <a href="https://github.com/larkhre/larkhre.github.io">GitHub</a>
 <div class="zappitch"><a href="https://zappitch.app/d/larkhre.html?utm_source=badge" target="_blank" rel="noopener"><img src="https://zappitch.app/badge/featured-light.svg" alt="Featured on Zappitch" width="196" height="54"></a></div>
 </footer>
+<script>
+/* La façade de la vidéo : au clic, l'image est remplacée par le lecteur youtube-nocookie.com */
+document.querySelectorAll('.film-facade').forEach(function(a){
+  a.addEventListener('click', function(e){
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;   // ouvrir dans un onglet reste possible
+    e.preventDefault();
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + a.getAttribute('data-video') + '?autoplay=1&rel=0&playsinline=1';
+    f.title = a.getAttribute('data-titre');
+    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    f.setAttribute('allowfullscreen', '');
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    a.parentNode.replaceChild(f, a);
+    f.focus();
+  });
+});
+</script>
 </body>
 </html>
