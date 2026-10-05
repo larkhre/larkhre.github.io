@@ -87,21 +87,12 @@ body{ background:var(--earth); color:var(--earth);
 .pied img{ max-width:100%; height:auto; vertical-align:middle; }
 @media (prefers-reduced-motion: reduce){ .photo img{ transform:none !important; } }
 
-/* --- La vidéo de présentation : une façade, le lecteur YouTube ne se charge qu'au clic --- */
+/* --- La vidéo de présentation, hébergée sur le site --- */
 .film-cadre{ position:relative; width:100%; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#1a1410;
   box-shadow:0 14px 34px rgba(0,0,0,.35); }
 @supports not (aspect-ratio:16/9){ .film-cadre{ height:0; padding-top:56.25%; } }
-.film-facade, .film-cadre iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; display:block; }
-.film-facade img{ width:100%; height:100%; object-fit:cover; display:block; }
-.film-lecture{ position:absolute; left:50%; top:50%; width:84px; height:84px; margin:-42px 0 0 -42px; border-radius:50%;
-  background:rgba(246,236,219,.95); box-shadow:0 6px 22px rgba(0,0,0,.4); transition:transform .15s ease; }
-.film-lecture::after{ content:""; position:absolute; left:33px; top:26px; border-style:solid;
-  border-width:16px 0 16px 26px; border-color:transparent transparent transparent #2b2119; }
-.film-facade:hover .film-lecture, .film-facade:focus-visible .film-lecture{ transform:scale(1.08); }
-.film-facade:focus-visible{ outline:3px solid #f6ecdb; outline-offset:-6px; }
-.film-cache{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.film-video{ position:absolute; inset:0; width:100%; height:100%; display:block; background:#1a1410; object-fit:contain; }
 .film-lien{ margin-top:12px; text-align:center; font-size:.95rem; }
-@media (prefers-reduced-motion: reduce){ .film-lecture{ transition:none; } }
 .film{ background:var(--earth); color:var(--cream); padding:56px 6vw 48px; }
 .film-interieur{ max-width:960px; margin:0 auto; }
 .film h2{ font-family:'Fraunces',Georgia,serif; font-weight:700; font-size:clamp(1.5rem,4vw,2.2rem); line-height:1.15; margin-bottom:18px; }
@@ -140,12 +131,12 @@ body{ background:var(--earth); color:var(--earth);
 <div class="film-interieur">
   <h2 id="film-titre">Larkhré en 1 minute 30</h2>
   <div class="film-cadre">
-    <a class="film-facade" href="https://youtu.be/19oQ2O1K9sQ" data-video="19oQ2O1K9sQ" data-titre="Larkhré en 1 minute 30 : la vidéo de présentation du langage"
-       title="Lire la vidéo : Larkhré en 1 minute 30" data-goatcounter-click="video-accueil">
-      <img src="film-larkhre-apercu.webp" width="1280" height="720" loading="lazy" alt="Aperçu de la vidéo : le playground Larkhré, avec un programme de quelques lignes qui dessine un soleil et de l'herbe">
-      <span class="film-lecture" aria-hidden="true"></span>
-      <span class="film-cache">Lire la vidéo de présentation de Larkhré</span>
-    </a>
+    <video class="film-video" controls preload="none" playsinline width="1920" height="1080"
+           poster="film-larkhre-apercu.webp" title="Larkhré en 1 minute 30 : la vidéo de présentation du langage"
+           aria-label="Vidéo de présentation de Larkhré, 1 minute 32" data-compteur="video-accueil">
+      <source src="film-larkhre.mp4" type="video/mp4">
+      Ton navigateur ne peut pas lire cette vidéo : <a href="https://youtu.be/19oQ2O1K9sQ">regarde-la sur YouTube</a>.
+    </video>
   </div>
   <p class="film-lien"><a href="https://youtu.be/19oQ2O1K9sQ" data-goatcounter-click="video-accueil-youtube">Voir sur YouTube</a></p>
 </div>
@@ -182,21 +173,13 @@ body{ background:var(--earth); color:var(--earth);
 })();
 </script>
 <script>
-/* La façade de la vidéo : au clic, l'image est remplacée par le lecteur youtube-nocookie.com.
-   Pas de démarrage automatique : sinon, certains navigateurs lancent la vidéo sans le son, et YouTube affiche alors les sous-titres. */
-document.querySelectorAll('.film-facade').forEach(function(a){
-  a.addEventListener('click', function(e){
-    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;   // ouvrir dans un onglet reste possible
-    e.preventDefault();
-    var f = document.createElement('iframe');
-    f.src = 'https://www.youtube-nocookie.com/embed/' + a.getAttribute('data-video') + '?rel=0&playsinline=1';
-    f.title = a.getAttribute('data-titre');
-    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-    f.setAttribute('allowfullscreen', '');
-    f.referrerPolicy = 'strict-origin-when-cross-origin';
-    a.parentNode.replaceChild(f, a);
-    f.focus();
-  });
+/* La vidéo de présentation, hébergée sur le site : aucun sous-titre, aucun cookie, rien n'est téléchargé avant la lecture.
+   On compte seulement la première lecture dans GoatCounter, comme les autres boutons du site. */
+document.querySelectorAll('.film-video').forEach(function(v){
+  v.addEventListener('play', function(){
+    if (window.goatcounter && window.goatcounter.count)
+      window.goatcounter.count({ path: v.getAttribute('data-compteur'), title: 'Lecture du film', event: true });
+  }, { once: true });
 });
 </script>
 </body>
