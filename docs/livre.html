@@ -212,13 +212,14 @@
 <div class="zappitch"><a href="https://zappitch.app/d/larkhre.html?utm_source=badge" target="_blank" rel="noopener"><img src="https://zappitch.app/badge/featured-light.svg" alt="Featured on Zappitch" width="196" height="54"></a></div>
 </footer>
 <script>
-/* La façade de la vidéo : au clic, l'image est remplacée par le lecteur youtube-nocookie.com */
+/* La façade de la vidéo : au clic, l'image est remplacée par le lecteur youtube-nocookie.com.
+   Pas de démarrage automatique : sinon, certains navigateurs lancent la vidéo sans le son, et YouTube affiche alors les sous-titres. */
 document.querySelectorAll('.film-facade').forEach(function(a){
   a.addEventListener('click', function(e){
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;   // ouvrir dans un onglet reste possible
     e.preventDefault();
     var f = document.createElement('iframe');
-    f.src = 'https://www.youtube-nocookie.com/embed/' + a.getAttribute('data-video') + '?autoplay=1&rel=0&playsinline=1';
+    f.src = 'https://www.youtube-nocookie.com/embed/' + a.getAttribute('data-video') + '?rel=0&playsinline=1';
     f.title = a.getAttribute('data-titre');
     f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
     f.setAttribute('allowfullscreen', '');
